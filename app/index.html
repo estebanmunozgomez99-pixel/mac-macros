@@ -303,6 +303,36 @@ img { max-width: 100%; }
   background: transparent; font-weight: 700; margin-top: 10px;
 }
 
+/* Goal calculator */
+.calc-link-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+.link-btn { border: none; background: none; padding: 4px 2px; font-size: 0.85rem; color: var(--muted); text-align: right; }
+.link-btn b { color: var(--maroon); }
+:root[data-theme="dark"] .link-btn b { color: var(--gold); }
+.sub-label { font-weight: 500; color: var(--muted); font-size: 0.78rem; }
+.pair { display: flex; gap: 6px; }
+.field .opt-row { flex-wrap: nowrap; }
+.pair input { width: 60px; }
+.choices { display: grid; gap: 6px; }
+.choice {
+  text-align: left; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm);
+  background: var(--surface); display: flex; flex-direction: column; gap: 2px;
+}
+.choice span { font-size: 0.82rem; color: var(--muted); }
+.choice[aria-pressed="true"] { border-color: var(--maroon); box-shadow: inset 0 0 0 1px var(--maroon); }
+.choice[aria-pressed="true"] span { color: var(--text); }
+.maint { margin: 20px 2px 10px; font-size: 1rem; }
+.plan { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 10px; }
+.plan.picked { border: 2px solid var(--maroon); }
+.plan-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 1.05rem; }
+.tag { font-size: 0.72rem; font-weight: 800; background: var(--gold); color: #2B1A00; padding: 3px 8px; border-radius: 999px; }
+.plan-note { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+.plan-nums { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 10px; font-size: 0.9rem; }
+.plan-nums .p b { color: var(--protein); }
+.plan-nums .c b { color: var(--carbs); }
+.plan-nums .f b { color: var(--fat); }
+.plan .primary, .plan .ghost { margin-top: 12px; height: 42px; }
+.calc-empty { margin-top: 18px; }
+
 /* Nutrition facts */
 /* Day nutrition: small ⓘ in the summary card's top-right corner */
 .summary { position: relative; }
@@ -440,7 +470,7 @@ img { max-width: 100%; }
     </div>
     <div class="tabs" role="tablist" aria-label="Food list">
       <button role="tab" id="tabAll" aria-selected="true" data-tab="all">All food</button>
-      <button role="tab" id="tabProtein" aria-selected="false" data-tab="protein">High protein</button>
+      <button role="tab" id="tabProtein" aria-selected="false" data-tab="protein">High protein 💪</button>
     </div>
     <div class="loc-row" id="locRow" role="group" aria-label="Filter by location"></div>
     <div class="loc-row station-row" id="stationRow" role="group" aria-label="Filter by station" hidden></div>
@@ -461,9 +491,33 @@ img { max-width: 100%; }
   <div class="sheet-body">
     <p class="hint">Optional. Leave a box empty to just see your totals for that one.</p>
     <div class="card" id="goalFields"></div>
+    <div class="calc-link-row"><button class="link-btn" id="openCalc">Don't know where to start? <b>Calculate my goals →</b></button></div>
     <button class="primary" id="saveGoals">Save goals</button>
     <button class="ghost" id="clearDay">Clear this day's meals</button>
     <p class="hint" style="margin-top:16px">Your log is saved on this device only.</p>
+  </div>
+</div>
+
+<!-- Goal calculator sheet -->
+<div class="sheet" id="calcSheet" role="dialog" aria-modal="true" aria-labelledby="calcTitle" aria-hidden="true">
+  <div class="sheet-head">
+    <h2 id="calcTitle">Calculate my goals</h2>
+    <button class="icon-btn" data-close aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body" id="calcBody">
+    <p class="hint">Estimates the calories you burn in a day and sets targets for your goal. It's a starting point, not medical advice. Adjust after a few weeks based on how your weight changes.</p>
+    <div class="tabs" role="group" aria-label="Units" id="unitSeg">
+      <button data-units="metric">Metric (cm, kg)</button>
+      <button data-units="imperial">Imperial (ft, lb)</button>
+    </div>
+    <div class="card" id="calcFields"></div>
+    <div class="group-label">How active are you?</div>
+    <div class="choices" id="activityList" role="group" aria-label="Activity level"></div>
+    <div class="group-label">What's your priority?</div>
+    <div class="opt-row prio-row" id="prioRow" role="group" aria-label="Priority"></div>
+    <div id="calcResult"></div>
   </div>
 </div>
 
@@ -663,10 +717,10 @@ function loadState() {
     const raw = localStorage.getItem(STORE_KEY);
     if (raw) {
       const s = JSON.parse(raw);
-      return { log: s.log || {}, goals: s.goals || {}, recents: s.recents || [] };
+      return { log: s.log || {}, goals: s.goals || {}, recents: s.recents || [], profile: s.profile || {} };
     }
   } catch (e) { /* storage unavailable: start fresh */ }
-  return { log: {}, goals: {}, recents: [] };
+  return { log: {}, goals: {}, recents: [], profile: {} };
 }
 function saveState() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
@@ -1021,6 +1075,103 @@ function renderGoals() {
       <span class="input-wrap"><input id="goal-${f.key}" type="number" inputmode="numeric" min="0" step="1" value="${state.goals[f.key] || ""}" placeholder="—">${f.unit}</span>
     </div>`).join("");
 }
+
+/* ---------- Goal calculator ----------
+   Maintenance calories: Mifflin-St Jeor resting energy x activity factor.
+   Protein per kg of body weight by goal (within the 1.6-2.2 g/kg range from sports nutrition research); fat 25% of
+   calories; carbs fill the rest. Weight loss never goes below 1,500 (male) / 1,200 (female) calories. */
+const ACTIVITY = [
+  { f: 1.2, name: "Mostly sitting", note: "Class and studying, little exercise" },
+  { f: 1.375, name: "Lightly active", note: "Walking around campus, exercise 1–3 days a week" },
+  { f: 1.55, name: "Active", note: "Exercise 3–5 days a week" },
+  { f: 1.725, name: "Very active", note: "Hard exercise 6–7 days a week, or a varsity sport" }
+];
+const PLANS = [
+  { key: "lose", name: "Lose fat", delta: -500, gPerKg: 2.0, note: "About 0.5 kg (1 lb) a week" },
+  { key: "maintain", name: "Maintain", delta: 0, gPerKg: 1.6, note: "Stay about the same weight" },
+  { key: "muscle", name: "Build muscle", delta: 250, gPerKg: 1.8, note: "Slow, lean gain. Pair it with strength training" },
+  { key: "gain", name: "Gain weight", delta: 500, gPerKg: 1.6, note: "About 0.5 kg (1 lb) a week" }
+];
+const prof = () => state.profile;
+function calcPlans() {
+  const p = prof();
+  if (!(p.age >= 14 && p.age <= 90 && p.cm >= 120 && p.cm <= 230 && p.kg >= 35 && p.kg <= 250 && p.sex)) return null;
+  const bmr = 10 * p.kg + 6.25 * p.cm - 5 * p.age + (p.sex === "male" ? 5 : -161);
+  const tdee = bmr * (p.activity || 1.375);
+  const floor = p.sex === "male" ? 1500 : 1200;
+  const r10 = n => Math.round(n / 10) * 10;
+  return { tdee: r10(tdee), plans: PLANS.map(pl => {
+    const calories = r10(Math.max(tdee + pl.delta, pl.delta < 0 ? floor : 0));
+    const protein = Math.round(p.kg * pl.gPerKg);
+    const fat = Math.round(calories * 0.25 / 9);
+    const carbs = Math.max(0, Math.round((calories - protein * 4 - fat * 9) / 4));
+    return { ...pl, calories, protein, carbs, fat };
+  }) };
+}
+function renderCalcFields() {
+  const p = prof(), imp = p.units === "imperial";
+  document.querySelectorAll("#unitSeg [data-units]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.units === (p.units || "metric"))));
+  const num = (id, val, unit, step = 1) => `<span class="input-wrap"><input id="${id}" type="number" inputmode="decimal" min="0" step="${step}" value="${val ?? ""}" placeholder="—">${unit}</span>`;
+  const totalIn = p.cm ? Math.round(p.cm / 2.54) : null;
+  $("#calcFields").innerHTML = `
+    <div class="field"><span class="field-label">Sex <small class="sub-label">(used in the formula)</small></span>
+      <div class="opt-row">${["male", "female"].map(x => `<button class="opt" data-sex="${x}" aria-pressed="${p.sex === x}">${x === "male" ? "Male" : "Female"}</button>`).join("")}</div></div>
+    <div class="field"><label for="c-age">Age</label>${num("c-age", p.age, "yrs")}</div>
+    <div class="field"><label for="${imp ? "c-ft" : "c-cm"}">Height</label>${imp
+      ? `<span class="pair">${num("c-ft", totalIn != null ? Math.floor(totalIn / 12) : "", "ft")}${num("c-in", totalIn != null ? totalIn % 12 : "", "in")}</span>`
+      : num("c-cm", p.cm && Math.round(p.cm), "cm")}</div>
+    <div class="field"><label for="c-w">Weight</label>${num("c-w", p.kg && (imp ? Math.round(p.kg * 2.20462) : Math.round(p.kg * 10) / 10), imp ? "lb" : "kg", 0.1)}</div>`;
+  $("#activityList").innerHTML = ACTIVITY.map(a => `<button class="choice" data-act="${a.f}" aria-pressed="${(p.activity || 1.375) === a.f}">
+    <b>${a.name}</b><span>${a.note}</span></button>`).join("");
+  $("#prioRow").innerHTML = PLANS.map(pl => `<button class="opt" data-prio="${pl.key}" aria-pressed="${(p.priority || "maintain") === pl.key}">${pl.name}</button>`).join("");
+}
+function renderCalcResult() {
+  const r = calcPlans();
+  if (!r) { $("#calcResult").innerHTML = `<p class="hint calc-empty">Fill in your sex, age, height and weight to see your numbers.</p>`; return; }
+  const pick = prof().priority || "maintain";
+  const plans = [...r.plans].sort((a, b) => (b.key === pick) - (a.key === pick));
+  $("#calcResult").innerHTML = `
+    <div class="maint">Your maintenance: <b>${fmt(r.tdee)} cal</b> a day</div>
+    ${plans.map(pl => `<div class="plan${pl.key === pick ? " picked" : ""}">
+      <div class="plan-head"><b>${pl.name}</b>${pl.key === pick ? `<span class="tag">Your priority</span>` : ""}</div>
+      <div class="plan-note">${pl.note}</div>
+      <div class="plan-nums"><span><b>${fmt(pl.calories)}</b> cal</span><span class="p"><b>${pl.protein}g</b> protein</span>
+        <span class="c"><b>${pl.carbs}g</b> carbs</span><span class="f"><b>${pl.fat}g</b> fat</span></div>
+      <button class="${pl.key === pick ? "primary" : "ghost"} use-plan" data-use="${pl.key}">Use this as my goal</button>
+    </div>`).join("")}`;
+}
+// Read the typed numbers back into the profile (stored in cm and kg)
+function readCalcInputs() {
+  const p = prof(), v = id => { const el = $("#" + id); return el && el.value !== "" ? parseFloat(el.value) : undefined; };
+  p.age = v("c-age");
+  if (p.units === "imperial") {
+    const ft = v("c-ft"), inch = v("c-in"), lb = v("c-w");
+    p.cm = ft != null ? (ft * 12 + (inch || 0)) * 2.54 : undefined;
+    p.kg = lb != null ? lb / 2.20462 : undefined;
+  } else { p.cm = v("c-cm"); p.kg = v("c-w"); }
+  saveState(); renderCalcResult();
+}
+$("#openCalc").addEventListener("click", () => {
+  renderCalcFields(); renderCalcResult();
+  document.querySelectorAll(".sheet.open").forEach(s => { s.classList.remove("open"); s.setAttribute("aria-hidden", "true"); });
+  openSheet("calcSheet");
+});
+$("#calcBody").addEventListener("input", e => { if (e.target.matches("input")) readCalcInputs(); });
+$("#calcBody").addEventListener("click", e => {
+  const p = prof(), t = k => e.target.closest(k);
+  if (t("[data-units]")) { p.units = t("[data-units]").dataset.units; saveState(); renderCalcFields(); return; }
+  if (t("[data-sex]")) p.sex = t("[data-sex]").dataset.sex;
+  else if (t("[data-act]")) p.activity = Number(t("[data-act]").dataset.act);
+  else if (t("[data-prio]")) p.priority = t("[data-prio]").dataset.prio;
+  else if (t("[data-use]")) {
+    const pl = calcPlans().plans.find(x => x.key === t("[data-use]").dataset.use);
+    state.goals = { calories: pl.calories, protein: pl.protein, carbs: pl.carbs, fat: pl.fat };
+    saveState(); closeSheets(); renderSummary();
+    toast(`Goal set: ${pl.name}, ${fmt(pl.calories)} cal, ${pl.protein}g protein`);
+    return;
+  } else return;
+  saveState(); renderCalcFields(); renderCalcResult();
+});
 
 /* ---------- Sheets ---------- */
 let lastFocus = null;
