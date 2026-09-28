@@ -271,6 +271,11 @@ img { max-width: 100%; }
   background: var(--maroon); color: var(--on-maroon); font-weight: 800;
 }
 .picker-totals { padding: 0 16px 12px; background: var(--surface-2); font-size: 0.85rem; color: var(--muted); }
+.opts { padding: 10px 16px 0; background: var(--surface-2); }
+.opt-label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+.opt-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.opt { height: 36px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface); font-weight: 600; font-size: 0.9rem; }
+.opt[aria-pressed="true"] { background: var(--maroon); border-color: var(--maroon); color: var(--on-maroon); }
 
 .no-results { padding: 24px 8px; text-align: center; color: var(--muted); }
 .sample-note { font-size: 0.8rem; color: var(--muted); margin: 16px 2px 0; }
@@ -485,8 +490,51 @@ const FOODS = MENU.items.map(([si, item, serving, calories, protein, carbs, fat,
 const LOCATIONS = MENU.locations;
 const MAINS = FOODS.filter(f => !f.extra);
 const FOOD_BY_ID = new Map(FOODS.map(f => [f.id, f]));
-// Extras per station (restaurant), one entry per name + calories
 const stationKey = (loc, st) => loc + "|" + st;
+
+/* ---------- Sizes and milks ----------
+   Every size and milk of one drink is a single row in the list; the picker chooses the size and milk.
+   "Caffé Latte - 12 oz (oat)" -> base "Caffé Latte", size "12 oz", milk "oat". The log keeps the full name. */
+const SIZE_RE = /^(.*?)\s*-\s*(Small|Medium|Large|X Large|Regular|Single|Double|\d+ ?(?:mL|oz))(?: \(([^)]+)\))?$/i;
+const SIZE_WORDS = ["Single", "Double", "Small", "Regular", "Medium", "Large", "X Large"];
+const MILK_ORDER = ["2%", "skim", "oat", "almond", "soy", "coconut"];
+const sizeRank = s => { const n = parseFloat(s); return isNaN(n) ? 1000 + SIZE_WORDS.indexOf(s) : n; };
+const milkRank = m => { const i = MILK_ORDER.indexOf(m); return i < 0 ? 99 : i; };
+const GROUPS = new Map();
+MAINS.forEach(f => {
+  const m = f.item.match(SIZE_RE);
+  f.base = m ? m[1] : f.item; f.size = m ? m[2] : null; f.milk = m ? m[3] || null : null;
+});
+// La Piazza bowls come as "Acai Bowl" and "Acai Bowl- Small": treat "Small" as a size only when the plain dish exists
+const NAMES = new Set(MAINS.map(f => stationKey(f.location, f.station) + "|" + f.item));
+MAINS.forEach(f => {
+  const m = !f.size && f.item.match(/^(.*?)\s*-?\s*Small$/);
+  if (m && NAMES.has(stationKey(f.location, f.station) + "|" + m[1])) { f.base = m[1]; f.size = "Small"; }
+});
+// Only sizes/milks are grouped; same-name dishes with different servings stay separate rows
+const SIZED = new Set(MAINS.filter(f => f.size).map(f => stationKey(f.location, f.station) + "|" + f.base));
+MAINS.forEach(f => {
+  const sk = stationKey(f.location, f.station) + "|" + f.base;
+  const key = (f.size || SIZED.has(sk) ? sk : f.id).toLowerCase();
+  if (!GROUPS.has(key)) GROUPS.set(key, { id: "g|" + key, name: f.base, location: f.location, station: f.station, variants: [] });
+  const g = GROUPS.get(key);
+  g.variants.push(f); f.group = g;
+});
+GROUPS.forEach(g => {
+  const vs = g.variants;
+  if (vs.length > 1 && vs.some(v => v.size)) vs.forEach(v => { if (!v.size) v.size = "Regular"; });
+  if (vs.some(v => v.milk)) vs.forEach(v => { if (!v.milk) v.milk = "No milk"; });
+  if (vs.length === 1 && !vs[0].size) g.name = vs[0].item;  // plain dish: keep its own name
+  vs.sort((a, b) => sizeRank(a.size) - sizeRank(b.size) || milkRank(a.milk) - milkRank(b.milk));
+  g.sizes = [...new Set(vs.map(v => v.size).filter(Boolean))];
+  g.search = [...new Set(vs.map(v => v.search))].join(" ");
+});
+const GROUP_LIST = [...GROUPS.values()];
+// The variant matching the picked size and milk (falls back to the first milk that size comes in)
+function pickVariant(g, size, milk) {
+  return g.variants.find(v => v.size === size && v.milk === milk) || g.variants.find(v => v.size === size) || g.variants[0];
+}
+// Extras per station (restaurant), one entry per name + calories
 const EXTRAS_BY_STATION = {};
 FOODS.filter(f => f.extra).forEach(f => {
   const k = stationKey(f.location, f.station);
@@ -567,6 +615,7 @@ const HIGH_PROTEIN_RATIO = 2 / 30;
 const isHighProtein = f => f.calories > 0 && f.protein >= 5 && f.protein / f.calories >= HIGH_PROTEIN_RATIO; // 5 g floor skips black coffee etc.
 let expandedId = null;
 let pickServings = 1;
+let pickSize = null, pickMilk = null;
 
 /* ---------- Summary ---------- */
 function totalsFor(key) {
@@ -680,20 +729,31 @@ function renderLocations() {
 }
 
 const SERVING_WORDS = { Portion: "1 portion", Each: "1 item", Sandwich: "1 sandwich", Slice: "1 slice", Plate: "1 plate", Kilogram: "1 kg", "100g": "100 g" };
-function foodRow(f) {
-  const open = expandedId === f.id;
+// One row per dish or drink. rowId keeps a drink under Recent separate from the same drink in the full list;
+// rep is the variant shown in the row (the one picked last, or the best protein ratio on the High protein tab).
+function foodRow(g, rowId, rep) {
+  const open = expandedId === rowId;
+  const cals = g.variants.map(v => v.calories);
+  const lo = Math.min(...cals), hi = Math.max(...cals);
   let html = `<li>
-    <button class="food-btn" data-food="${esc(f.id)}" aria-expanded="${open}">
+    <button class="food-btn" data-food="${esc(rowId)}" aria-expanded="${open}">
       <div class="info">
-        <div class="name">${esc(f.item)}</div>
-        <div class="meta">${esc(f.location)}, ${esc(f.station)}</div>
+        <div class="name">${esc(g.name)}</div>
+        <div class="meta">${esc(g.location)}, ${esc(g.station)}${g.variants.length > 1 ? ` · ${optionsText(g)}` : ""}</div>
       </div>
       ${activeTab === "protein"
-        ? `<div class="cal prot">${fmtG(f.protein)}g protein<small>${fmt(f.calories)} cal</small></div>`
-        : `<div class="cal">${fmt(f.calories)} cal</div>`}
+        ? `<div class="cal prot">${fmtG(rep.protein)}g protein<small>${fmt(rep.calories)} cal</small></div>`
+        : `<div class="cal">${lo === hi ? fmt(lo) : fmt(lo) + "–" + fmt(hi)} cal</div>`}
     </button>`;
   if (open) {
+    const f = pickVariant(g, pickSize, pickMilk);
     const unit = SERVING_WORDS[f.serving] || f.serving || "1 serving";
+    const milks = [...new Set(g.variants.filter(v => v.size === f.size).map(v => v.milk).filter(Boolean))];
+    const chips = (label, attr, list, cur) => list.length > 1 ? `<div class="opts" role="group" aria-label="${label}">
+      <span class="opt-label">${label}</span>
+      <div class="opt-row">${list.map(o => `<button class="opt" data-${attr}="${esc(o)}" aria-pressed="${o === cur}">${esc(o)}</button>`).join("")}</div>
+    </div>` : "";
+    html += chips("Size", "size", g.sizes, f.size) + chips("Milk", "milk", milks, f.milk);
     html += `<div class="picker">
       <div class="stepper">
         <button data-step="-0.5" aria-label="Fewer servings">−</button>
@@ -706,16 +766,30 @@ function foodRow(f) {
   }
   return html + "</li>";
 }
+function optionsText(g) {
+  const milks = new Set(g.variants.map(v => v.milk).filter(Boolean)).size;
+  return [g.sizes.length > 1 && `${g.sizes.length} sizes`, milks > 1 && `${milks} milks`].filter(Boolean).join(", ") || g.sizes[0] || "";
+}
+// Open a row with a variant picked: its size and milk become the picker's starting choice
+function openRow(rowId, v) { expandedId = rowId; pickSize = v.size; pickMilk = v.milk; pickServings = 1; }
 
 function renderFoods() {
   const q = $("#searchInput").value.trim().toLowerCase();
   const words = q.split(/\s+/).filter(Boolean);
-  const matches = MAINS.filter(f =>
-    (activeLoc === "All" || f.location === activeLoc) &&
-    (activeStation === "All" || f.station === activeStation) &&
-    words.every(w => f.search.includes(w)) && isServed(f, viewKey) &&
-    (activeTab !== "protein" || isHighProtein(f)));
-  if (activeTab === "protein") matches.sort((a, b) => b.protein / b.calories - a.protein / a.calories);
+  const ratio = f => f.protein / f.calories;
+  // A dish or drink shows if any of its sizes/milks is served today (and qualifies on the High protein tab)
+  const matches = [];
+  GROUP_LIST.forEach(g => {
+    if ((activeLoc !== "All" && g.location !== activeLoc) || (activeStation !== "All" && g.station !== activeStation)) return;
+    if (!words.every(w => g.search.includes(w))) return;
+    const ok = g.variants.filter(f => isServed(f, viewKey) && (activeTab !== "protein" || isHighProtein(f)));
+    if (!ok.length) return;
+    const rep = activeTab === "protein" ? ok.reduce((a, b) => ratio(b) > ratio(a) ? b : a) : ok[0];
+    matches.push({ g, rep });
+  });
+  if (activeTab === "protein") matches.sort((a, b) => ratio(b.rep) - ratio(a.rep));
+  rowPicks.clear();
+  const row = (g, rowId, rep) => { rowPicks.set(rowId, rep); return foodRow(g, rowId, rep); };
 
   let html = "";
   const rot = activeStation !== "All" && ROTATIONS[stationKey(activeLoc, activeStation)];
@@ -727,11 +801,15 @@ function renderFoods() {
       <button data-fullrot>${showFullRotation ? "Only this day" : "Show all weeks"}</button></div>`;
   }
   if (activeTab === "protein") html += `<p class="hp-note">At least 20 g of protein per 300 calories (and 5 g or more), best ratio first.</p>`;
-  const recent = (!q && activeLoc === "All" && activeTab === "all")
-    ? state.recents.map(id => FOOD_BY_ID.get(id)).filter(f => f && !f.extra && isServed(f, viewKey)).slice(0, 5)
-    : [];
+  // Recent: one row per dish, opening on the size and milk logged last
+  const recent = [];
+  if (!q && activeLoc === "All" && activeTab === "all") {
+    state.recents.map(id => FOOD_BY_ID.get(id)).forEach(f => {
+      if (f && f.group && isServed(f, viewKey) && !recent.some(r => r.group === f.group) && recent.length < 5) recent.push(f);
+    });
+  }
   if (recent.length) {
-    html += `<div class="group-label">Recent</div><ul class="foods">${recent.map(foodRow).join("")}</ul>`;
+    html += `<div class="group-label">Recent</div><ul class="foods">${recent.map(f => row(f.group, f.group.id + "#recent", f)).join("")}</ul>`;
     html += `<div class="group-label">All food</div>`;
   }
   if (!matches.length) {
@@ -739,15 +817,15 @@ function renderFoods() {
   } else {
     const shown = matches.slice(0, showLimit);
     if (!recent.length) html += `<div class="count-note">${matches.length.toLocaleString()} item${matches.length > 1 ? "s" : ""}</div>`;
-    // Items also shown under Recent get their own id so only the tapped copy expands
-    html += `<ul class="foods">${shown.map(f => recent.some(r => r.id === f.id) ? foodRow({ ...f, id: f.id + "#all" }) : foodRow(f)).join("")}</ul>`;
+    html += `<ul class="foods">${shown.map(({ g, rep }) => row(g, g.id, rep)).join("")}</ul>`;
     if (matches.length > showLimit) html += `<button class="more-btn" data-more>Show ${Math.min(50, matches.length - showLimit)} more of ${matches.length.toLocaleString()}</button>`;
   }
   $("#foodArea").innerHTML = html;
 }
 
+const rowPicks = new Map();  // row id -> variant the row opens on
 function addFood(id) {
-  const f = FOODS.find(x => x.id === id.replace(/#all$/, ""));
+  const f = FOOD_BY_ID.get(id);
   if (!f) return;
   const entry = {
     id: f.id, item: f.item, location: f.location, station: f.station, serving: f.serving,
@@ -854,11 +932,16 @@ $("#foodArea").addEventListener("click", e => {
   const add = e.target.closest("[data-add]");
   if (e.target.closest("[data-more]")) { showLimit += 50; renderFoods(); return; }
   if (e.target.closest("[data-fullrot]")) { showFullRotation = !showFullRotation; expandedId = null; showLimit = 50; renderFoods(); return; }
+  const size = e.target.closest("[data-size]");
+  const milk = e.target.closest("[data-milk]");
   if (food) {
     const id = food.dataset.food;
-    expandedId = expandedId === id ? null : id;
-    pickServings = 1;
+    if (expandedId === id) expandedId = null; else openRow(id, rowPicks.get(id));
     renderFoods();
+  } else if (size) {
+    pickSize = size.dataset.size; renderFoods();
+  } else if (milk) {
+    pickMilk = milk.dataset.milk; renderFoods();
   } else if (step) {
     pickServings = Math.min(10, Math.max(0.5, pickServings + Number(step.dataset.step)));
     renderFoods();
