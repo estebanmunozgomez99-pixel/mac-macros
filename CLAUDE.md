@@ -12,6 +12,12 @@ A mobile-first macro tracker for McMaster University students (mainly first year
 
 Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotext` (poppler-utils).
 
+## Hosting
+
+- Live on GitHub Pages from `main` / root: https://estebanmunozgomez99-pixel.github.io/mac-macros/ (repo is public). Pushing to `main` updates the site in a minute or two.
+- `index.html` at the root redirects to `app/`. `mac-macros/index.html` and `mac-macros/app/index.html` are redirects left from an early manual upload that nested everything under `mac-macros/`; keep them so old links and home-screen shortcuts work.
+- The mic (voice logging) only works on https or localhost, so test voice on the live site.
+
 ## Data pipeline
 
 1. `clean.py` – cleans McMaster's CSV: merges misspelled serving sizes, adds a `Data Note` flag for rows with blank nutrition or obviously wrong numbers (over 5,000 kcal, or macros not adding up). Flagged rows are kept in the spreadsheet but left out of the app.
