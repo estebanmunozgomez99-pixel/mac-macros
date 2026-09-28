@@ -95,6 +95,13 @@ for cat,suffix,serving,base,prots,src in BASES:
         if n in prots: plk(cat,n+suffix,serving,*[b+x for b,x in zip(base,PROT[n])],src=src)
 plk('Limited Time Offer','Beef Kafta Dinner','1 plate',950,30,106,44)
 for n,v in PROT.items(): plk('Proteins',f'Extra {n}','1 portion',*v,kind=1)
+# ---- Booster Juice (La Piazza and DBAC): food only for now; smoothies wait for the official nutrition guide
+import csv
+BJ_SRC='Booster Juice official food nutrition (provided by the user, Sept 28, 2026)'
+for r in csv.DictReader(l for l in open('data/sources/booster-juice-food.csv') if not l.startswith('#')):
+    for loc in ('La Piazza','DBAC'):
+        add(loc,'Booster Juice',r['category'],r['item'],r['serving'],r['calories'],r['fat'],None,None,None,r['carbs'],None,None,r['protein'],
+            2 if r['category']=='Booster Balls' else 0,BJ_SRC)
 json.dump(out,open('data/build/franchise.json','w'),ensure_ascii=False,indent=0)
 from collections import Counter
 print(len(out), Counter((o['location'],o['station'],o['kind']) for o in out))

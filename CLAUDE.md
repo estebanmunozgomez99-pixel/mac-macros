@@ -36,7 +36,8 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 
 ## Locations for non-McMaster restaurants
 
-- La Piazza → Tim Hortons
+- La Piazza → Tim Hortons, Booster Juice
+- DBAC (David Braley Athletic Centre) → Booster Juice
 - PGCLL → Second Cup, Chopped Leaf
 - Bistro 2 Go → Second Cup
 - Centro → Paramount Lebanese Kitchen (wraps, build-your-own meal/salad/Yalla Special fries/poutine, Beef Kafta Dinner LTO; proteins are extras)
@@ -51,7 +52,7 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 
 ## To-do
 
-- Booster Juice (MUSC location and ByMac at the David Bradley Athletic Centre): needs official nutrition data.
+- Booster Juice smoothies/juices/shots: food is in (from `data/sources/booster-juice-food.csv`), but drinks wait for the official nutrition guide the user is getting from boosterjuice.com. `data/sources/Booster-Juice-Menu-2023.pdf` has calories only (plus protein for the protein smoothies).
 - Starbucks: needs the Canadian nutrition guide (starbucks.ca).
 - Teriyaki Experience (student centre): not started.
 - Later: native iOS/Android version (React Native/Expo was the suggested route) for sharing with all first years.

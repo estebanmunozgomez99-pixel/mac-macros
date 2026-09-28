@@ -96,7 +96,8 @@ lines=[('Mac Macros menu data',True),
 ('Tim Hortons (La Piazza): Tim Hortons Canada Nutrition Information, August 2025. Drinks, drink add-ons and baked goods only, since this location does not sell food.',False),
 ('Second Cup (PGCLL and Bistro 2 Go): Second Cup Beverage Menu Nutritional Values. Two blocks have no label in the PDF and are listed as Espresso and Americano by their position on the menu.',False),
 ('Chopped Leaf (PGCLL): Chopped Leaf Nutritional Chart. Proteins and dressings are add-ons in the app.',False),
-('Paramount Lebanese Kitchen (Centro): calories from the menu boards (Sept 28, 2026). Paramount publishes no protein, carb or fat numbers, so those are ESTIMATES, as are the salad calories. Build-your-own dishes = posted base dish + posted protein.',False)]
+('Paramount Lebanese Kitchen (Centro): calories from the menu boards (Sept 28, 2026). Paramount publishes no protein, carb or fat numbers, so those are ESTIMATES, as are the salad calories. Build-your-own dishes = posted base dish + posted protein.',False),
+('Booster Juice (La Piazza and DBAC): paninis, wraps and Booster Balls from Booster Juice official numbers. Smoothies and juices are not added yet (waiting for the official nutrition guide).',False)]
 for i,(t_,b) in enumerate(lines,1):
     a[f'A{i}']=t_; a[f'A{i}'].font=F(bold=b,size=13 if i==1 else 10); a[f'A{i}'].alignment=Alignment(wrap_text=True,vertical='top')
 a.column_dimensions['A'].width=110
