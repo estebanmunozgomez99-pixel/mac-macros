@@ -5,7 +5,7 @@ A mobile-first macro tracker for McMaster University students (mainly first year
 ## Layout
 
 - `app/index.html` – the whole app: one self-contained HTML file (inline CSS and JS, no build step). Food data is embedded as `const MENU = {...}`. The daily log, goals and recent foods are saved in `localStorage` (key `macmacros:v1`), per device.
-- `data/sources/` – original data: McMaster's menu export (CSV) and official PDFs from Tim Hortons, Second Cup and Chopped Leaf.
+- `data/sources/` – original data: McMaster's menu export (CSV), official PDFs from Tim Hortons, Second Cup and Chopped Leaf, and photos of the Paramount menu boards at Centro.
 - `scripts/` – Python that cleans the sources and regenerates the app data and spreadsheet.
 - `build.sh` – runs the whole pipeline and rewrites the `MENU` block in `app/index.html`. Run it after any data or script change.
 - `mcmaster-menu-nutrition.xlsx` – human-readable spreadsheet (About, Menu, Other Restaurants, By Location).
@@ -39,12 +39,14 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 - La Piazza → Tim Hortons
 - PGCLL → Second Cup, Chopped Leaf
 - Bistro 2 Go → Second Cup
+- Centro → Paramount Lebanese Kitchen (wraps, build-your-own meal/salad/Yalla Special fries/poutine, Beef Kafta Dinner LTO; proteins are extras)
 - There is no "MUSC" location; the user said MUSC isn't a place in the app.
 
 ## Known data caveats
 
 - Several McMaster items list a "100g" serving while the numbers are clearly for the whole item. Kept as posted.
 - Two unlabeled blocks in the Second Cup PDF are named Espresso and Americano from their position on the menu.
+- Paramount Lebanese Kitchen publishes calories only. Macros are estimates (user approved), salad calories too. Build-your-own = posted base dish + posted protein calories. Recheck if Paramount releases a nutrition guide.
 - Starbucks PDFs the user found were the Ireland/Northern Ireland menu, so Starbucks was not added.
 
 ## To-do
