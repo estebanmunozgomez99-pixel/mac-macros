@@ -1,0 +1,3 @@
+data/build/*
+!data/build/.gitkeep
+__pycache__/
