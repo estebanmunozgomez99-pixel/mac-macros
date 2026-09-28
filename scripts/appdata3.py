@@ -47,6 +47,15 @@ def cat_name(station,c):
     c=str(c or '').strip()
     return CAT_MERGE.get(station,{}).get(c) or CAT_NAMES.get(c,c)
 cats=[]
+# Nutrition facts beyond macros: [sat fat g, cholesterol mg, sodium mg, fibre g, sugars g, vitamin C mg, calcium mg, iron mg]
+# None (null in the app) = the source doesn't publish that number
+def micro(vals):
+    out=[]
+    for v in vals:
+        if v is None or v=='' or (isinstance(v,float) and v!=v): out.append(None); continue
+        v=round(float(v),1); out.append(int(v) if v==int(v) else v)
+    return out
+MC_MICRO=['Saturated Fat (g)','Cholesterol (mg)','Sodium (mg)','Total Fibre (g)','Sugars (g)','Vitamin C (mg)','Calcium (mg)','Iron (mg)']
 def cat_index(station,c):
     n=cat_name(station,c)
     if n not in cats: cats.append(n)
@@ -59,7 +68,7 @@ for _,r in df.iterrows():
     vals=[int(v) if v==int(v) else v for v in vals]
     k=(r['Location'],r['st'],r['nm'],r['Serving Size'],*vals)
     if k in seen: continue
-    seen.add(k); rows.append([stations.index(key),r['nm'],r['Serving Size'],*vals,int(r['kind']),cat_index(r['st'],r['Category'])])
+    seen.add(k); rows.append([stations.index(key),r['nm'],r['Serving Size'],*vals,int(r['kind']),cat_index(r['st'],r['Category']),micro([r[c] for c in MC_MICRO])])
 # Non-McMaster restaurants (Tim Hortons, Second Cup, Chopped Leaf)
 for r in FR:
     if r['calories'] is None: continue
@@ -69,7 +78,7 @@ for r in FR:
     vals=[int(v) if v==int(v) else v for v in vals]
     k=(r['location'],r['station'],r['item'],r['serving'],*vals)
     if k in seen: continue
-    seen.add(k); rows.append([stations.index(key),r['item'],r['serving'],*vals,r['kind'],cat_index(r['station'],r['category'])])
+    seen.add(k); rows.append([stations.index(key),r['item'],r['serving'],*vals,r['kind'],cat_index(r['station'],r['category']),micro([r['satfat'],r['chol'],r['sodium'],r['fibre'],r['sugars'],None,None,None])])
 out={'locations':locs,'stations':[[locs.index(l),s] for l,s in stations],'categories':cats,'items':rows}
 open('data/build/data.json','w').write(json.dumps(out,ensure_ascii=False,separators=(',',':')))
 from collections import Counter
