@@ -1,0 +1,48 @@
+# Booster Juice drinks, transcribed from data/sources/Booster-Juice-Menu-2023.pdf (calories; protein only where the menu posts it).
+# cal_large/cal_small = the two sizes listed on the menu (small blank when only one size is listed).
+category,item,size_large,cal_large,size_small,cal_small,protein
+Fresh Juices,Heavenly Horizon,480 mL,210,,,
+Fresh Juices,Strawberry Lemon-Aid,480 mL,240,,,
+Fresh Juices,Hail To The Kale,480 mL,140,,,
+Fresh Juices,Ginger Hammer,480 mL,190,,,
+Fresh Juices,Maui Juice,480 mL,200,,,
+Fresh Juices,Red Sunrise,480 mL,170,,,
+Fresh Juices,Tahiti Squeeze,480 mL,180,,,
+Fresh Juices,Celery Juice,480 mL,60,,,
+Fresh Juices,Fresh Apple Juice,480 mL,220,,,
+Fresh Juices,Fresh Carrot Juice,480 mL,160,,,
+Fresh Juices,Fresh Orange Juice,480 mL,220,,,
+Classics,Strawberry Sunshine,710 mL,290,355 mL,150,
+Classics,Pirates Nectar,710 mL,300,355 mL,140,
+Classics,Very Berry,710 mL,280,355 mL,140,
+Classics,Mango Hurricane,710 mL,280,355 mL,140,
+Classics,Tropical Tornado,710 mL,350,355 mL,170,
+Classics,Hawaiian Sunset,710 mL,270,355 mL,130,
+Spirit,Mangosicle,710 mL,290,355 mL,130,
+Spirit,Funky Monkey,710 mL,400,355 mL,200,
+Spirit,Canadian Colada,710 mL,370,355 mL,190,
+Spirit,Berry Cream Sensation,710 mL,260,355 mL,130,
+Spirit,Pineapple Freeze,710 mL,310,355 mL,160,
+Spirit,Oat-Rageous Mocha,710 mL,440,355 mL,220,
+Refresh,Spinach Is In It,710 mL,320,355 mL,180,
+Refresh,Tropi-Kale,710 mL,290,355 mL,140,
+Refresh,Coco Crush,710 mL,290,355 mL,150,
+Refresh,Wildberry Rush,710 mL,190,355 mL,90,
+High Protein,Bananas-A-Whey,710 mL,360,,,28
+High Protein,Ripped Berry,710 mL,390,,,29
+High Protein,Strawberry Storm,710 mL,280,,,23
+High Protein,Nuttin' Better,710 mL,650,,,39
+Superfood,Brazilian Thunder,710 mL,410,355 mL,200,
+Superfood,Ocean Mist,710 mL,310,355 mL,150,
+Superfood,Matcha Monsoon,710 mL,280,355 mL,140,
+Superfood,Pomegranate Passion,710 mL,280,355 mL,140,
+Superfood,Lemon Berry,710 mL,280,355 mL,140,
+Superfood+,High Impact Açai,710 mL,470,,,26
+Superfood+,Mind Over Matcha,710 mL,350,,,25
+Superfood+,Açai Avalanche,710 mL,330,,,23
+Superfood+,Pomegranate Punch,710 mL,340,,,22
+Booster Blends,Mango Teazer,480 mL,60,,,
+Booster Blends,Tropical Teazer,480 mL,45,,,
+Shots,Lemon & Ginger Shot,60 mL (double),15,30 mL (single),10,
+"Shots","Lemon, Ginger, Coconut Water & Turmeric Shot",60 mL (double),15,30 mL (single),10,
+Shots,"Apple, Lemon, Ginger Shot",60 mL (double),30,30 mL (single),15,

@@ -48,11 +48,12 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 - Several McMaster items list a "100g" serving while the numbers are clearly for the whole item. Kept as posted.
 - Two unlabeled blocks in the Second Cup PDF are named Espresso and Americano from their position on the menu.
 - Paramount Lebanese Kitchen publishes calories only. Macros are estimates (user approved), salad calories too. Build-your-own = posted base dish + posted protein calories. Recheck if Paramount releases a nutrition guide.
+- Booster Juice drinks (`data/sources/booster-juice-drinks.csv`, from the 2023 menu PDF): calories posted, protein posted only for High Protein / Superfood+; other macros estimated by category (`SHARE`/`OVERRIDE` in `build_franchise.py`). Food (`booster-juice-food.csv`) is official per the user. Booster Ball serving (2-3 balls, 140 cal) conflicts with the PDF (100-150 cal per ball).
 - Starbucks PDFs the user found were the Ireland/Northern Ireland menu, so Starbucks was not added.
 
 ## To-do
 
-- Booster Juice smoothies/juices/shots: food is in (from `data/sources/booster-juice-food.csv`), but drinks wait for the official nutrition guide the user is getting from boosterjuice.com. `data/sources/Booster-Juice-Menu-2023.pdf` has calories only (plus protein for the protein smoothies).
+- Booster Juice: swap in the official nutrition guide (boosterjuice.com) when the user uploads it; drink macros are estimates until then.
 - Starbucks: needs the Canadian nutrition guide (starbucks.ca).
 - Teriyaki Experience (student centre): not started.
 - Later: native iOS/Android version (React Native/Expo was the suggested route) for sharing with all first years.
