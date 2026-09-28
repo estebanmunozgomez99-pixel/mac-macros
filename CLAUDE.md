@@ -30,7 +30,7 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 - **Extras** (add-ons, toppings, sauces, sides) never appear in the main food list. They're added via the Edit button on a logged meal.
 - Extras only work on **real meals** (not parfaits, desserts, drinks), and only extras from the **same station/restaurant** as the meal. Fruit toppings only on waffles, pancakes, French toast.
 - **SMPL stations:** savory mains first (meat, fish, plant-based, pasta, other), desserts last.
-- **Daily SMPL rotation (Centro only):** Centro SMPL runs a 4-week Monday–Sunday cycle from hospitality.mcmaster.ca. The schedule is in `ROTATIONS` in `app/index.html`; dishes not on the schedule are hidden except desserts and "Sub" swaps. There's a "Show all weeks" toggle. **Open question:** `week1Monday` is set to `2026-09-07` as a guess (makes Mon Sept 28, 2026 = Week 4). The user was going to confirm by checking what's on the Centro SMPL line. LAH SMPL and Bistro SMPL have no published daily schedule yet.
+- **Daily SMPL rotation (Centro only):** Centro SMPL runs a 4-week Monday–Sunday cycle from hospitality.mcmaster.ca. The schedule is in `ROTATIONS` in `app/index.html`; dishes not on the schedule are hidden except desserts and "Sub" swaps. There's a "Show all weeks" toggle. `week1Monday` is `2026-09-28`: confirmed from a photo of the Centro SMPL board on Mon Sept 28, 2026, which matched Week 1 Monday exactly (Honey Balsamic Basa, Roasted Pesto Chicken, Beef & Lentil Shepherd's Pie, Veg Tikka Masala, Zucchini/Peppers/Tomato, Vegetable Rice Pilaf). LAH SMPL and Bistro SMPL have no published daily schedule yet.
 - **High protein tab:** item qualifies if protein/calories ≥ 2/30 (20 g per 300 kcal) and protein ≥ 5 g. Sorted by best ratio. Extras excluded.
 - Tim Hortons at La Piazza sells **drinks and baked goods only** (no sandwiches, soups or bagels). Plain coffee, tea and lattes are meals so they can take cream/milk/sugar/syrup extras.
 
@@ -52,7 +52,6 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 - Booster Juice (MUSC location and ByMac at the David Bradley Athletic Centre): needs official nutrition data.
 - Starbucks: needs the Canadian nutrition guide (starbucks.ca).
 - Teriyaki Experience (student centre): not started.
-- Confirm the Centro SMPL week (see above).
 - Later: native iOS/Android version (React Native/Expo was the suggested route) for sharing with all first years.
 
 ## Style

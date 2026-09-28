@@ -41,4 +41,4 @@ missing={n for w in W for day in w for n in day if n not in names}
 print('missing',missing)
 sched={n for w in W for day in w for n in day}
 print('unscheduled in data:',sorted(names-sched))
-json.dump({"Centro|SMPL Rotational Menu":{"week1Monday":"2026-09-07","weeks":W}},open('data/build/rotation.json','w'),ensure_ascii=False,separators=(',',':'))
+json.dump({"Centro|SMPL Rotational Menu":{"week1Monday":"2026-09-28","weeks":W}},open('data/build/rotation.json','w'),ensure_ascii=False,separators=(',',':'))
