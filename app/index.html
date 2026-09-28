@@ -304,12 +304,15 @@ img { max-width: 100%; }
 }
 
 /* Nutrition facts */
+/* Day nutrition: small ⓘ in the summary card's top-right corner */
+.summary { position: relative; }
+.summary .kcal { padding-right: 36px; }
 .day-facts {
-  width: 100%; height: 40px; margin-top: 16px; border-radius: var(--radius-sm);
-  border: 1px solid rgba(255,255,255,0.35); background: transparent; color: var(--on-maroon);
-  font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px;
+  position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; padding: 0; border-radius: 50%;
+  border: none; background: rgba(255,255,255,0.14); color: var(--on-maroon);
+  display: flex; align-items: center; justify-content: center;
 }
-.day-facts svg { width: 16px; height: 16px; }
+.day-facts svg { width: 18px; height: 18px; }
 .log li { gap: 8px; }
 .log .edit { width: 34px; padding: 0; justify-content: center; }
 .log .edit svg { width: 16px; height: 16px; }
@@ -798,8 +801,8 @@ function renderSummary() {
       ${macroBlock("carbs", "Carbs", "var(--gold)")}
       ${macroBlock("fat", "Fat", "#8FD3D6")}
     </div>
-    ${(state.log[viewKey] || []).length ? `<button class="day-facts" data-day-facts>Full nutrition for the day
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>` : ""}`;
+    ${(state.log[viewKey] || []).length ? `<button class="day-facts" data-day-facts aria-label="Full nutrition for the day">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg></button>` : ""}`;
 }
 
 /* ---------- Log ---------- */
