@@ -535,6 +535,22 @@ GROUPS.forEach(g => {
   g.search = [...new Set(vs.map(v => v.search))].join(" ");
 });
 const GROUP_LIST = [...GROUPS.values()];
+
+/* Food types for the High protein tab, which mixes every restaurant: first rule that matches wins */
+const DRINK_CATS = /^(Espresso Bar|Brew Bar|Cold Bar|Hot Drinks|Iced Coffee|Cold Drinks|Beverage|Smoothies|Juices|Booster Mix'rs|Drinks)$/;
+const FOOD_TYPES = [
+  ["Drinks", g => DRINK_CATS.test(g.category) || /smoothie|latte|shake|coffee|\btea\b|juice/i.test(g.name)],
+  ["Soups", g => g.category === "Soups" || /soup|chowder/i.test(g.name)],
+  ["Sandwiches & Wraps", g => /^(Sandwiches|Wraps|Quesadillas)$/.test(g.category) ||
+    /sandwich|wrap|pita|panini|burger|\bsub\b|bagel|quesadilla|taco|burrito(?! bowl)|\bblt\b|monte cristo|club|melt|sloppy joe/i.test(g.name)],
+  ["Bowls & Salads", g => /^(Salads|Bowls|Salad)$/.test(g.category) || /bowl|salad/i.test(g.name)],
+  ["Pasta & Noodles", g => g.category === "Pasta" || /pasta|lasagna|cannelloni|spaghetti|\bmac\b|noodle|udon|gnocchi|goreng|pizza/i.test(g.name)],
+  ["Fish", g => g.category === "Fish" || /salmon|basa|\bcod\b|tilapia|tuna|shrimp|fish/i.test(g.name)],
+  ["Snacks", g => g.variants.every(v => !v.isMeal)],
+  ["Mains", () => true]
+];
+const TYPE_ORDER = ["Drinks", "Sandwiches & Wraps", "Bowls & Salads", "Mains", "Fish", "Pasta & Noodles", "Soups", "Snacks"];
+GROUP_LIST.forEach(g => { g.type = FOOD_TYPES.find(([, test]) => test(g))[0]; });
 // The variant matching the picked size and milk (falls back to the first milk that size comes in)
 function pickVariant(g, size, milk) {
   return g.variants.find(v => v.size === size && v.milk === milk) || g.variants.find(v => v.size === size) || g.variants[0];
@@ -614,6 +630,7 @@ let viewKey = dateKey(new Date());
 let activeLoc = "All";
 let activeStation = "All";
 let activeCat = "All";
+let activeType = "All";  // food-type tab on the High protein tab
 // A station gets category tabs when it shows at least this many items and has more than one category
 const CAT_TABS_MIN = 40;
 let showLimit = 50;
@@ -785,6 +802,7 @@ function openRow(rowId, v) { expandedId = rowId; pickSize = v.size; pickMilk = v
 // today, ignoring the search box so the tabs don't jump around while typing.
 function renderCategories() {
   const row = $("#catRow");
+  if (activeTab === "protein") return renderTypes(row);
   const inStation = activeStation === "All" ? [] : GROUP_LIST.filter(g => g.location === activeLoc && g.station === activeStation &&
     g.variants.some(f => isServed(f, viewKey) && (activeTab !== "protein" || isHighProtein(f))));
   const cats = [...new Set(inStation.map(g => g.category))];
@@ -793,6 +811,18 @@ function renderCategories() {
   row.hidden = false;
   row.innerHTML = ["All", ...cats].map(c =>
     `<button class="loc" aria-pressed="${c === activeCat}" data-cat="${esc(c)}">${esc(c === "All" ? "Everything" : c)}</button>`).join("");
+}
+
+// High protein tab: food-type tabs (Drinks, Sandwiches & Wraps, Bowls & Salads, ...) for whatever qualifies
+function renderTypes(row) {
+  const shown = GROUP_LIST.filter(g => (activeLoc === "All" || g.location === activeLoc) &&
+    (activeStation === "All" || g.station === activeStation) && g.variants.some(f => isServed(f, viewKey) && isHighProtein(f)));
+  const types = TYPE_ORDER.filter(t => shown.some(g => g.type === t));
+  if (types.length < 2) { row.hidden = true; row.innerHTML = ""; activeType = "All"; return; }
+  if (!types.includes(activeType)) activeType = "All";
+  row.hidden = false;
+  row.innerHTML = ["All", ...types].map(t =>
+    `<button class="loc" aria-pressed="${t === activeType}" data-type="${esc(t)}">${esc(t === "All" ? "Everything" : t)}</button>`).join("");
 }
 
 function renderFoods() {
@@ -811,7 +841,9 @@ function renderFoods() {
   });
   if (activeTab === "protein") matches.sort((a, b) => ratio(b.rep) - ratio(a.rep));
   renderCategories();
-  if (activeCat !== "All") matches.splice(0, matches.length, ...matches.filter(m => m.g.category === activeCat));
+  const keep = activeTab === "protein" ? (activeType === "All" ? null : m => m.g.type === activeType)
+    : (activeCat === "All" ? null : m => m.g.category === activeCat);
+  if (keep) matches.splice(0, matches.length, ...matches.filter(keep));
   rowPicks.clear();
   const row = (g, rowId, rep) => { rowPicks.set(rowId, rep); return foodRow(g, rowId, rep); };
 
@@ -909,7 +941,7 @@ function toast(msg, action) {
 /* ---------- Events ---------- */
 $("#openAdd").addEventListener("click", () => {
   $("#searchInput").value = "";
-  activeLoc = "All"; activeStation = "All"; activeCat = "All"; showLimit = 50; expandedId = null; pickServings = 1; showFullRotation = false;
+  activeLoc = "All"; activeStation = "All"; activeCat = "All"; activeType = "All"; showLimit = 50; expandedId = null; pickServings = 1; showFullRotation = false;
   setTab("all");
   renderLocations(); renderFoods();
   openSheet("addSheet");
@@ -950,9 +982,11 @@ $("#stationRow").addEventListener("click", e => {
   renderLocations(); renderFoods();
 });
 $("#catRow").addEventListener("click", e => {
-  const b = e.target.closest("[data-cat]");
+  const b = e.target.closest("[data-cat], [data-type]");
   if (!b) return;
-  activeCat = b.dataset.cat; showLimit = 50; expandedId = null;
+  const b2 = e.target.closest("[data-type]");
+  if (b2) activeType = b2.dataset.type; else activeCat = b.dataset.cat;
+  showLimit = 50; expandedId = null;
   renderFoods();
 });
 
