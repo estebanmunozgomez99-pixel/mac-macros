@@ -193,6 +193,10 @@ img { max-width: 100%; }
   box-shadow: 0 6px 18px rgba(122, 0, 60, 0.22);
 }
 .fab svg { width: 22px; height: 22px; }
+.fab-row { display: flex; gap: 10px; max-width: 488px; margin: 0 auto; }
+.fab-row .fab { flex: 1; margin: 0; }
+.fab-row .fab.mic { flex: 0 0 56px; width: 56px; padding: 0; background: var(--maroon); color: var(--on-maroon); }
+.fab.mic.on { animation: pulse 1.2s ease-in-out infinite; }
 
 /* ---------- Sheets ---------- */
 .scrim {
@@ -227,6 +231,33 @@ img { max-width: 100%; }
   border: 1px solid var(--line); background: var(--surface);
   padding: 0 14px 0 44px; font-size: 1rem;
 }
+.search .mic {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%;
+  border: none; background: var(--maroon); color: var(--on-maroon); display: flex; align-items: center; justify-content: center; padding: 0;
+}
+.search .mic svg { position: static; transform: none; color: currentColor; width: 20px; height: 20px; }
+.search .mic.on { animation: pulse 1.2s ease-in-out infinite; }
+.search:has(.mic:not([hidden])) input { padding-right: 52px; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(122,0,60,0.45); } 50% { box-shadow: 0 0 0 10px rgba(122,0,60,0); } }
+#voiceArea { margin: 0 0 14px; }
+.voice-head { font-size: 0.9rem; color: var(--muted); margin: 0 2px 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.voice-head b { color: var(--text); }
+.voice-head .link-btn { margin-left: auto; }
+.pulse { width: 10px; height: 10px; border-radius: 50%; background: var(--maroon); animation: pulse 1.2s ease-in-out infinite; }
+.vlist { border: 2px solid var(--maroon); }
+.vitem { padding: 12px 0 0; background: var(--surface-2); }
+.vitem.miss { padding: 12px 16px; background: var(--surface); }
+.vbtns { display: flex; gap: 8px; }
+.vbtns .ghost { height: 38px; }
+.vtop { display: flex; justify-content: space-between; gap: 10px; padding: 0 16px; }
+.vtop .name { font-weight: 800; }
+.vtop .meta { color: var(--muted); font-size: 0.85rem; }
+.vnote { font-size: 0.8rem; font-weight: 700; color: var(--maroon); margin-top: 2px; }
+:root[data-theme="dark"] .vnote { color: var(--gold); }
+.vx { border: none; background: none; color: var(--muted); font-size: 1rem; width: 32px; height: 32px; }
+.valts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 16px 12px; background: var(--surface-2); font-size: 0.85rem; color: var(--muted); }
+.valts .opt { height: 32px; font-size: 0.82rem; }
+.valts small { color: var(--muted); font-weight: 500; }
 .search input:focus { outline: 2px solid var(--maroon); outline-offset: 0; border-color: transparent; }
 
 .loc-row {
@@ -447,10 +478,15 @@ img { max-width: 100%; }
 </div>
 
 <div class="fab-wrap">
+  <div class="fab-row">
   <button class="fab" id="openAdd">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     Add food
   </button>
+  <button class="fab mic" id="fabMic" hidden aria-label="Say what you ate">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+  </button>
+  </div>
 </div>
 
 <!-- Add food sheet -->
@@ -466,8 +502,12 @@ img { max-width: 100%; }
     <div class="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
       <label class="sr-only" for="searchInput">Search food</label>
-      <input id="searchInput" type="search" placeholder="Search food or location" autocomplete="off">
+      <input id="searchInput" type="search" placeholder="Search food or location" autocomplete="off" enterkeyhint="done">
+      <button class="mic" id="micBtn" hidden aria-label="Say what you ate">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      </button>
     </div>
+    <div id="voiceArea" hidden aria-live="polite"></div>
     <div class="tabs" role="tablist" aria-label="Food list">
       <button role="tab" id="tabAll" aria-selected="true" data-tab="all">All food</button>
       <button role="tab" id="tabProtein" aria-selected="false" data-tab="protein">High protein 💪</button>
@@ -934,12 +974,8 @@ function foodRow(g, rowId, rep) {
   if (open) {
     const f = pickVariant(g, pickSize, pickMilk);
     const unit = SERVING_WORDS[f.serving] || f.serving || "1 serving";
-    const milks = [...new Set(g.variants.filter(v => v.size === f.size).map(v => v.milk).filter(Boolean))];
-    const chips = (label, attr, list, cur) => list.length > 1 ? `<div class="opts" role="group" aria-label="${label}">
-      <span class="opt-label">${label}</span>
-      <div class="opt-row">${list.map(o => `<button class="opt" data-${attr}="${esc(o)}" aria-pressed="${o === cur}">${esc(o)}</button>`).join("")}</div>
-    </div>` : "";
-    html += chips("Size", "size", g.sizes, f.size) + chips("Milk", "milk", milks, f.milk);
+    const milks = milksFor(g, f.size);
+    html += optChips("Size", g.sizes, f.size, o => `data-size="${esc(o)}"`) + optChips("Milk", milks, f.milk, o => `data-milk="${esc(o)}"`);
     html += `<div class="picker">
       <div class="stepper">
         <button data-step="-0.5" aria-label="Fewer servings">−</button>
@@ -954,6 +990,14 @@ function foodRow(g, rowId, rep) {
   }
   return html + "</li>";
 }
+// Size / Milk buttons for a picker; attrs(o) gives the data attributes of each button
+function optChips(label, list, cur, attrs) {
+  return list.length > 1 ? `<div class="opts" role="group" aria-label="${label}">
+      <span class="opt-label">${label}</span>
+      <div class="opt-row">${list.map(o => `<button class="opt" ${attrs(o)} aria-pressed="${o === cur}">${esc(o)}</button>`).join("")}</div>
+    </div>` : "";
+}
+const milksFor = (g, size) => [...new Set(g.variants.filter(v => v.size === size).map(v => v.milk).filter(Boolean))];
 function optionsText(g) {
   const milks = new Set(g.variants.map(v => v.milk).filter(Boolean)).size;
   return [g.sizes.length > 1 && `${g.sizes.length} sizes`, milks > 1 && `${milks} milks`].filter(Boolean).join(", ") || g.sizes[0] || "";
@@ -1043,22 +1087,230 @@ function renderFoods() {
 }
 
 const rowPicks = new Map();  // row id -> variant the row opens on
-function addFood(id) {
+// Log a food. keepOpen leaves the Add food sheet up (voice results with more items still to add).
+function addFood(id, servings = pickServings, keepOpen = false) {
   const f = FOOD_BY_ID.get(id);
   if (!f) return;
   const entry = {
     id: f.id, item: f.item, location: f.location, station: f.station, serving: f.serving,
     calories: f.calories, protein: f.protein, carbs: f.carbs, fat: f.fat, micro: f.micro,
-    servings: pickServings, extras: [], at: Date.now()
+    servings, extras: [], at: Date.now()
   };
   (state.log[viewKey] = state.log[viewKey] || []).push(entry);
   state.recents = [f.id, ...state.recents.filter(r => r !== f.id)].slice(0, 8);
   saveState();
-  closeSheets();
+  if (!keepOpen) closeSheets();
   renderAll();
   const idx = state.log[viewKey].length - 1;
-  toast(`Added ${f.item}`, extrasFor(entry).length ? { label: "Add extras", fn: () => openEdit(idx) } : null);
+  toast(`Added ${f.item}`, !keepOpen && extrasFor(entry).length ? { label: "Add extras", fn: () => openEdit(idx) } : null);
 }
+
+/* ---------- Voice logging ----------
+   Say (or type and press Enter) "I got a medium protein latte from Tims and a chocolate glazed donut".
+   The browser turns speech into text (Web Speech API, needs https); matching to the menu happens here, on the
+   device. Every match is shown with its Size / Milk / servings buttons before anything is logged. */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+// Places people say -> station or location. Longest phrases first so "bistro 2 go" beats "bistro".
+const PLACES = [
+  [/\b(tim hortons?|tim hortons|timmies|timmy s|timmys|tims|tim s)\b/, { station: "Tim Hortons" }],
+  [/\bsecond cup\b/, { station: "Second Cup" }],
+  [/\bbooster( juice)?\b/, { station: "Booster Juice" }],
+  [/\bchopped leaf\b/, { station: "Chopped Leaf" }],
+  [/\bparamount|lebanese kitchen\b/, { station: "Paramount Lebanese Kitchen" }],
+  [/\b(bistro (2|to|two) go|btg)\b/, { location: "Bistro 2 Go" }],
+  [/\b(the bistro|bistro at mkr|mkr|mary keyes)\b/, { location: "The Bistro @ MKR" }],
+  [/\b(la piazza|piazza)\b/, { location: "La Piazza" }],
+  [/\b(pgcll|pg|peter george)\b/, { location: "PGCLL" }],
+  [/\b(lah|lincoln alexander( hall)?|lincoln)\b/, { location: "Lincoln Alexander Hall" }],
+  [/\b(dbac|david braley|the gym|gym)\b/, { location: "DBAC" }],
+  [/\bcentro\b/, { location: "Centro" }],
+  [/\b(eco bean|mumc)\b/, { location: "Eco Bean - MUMC" }],
+  [/\bcafe one\b/, { location: "Café One" }],
+  [/\biahs\b/, { location: "IAHS Café" }],
+  [/\breactor\b/, { location: "Reactor Café and Lounge" }]
+];
+const MILK_WORDS = [[/\b(2 ?%|2 percent|two percent)( milk)?\b/, "2%"], [/\bskim( milk)?\b/, "skim"], [/\boat( milk)?\b/, "oat"],
+  [/\balmond( milk)?\b/, "almond"], [/\bsoy( milk)?\b/, "soy"], [/\bcoconut milk\b/, "coconut"], [/\bno milk\b/, "No milk"]];
+const SIZE_WORDS_SAID = [[/\b(extra large|x large|xl)\b/, "X Large"], [/\b(medium|med)\b/, "Medium"], [/\bsmall\b/, "Small"],
+  [/\blarge\b/, "Large"], [/\bregular\b/, "Regular"], [/\bsingle\b/, "Single"], [/\bdouble\b/, "Double"]];
+const COUNT_WORDS = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, couple: 2, half: 0.5 };
+const FILLER = new Set(("i im i'm ive got get gotten had have having ate eat eaten drank drink drinking grabbed grab ordered order " +
+  "bought buy the a an from at of my some just for today tonight this morning lunch breakfast dinner snack then also " +
+  "and cup piece pieces please add log me it like um uh with").split(" "));
+const stem = t => t.length > 3 && t.endsWith("s") && !t.endsWith("ss") ? t.slice(0, -1) : t;
+const toks = str => fold(str).replace(/[^a-z0-9% ]+/g, " ").split(/\s+/).filter(Boolean).map(stem);
+// How rare each name word is: "latte" matters less than "protein"
+const DF = new Map();
+GROUP_LIST.forEach(g => { g.nameToks = [...new Set(toks(g.name))]; g.nameToks.forEach(t => DF.set(t, (DF.get(t) || 0) + 1)); });
+const weight = t => Math.log(1 + GROUP_LIST.length / (DF.get(t) || 1));
+function lev(a, b) {
+  if (Math.abs(a.length - b.length) > 2) return 3;
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+// Same word, a prefix of it ("choc" / "chocolate"), or a small typo ("protien")
+const wordsMatch = (a, b) => a === b || (a.length >= 4 && b.startsWith(a)) || (b.length >= 4 && a.startsWith(b)) ||
+  (Math.min(a.length, b.length) >= 5 && lev(a, b) <= (Math.min(a.length, b.length) >= 7 ? 2 : 1));
+function scoreGroup(g, q) {
+  let qHit = 0, qAll = 0;
+  q.forEach(t => { const w = weight(t); qAll += w; if (g.nameToks.some(n => wordsMatch(t, n))) qHit += w; });
+  if (!qHit) return 0;
+  const nHit = g.nameToks.filter(n => q.some(t => wordsMatch(t, n))).length;
+  return 0.7 * qHit / qAll + 0.3 * nHit / g.nameToks.length + (state.recents.some(id => (FOOD_BY_ID.get(id) || {}).group === g) ? 0.03 : 0);
+}
+function findPlace(text) {
+  for (const [re, place] of PLACES) { const m = text.match(re); if (m) return { place, text: text.replace(re, " ") }; }
+  return { place: null, text };
+}
+// One spoken item ("two medium protein lattes") -> best matches, with the size, milk and count that were said
+function parseItem(raw, sentencePlace) {
+  let text = " " + fold(raw).replace(/[^a-z0-9% ]+/g, " ") + " ";
+  const found = findPlace(text); text = found.text;
+  const place = found.place || sentencePlace;
+  let milk = null, size = null, servings = 1;
+  for (const [re, m] of MILK_WORDS) if (re.test(text)) { milk = m; text = text.replace(re, " "); break; }
+  const num = text.match(/\b(\d+) ?(oz|ounces?|ml)\b/) || text.match(/\b(355|710|480)\b/);
+  if (num) { size = num[2] && num[2].startsWith("o") ? num[1] + " oz" : num[1] + " mL"; text = text.replace(num[0], " "); }
+  else for (const [re, sz] of SIZE_WORDS_SAID) if (re.test(text)) { size = sz; text = text.replace(re, " "); break; }
+  const cnt = text.match(/\b(\d+(?:\.\d+)?|a|an|one|two|three|four|five|couple|half)\b/);
+  if (cnt && cnt[1] !== "a" && cnt[1] !== "an") { servings = COUNT_WORDS[cnt[1]] || parseFloat(cnt[1]) || 1; text = text.replace(cnt[0], " "); }
+  const q = toks(text).filter(t => !FILLER.has(t));
+  const rank = pl => q.length ? GROUP_LIST.filter(g => g.variants.some(f => isServed(f, viewKey)) &&
+    (!pl || (pl.station ? g.station === pl.station : g.location === pl.location)))
+    .map(g => ({ g, s: scoreGroup(g, q) })).filter(x => x.s >= 0.35).sort((a, b) => b.s - a.s) : [];
+  let ranked = rank(place);
+  // A place said for another item ("...from Tims and a caffe latte") only applies if it doesn't make this match worse
+  if (!found.place && place) {
+    const any = rank(null);
+    if (any[0] && (!ranked[0] || any[0].s > ranked[0].s + 0.1)) ranked = any;
+  }
+  const seen = new Set(), top = [];
+  ranked.forEach(x => { const k = x.g.name + "|" + x.g.location; if (!seen.has(k) && top.length < 4) { seen.add(k); top.push(x); } });
+  const item = { said: raw.trim(), g: top[0] && top[0].g, alts: top.slice(1).map(x => x.g), size, milk, servings: Math.min(10, Math.max(0.5, servings)) };
+  if (item.g) {
+    fitVariant(item);
+    // Said a size or milk this drink doesn't come in: say so instead of quietly swapping it
+    item.note = [size && item.size !== size && `No ${size} size`, milk && item.milk !== milk && `No ${milk} milk for this one`].filter(Boolean).join(" · ");
+  }
+  return item;
+}
+// Keep the picked size/milk to ones the matched drink actually has
+function fitVariant(it) {
+  const g = it.g;
+  if (!g.sizes.includes(it.size)) it.size = g.variants[0].size;
+  const milks = milksFor(g, it.size);
+  if (milks.length && !milks.includes(it.milk)) it.milk = milks.includes("2%") ? "2%" : milks[0];
+  if (!milks.length) it.milk = null;
+}
+// Whole sentence -> items. Splits on commas, "plus", and "and" before a count ("and a donut"); names that contain
+// "and" ("Mac And Cheese") stay whole because the split only happens before a count word.
+function parseSpoken(text) {
+  const place = findPlace(" " + fold(text) + " ").place;
+  const parts = fold(text).split(/\s*(?:,|\bplus\b|\band then\b|\bthen\b|\band (?=(?:a|an|one|two|three|four|five|\d+|some|half)\b))\s*/)
+    .map(x => x.trim()).filter(x => toks(x).some(t => !FILLER.has(t)));
+  return parts.map(p => parseItem(p, place));
+}
+
+let voice = null;  // { text, listening, items }
+function handleSpoken(text) {
+  voice = { text, listening: false, items: parseSpoken(text) };
+  renderVoice();
+}
+function voiceItem(it, i) {
+  if (!it.g) return `<li class="vitem miss"><div>Couldn't find “${esc(it.said)}”.</div>
+    <div class="vbtns"><button class="ghost" data-vsearch="${i}">Search for it</button><button class="ghost" data-vremove="${i}">Skip</button></div></li>`;
+  const g = it.g, f = pickVariant(g, it.size, it.milk);
+  return `<li class="vitem">
+    <div class="vtop"><div><div class="name">${esc(g.name)}</div><div class="meta">${esc(g.location)}, ${esc(g.station)}</div>
+      ${it.note ? `<div class="vnote">${esc(it.note)}</div>` : ""}</div>
+      <button class="vx" data-vremove="${i}" aria-label="Remove ${esc(g.name)}">✕</button></div>
+    ${optChips("Size", g.sizes, f.size, o => `data-vsize="${i}" data-val="${esc(o)}"`)}
+    ${optChips("Milk", milksFor(g, f.size), f.milk, o => `data-vmilk="${i}" data-val="${esc(o)}"`)}
+    <div class="picker">
+      <div class="stepper">
+        <button data-vstep="${i}" data-d="-0.5" aria-label="Fewer servings">−</button>
+        <output>${fmtG(it.servings)}×</output>
+        <button data-vstep="${i}" data-d="0.5" aria-label="More servings">+</button>
+      </div>
+      <button class="add-btn" data-vadd="${i}">Add</button>
+    </div>
+    <div class="picker-totals">${fmt(f.calories * it.servings)} cal, P ${fmtG(f.protein * it.servings)}g, C ${fmtG(f.carbs * it.servings)}g, F ${fmtG(f.fat * it.servings)}g</div>
+    ${it.alts.length ? `<div class="valts"><span>Not it?</span>${it.alts.map((a, j) =>
+      `<button class="opt" data-valt="${i}" data-j="${j}">${esc(a.name)}${a.location !== g.location ? ` <small>${esc(a.location)}</small>` : ""}</button>`).join("")}</div>` : ""}
+  </li>`;
+}
+function renderVoice() {
+  const area = $("#voiceArea");
+  document.querySelectorAll(".mic").forEach(b => b.classList.toggle("on", !!(voice && voice.listening)));
+  $("#foodArea").hidden = !!voice;  // the voice card replaces the food list until it's done
+  if (!voice) { area.hidden = true; area.innerHTML = ""; return; }
+  area.hidden = false;
+  const found = voice.items.filter(it => it.g).length;
+  area.innerHTML = voice.listening
+    ? `<div class="voice-head"><span class="pulse"></span> Listening… <b>${esc(voice.text || "say what you ate")}</b></div>`
+    : `<div class="voice-head">Heard: <b>“${esc(voice.text)}”</b> <button class="link-btn" data-vretry>${SR ? "Try again" : "Clear"}</button></div>
+       ${voice.items.length ? `<ul class="foods vlist">${voice.items.map(voiceItem).join("")}</ul>` : `<p class="hint">Nothing to add. Try naming the food, like “medium protein latte from Tims”.</p>`}
+       ${found > 1 ? `<button class="primary" data-vall>Add all ${found}</button>` : ""}`;
+}
+function voiceAdd(i) {
+  const it = voice.items[i]; if (!it || !it.g) return;
+  const f = pickVariant(it.g, it.size, it.milk);
+  voice.items.splice(i, 1);
+  const done = !voice.items.length;  // "couldn't find" cards keep the sheet open so they can be searched
+  if (done) voice = null;
+  addFood(f.id, it.servings, !done);
+  renderVoice();
+}
+$("#voiceArea").addEventListener("click", e => {
+  const t = k => e.target.closest(k), it = i => voice && voice.items[Number(i)];
+  let b;
+  if ((b = t("[data-vsize]"))) { const x = it(b.dataset.vsize); x.size = b.dataset.val; fitVariant(x); }
+  else if ((b = t("[data-vmilk]"))) it(b.dataset.vmilk).milk = b.dataset.val;
+  else if ((b = t("[data-vstep]"))) { const x = it(b.dataset.vstep); x.servings = Math.min(10, Math.max(0.5, x.servings + Number(b.dataset.d))); }
+  else if ((b = t("[data-valt]"))) { const x = it(b.dataset.valt); const j = Number(b.dataset.j); [x.g, x.alts[j]] = [x.alts[j], x.g]; x.note = ""; fitVariant(x); }
+  else if ((b = t("[data-vremove]"))) { voice.items.splice(Number(b.dataset.vremove), 1); if (!voice.items.length) voice = null; }
+  else if ((b = t("[data-vsearch]"))) { $("#searchInput").value = it(b.dataset.vsearch).said; voice = null; renderVoice(); renderFoods(); return; }
+  else if (t("[data-vadd]")) return voiceAdd(Number(t("[data-vadd]").dataset.vadd));
+  else if (t("[data-vall]")) {
+    const list = voice.items.filter(x => x.g), misses = voice.items.filter(x => !x.g);
+    list.forEach(x => addFood(pickVariant(x.g, x.size, x.milk).id, x.servings, true));
+    voice = misses.length ? { ...voice, items: misses } : null;
+    if (!voice) closeSheets();
+    toast(`Added ${list.length} items`); renderVoice(); return;
+  }
+  else if (t("[data-vretry]")) { voice = null; renderVoice(); if (SR) startListening(); return; }
+  else return;
+  renderVoice();
+});
+// Typing a sentence and pressing Enter works like saying it (for browsers without speech recognition)
+$("#searchInput").addEventListener("keydown", e => {
+  if (e.key === "Enter" && $("#searchInput").value.trim()) { e.preventDefault(); handleSpoken($("#searchInput").value.trim()); }
+});
+
+let rec = null;
+function startListening() {
+  if (!SR) return;
+  if (rec) { rec.stop(); return; }
+  rec = new SR();
+  rec.lang = "en-CA"; rec.interimResults = true; rec.maxAlternatives = 1;
+  voice = { text: "", listening: true, items: [] }; renderVoice();
+  rec.onresult = e => { voice.text = [...e.results].map(r => r[0].transcript).join(" "); renderVoice(); };
+  rec.onerror = e => {
+    toast(e.error === "not-allowed" || e.error === "service-not-allowed" ? "Microphone is blocked. Allow it in your browser settings."
+      : e.error === "no-speech" ? "Didn't catch that. Tap the mic and try again." : "Voice didn't work. Try again or type it.");
+    voice = null;
+  };
+  rec.onend = () => { rec = null; if (voice && voice.text) handleSpoken(voice.text); else { voice = null; renderVoice(); } };
+  try { rec.start(); } catch (err) { rec = null; voice = null; renderVoice(); }
+}
+if (SR) document.querySelectorAll(".mic").forEach(b => { b.hidden = false; });
+$("#micBtn").addEventListener("click", startListening);
+$("#fabMic").addEventListener("click", () => { openAddSheet(); startListening(); });
 
 /* ---------- Goals ---------- */
 const GOAL_FIELDS = [
@@ -1199,14 +1451,15 @@ function toast(msg, action) {
 }
 
 /* ---------- Events ---------- */
-$("#openAdd").addEventListener("click", () => {
+function openAddSheet() {
+  voice = null; renderVoice();
   $("#searchInput").value = "";
   activeLoc = "All"; activeStation = "All"; activeCat = "All"; activeType = "All"; showLimit = 50; expandedId = null; pickServings = 1; showFullRotation = false;
   setTab("all");
   renderLocations(); renderFoods();
   openSheet("addSheet");
-  setTimeout(() => $("#searchInput").focus(), 250);
-});
+}
+$("#openAdd").addEventListener("click", () => { openAddSheet(); setTimeout(() => $("#searchInput").focus(), 250); });
 $("#openGoals").addEventListener("click", () => { renderGoals(); openSheet("goalSheet"); });
 $("#scrim").addEventListener("click", closeSheets);
 document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeSheets));
