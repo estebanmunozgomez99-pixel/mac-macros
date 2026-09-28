@@ -1293,15 +1293,19 @@ $("#searchInput").addEventListener("keydown", e => {
 });
 
 let rec = null;
+// Browsers only allow the microphone on https (or localhost), not on a file opened from the computer
+const MIC_NEEDS_WEB = "Voice needs the app opened from its website (https), not a saved file. For now, type what you ate and press Enter.";
 function startListening() {
   if (!SR) return;
+  if (!window.isSecureContext || location.protocol === "file:") { toast(MIC_NEEDS_WEB); $("#searchInput").focus(); return; }
   if (rec) { rec.stop(); return; }
   rec = new SR();
   rec.lang = "en-CA"; rec.interimResults = true; rec.maxAlternatives = 1;
   voice = { text: "", listening: true, items: [] }; renderVoice();
   rec.onresult = e => { voice.text = [...e.results].map(r => r[0].transcript).join(" "); renderVoice(); };
   rec.onerror = e => {
-    toast(e.error === "not-allowed" || e.error === "service-not-allowed" ? "Microphone is blocked. Allow it in your browser settings."
+    toast(e.error === "not-allowed" || e.error === "service-not-allowed"
+      ? (window.self !== window.top || location.protocol === "file:" ? MIC_NEEDS_WEB : "Microphone is blocked. Tap the lock or aA icon by the web address and allow the microphone.")
       : e.error === "no-speech" ? "Didn't catch that. Tap the mic and try again." : "Voice didn't work. Try again or type it.");
     voice = null;
   };
@@ -1447,7 +1451,7 @@ function toast(msg, action) {
   if (action) t.querySelector("button").onclick = () => { t.classList.remove("show"); action.fn(); };
   t.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove("show"), action ? 4000 : 1800);
+  toastTimer = setTimeout(() => t.classList.remove("show"), action ? 4000 : Math.max(1800, msg.length * 45));
 }
 
 /* ---------- Events ---------- */
