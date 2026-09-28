@@ -493,7 +493,6 @@ img { max-width: 100%; }
     <div class="card" id="goalFields"></div>
     <div class="calc-link-row"><button class="link-btn" id="openCalc">Don't know where to start? <b>Calculate my goals →</b></button></div>
     <button class="primary" id="saveGoals">Save goals</button>
-    <button class="ghost" id="clearDay">Clear this day's meals</button>
     <p class="hint" style="margin-top:16px">Your log is saved on this device only.</p>
   </div>
 </div>
@@ -1397,14 +1396,6 @@ $("#saveGoals").addEventListener("click", () => {
   toast("Goals saved");
 });
 
-$("#clearDay").addEventListener("click", () => {
-  if (!(state.log[viewKey] || []).length) { closeSheets(); return; }
-  if (confirm("Remove every meal logged on this day?")) {
-    delete state.log[viewKey];
-    saveState(); closeSheets(); renderAll();
-    toast("Day cleared");
-  }
-});
 
 // Keep "Today" correct if the app stays open past midnight
 document.addEventListener("visibilitychange", () => { if (!document.hidden) renderDay(); });
