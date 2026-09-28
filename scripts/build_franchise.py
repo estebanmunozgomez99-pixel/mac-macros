@@ -95,32 +95,22 @@ for cat,suffix,serving,base,prots,src in BASES:
         if n in prots: plk(cat,n+suffix,serving,*[b+x for b,x in zip(base,PROT[n])],src=src)
 plk('Limited Time Offer','Beef Kafta Dinner','1 plate',950,30,106,44)
 for n,v in PROT.items(): plk('Proteins',f'Extra {n}','1 portion',*v,kind=1)
-# ---- Booster Juice (La Piazza and DBAC): food only for now; smoothies wait for the official nutrition guide
-import csv
-BJ_SRC='Booster Juice official food nutrition (provided by the user, Sept 28, 2026)'
-for r in csv.DictReader(l for l in open('data/sources/booster-juice-food.csv') if not l.startswith('#')):
+# ---- Booster Juice (La Piazza and DBAC), from Nutritionix's Booster Juice menu
+BJ_SRC='Nutritionix Booster Juice menu (m.nutritionix.com/booster-juice/menu/premium), Sept 28, 2026'
+cat=None
+for line in open('data/sources/booster-juice-nutritionix.tsv',encoding='utf-8'):
+    if line.startswith('#') or not line.strip(): continue
+    f=line.rstrip('\n').split('\t')
+    if len(f)==1: cat=f[0].strip(); continue
+    name=f[0]; v=[x.replace(',','') for x in f[1:]]
+    v=['0' if x.startswith('<') else x for x in v]  # "<5" / "<1": trace amounts
+    cal,fat,sat,trans,chol,sod,carb,fib,sug,prot=v
+    size=re.search(r', (\d+ ?(?:mL|oz))$',name)
+    if size: name=name[:size.start()]+(' Shot' if cat=='Specialty' and 'Wheatgrass' not in name else '')+' - '+size.group(1)
+    serving=size.group(1) if size else ('480 mL' if cat=='Fresh Juices' else '1 serving')
+    kind=0 if cat=='Grilled Fresh' else 2
     for loc in ('La Piazza','DBAC'):
-        add(loc,'Booster Juice',r['category'],r['item'],r['serving'],r['calories'],r['fat'],None,None,None,r['carbs'],None,None,r['protein'],
-            2 if r['category']=='Booster Balls' else 0,BJ_SRC)
-# Drinks: calories (and protein, where posted) from the 2023 menu PDF. Booster Juice's full guide wasn't available,
-# so the rest is estimated: share of calories from protein and fat by category, with overrides for richer
-# ingredients; carbs take the remaining calories.
-BJ_DRINK_SRC='Booster Juice menu (2023). Calories as posted, and protein where posted; other macros are estimates'
-SHARE={'Fresh Juices':(.04,.02),'Classics':(.05,.02),'Spirit':(.06,.06),'Refresh':(.04,.02),'High Protein':(0,.05),
-       'Superfood':(.05,.04),'Superfood+':(0,.05),'Booster Blends':(0,0),'Shots':(0,0)}
-OVERRIDE={'Funky Monkey':(.06,.10),'Canadian Colada':(.05,.12),'Oat-Rageous Mocha':(.06,.08),'Coco Crush':(.04,.10),
-          "Nuttin' Better":(0,.30),'Brazilian Thunder':(.05,.08),'Ocean Mist':(.12,.02),'Matcha Monsoon':(.06,.06),
-          'High Impact Açai':(0,.08)}
-for r in csv.DictReader(l for l in open('data/sources/booster-juice-drinks.csv') if not l.startswith('#')):
-    ps,fs=OVERRIDE.get(r['item'],SHARE[r['category']])
-    sizes=[(r['size_large'],r['cal_large'])]+([(r['size_small'],r['cal_small'])] if r['cal_small'] else [])
-    for size,cal in sizes:
-        cal=int(cal); scale=cal/int(r['cal_large'])
-        p=round(float(r['protein'])*scale) if r['protein'] else round(cal*ps/4)
-        f=round(cal*fs/9,1); c=max(round((cal-4*p-9*f)/4),0)
-        item=r['item']+(f' - {size}' if len(sizes)>1 else '')
-        for loc in ('La Piazza','DBAC'):
-            add(loc,'Booster Juice',r['category'],item,size,cal,f,None,None,None,c,None,None,p,2,BJ_DRINK_SRC)
+        add(loc,'Booster Juice',cat,name,serving,cal,fat,sat,chol,sod,carb,fib,sug,prot,kind,BJ_SRC)
 json.dump(out,open('data/build/franchise.json','w'),ensure_ascii=False,indent=0)
 from collections import Counter
 print(len(out), Counter((o['location'],o['station'],o['kind']) for o in out))
