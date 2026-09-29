@@ -1156,10 +1156,8 @@ function renderFoods() {
       <button data-fullrot>${showFullRotation ? "Only this day" : "Show all weeks"}</button></div>`;
   }
   if (activeTab === "protein") html += `<p class="hp-note">At least 20 g of protein per 300 calories (and 5 g or more), best ratio first.</p>`;
-  // Chopped Leaf build-your-own: on the Chopped Leaf list, or when searching for it
-  if (activeTab === "all" && (activeLoc === "All" || activeLoc === "PGCLL") && (activeCat === "All" || /^(Salads|Bowls|Wraps)$/.test(activeCat)) &&
-      (activeStation === "Chopped Leaf" ? !q || /build|byo|own|custom|salad|bowl|wrap/.test(q) : /\b(build|byo|chopped)/.test(q)))
-    html += byoRow();
+  // Build-your-own rows (Chopped Leaf, Pas Noodle): on their own station, or when searching for them
+  html += byoRows(q);
   // Recent: one row per dish, opening on the size and milk logged last
   const recent = [];
   if (!q && activeLoc === "All" && activeTab === "all") {
@@ -1718,99 +1716,158 @@ const BYO = {
 };
 const BYO_TOPS = BYO.toppings.flatMap(([, list]) => list.map(([key, name, n]) => ({ key, name, n, src: "est" })));
 const BYO_DRESS = BYO.dressings.map(([key, name, n]) => ({ key, name, n, src: "cl" }));
-let byo = null;  // current build
-function newBuild() { return { format: "bowl", greens: "romaine", grain: "rice", protein: { chicken: 1 }, tops: {}, dress: {}, amount: 1 }; }
+
+/* Pas Noodle (Centro): McMaster's own numbers for every ingredient, which it lists per 100 g. Portions are worked out
+   so McMaster's published build-your-own totals come out right (one protein 633 cal -> 631 here, two proteins
+   928 -> 921): 80 g dry pasta, 100 g sauce, 100 g protein, 20 g cheese, 40 g of each veggie. */
+const PAS = {
+pastas: [{ key: "cavatappi", name: "Cavatappi", n: [292, 1.4, 60, 4, 0, 10.4, 0], sub: "80 g dry" }, { key: "penne", name: "Whole grain penne", n: [291.2, 1.8, 58.6, 7.5, 2.5, 9.9, 10.4], sub: "80 g dry" }, { key: "spaghetti", name: "Spaghetti", n: [300.8, 1.9, 60.2, 2.8, 1.9, 10.4, 0], sub: "80 g dry" }, { key: "linguini", name: "Linguini", n: [300.8, 1.9, 60.2, 2.8, 1.9, 10.4, 0], sub: "80 g dry" }, { key: "fettuccine", name: "Fettuccine", n: [217.6, 1.4, 43.5, 2.1, 1.4, 7.5, 0], sub: "80 g dry" }, { key: "gfpenne", name: "Gluten-free penne", n: [282.4, 1.4, 62.1, 2.8, 0.9, 4.7, 0], sub: "80 g dry" }, { key: "rice", name: "Rice noodles", n: [288, 0, 65.6, 1.6, 0, 4.8, 0], sub: "80 g dry" }],
+sauces: [{ key: "tomato", name: "Tomato basil", n: [88, 3.1, 15, 3.8, 10, 2.5, 775], sub: "100 g" }, { key: "rose", name: "Ros\u00e9", n: [95, 3.7, 12.5, 1.8, 7.3, 3.8, 458], sub: "1 portion" }, { key: "alfredo", name: "Alfredo", n: [102, 4.2, 10.2, 0, 4.9, 4.9, 173], sub: "100 g" }, { key: "pesto", name: "Pesto (nut-free)", n: [148.8, 15.8, 0.7, 0.3, 0.1, 1.7, 0], sub: "30 g" }],
+proteins: [{ key: "chicken", name: "Chicken", n: [165, 3.6, 0, 0, 0, 31.3, 343], sub: "1 portion" }, { key: "sausage", name: "Hot Italian sausage", n: [290, 26, 1, 1, 0, 13, 990], sub: "100 g" }, { key: "shrimp", name: "Shrimp", n: [90, 1, 0, 0, 0, 20, 360], sub: "100 g" }, { key: "ham", name: "Ham", n: [90, 3, 6, 0, 2, 10, 1100], sub: "100 g" }, { key: "tofu", name: "Firm tofu", n: [120, 7, 0, 0, 0, 14, 0], sub: "100 g" }, { key: "bacon", name: "Bacon", n: [40, 2.8, 0.5, 0, 0.3, 3.4, 168], sub: "2 slices" }],
+veggies: [{ key: "broccoli", name: "Broccoli", n: [13.6, 0.2, 2.8, 1, 0.7, 1.1, 13.2], sub: "40 g" }, { key: "spinach", name: "Baby spinach", n: [9.2, 0.2, 1.4, 0.9, 0.2, 1.2, 31.6], sub: "40 g" }, { key: "mushrooms", name: "Mushrooms", n: [8.8, 0.1, 1.3, 0.4, 0.6, 1.2, 2], sub: "40 g" }, { key: "pepponion", name: "Peppers & onions", n: [13.2, 0.1, 2.9, 0.7, 1.5, 0.4, 1.6], sub: "40 g" }, { key: "redpep", name: "Red peppers", n: [12.4, 0.1, 2.4, 0.8, 1.7, 0.4, 1.6], sub: "40 g" }, { key: "greenpep", name: "Green peppers", n: [8, 0.1, 1.8, 0.7, 1, 0.4, 1.2], sub: "40 g" }, { key: "onion", name: "Spanish onion", n: [16.4, 0, 3.9, 0.6, 2, 0, 0.8], sub: "40 g" }, { key: "tomato", name: "Tomatoes", n: [8.8, 0, 2, 0.6, 1.2, 0.4, 2.4], sub: "40 g" }, { key: "grape", name: "Grape tomatoes", n: [6.4, 0, 1.2, 0.4, 0.4, 0.4, 0], sub: "40 g" }, { key: "corn", name: "Corn", n: [35.2, 0.3, 8.3, 0.8, 0.6, 1.2, 1.2], sub: "40 g" }, { key: "peas", name: "Peas", n: [22.4, 0, 3.8, 1.3, 1.6, 1.3, 24], sub: "40 g" }, { key: "carrots", name: "Carrots", n: [16.4, 0.1, 4, 0.8, 2, 0.4, 27.6], sub: "40 g" }],
+cheese: [{ key: "cheddar", name: "Cheddar", n: [59.2, 4.1, 1.3, 0, 0, 4.2, 254], sub: "20 g" }]
+};
+
+/* ---------- Build-your-own engine ----------
+   A builder is a list of steps. Step kinds:
+     one    pick exactly one option (b[key] = option key)
+     qty    amounts per option, e.g. chicken ×2 (b[key] = { option: count })
+     toggle tick any; with extra: true a second tap makes it ×2 (b[key] = { option: 1 | 2 })
+     share  tick any; they split one portion scaled by the amount step (b[key] = { option: true })
+     amount a multiplier such as Light / Regular / Extra (b[key] = number) */
+const BUILDERS = {
+  chopped: {
+    id: "chopped", title: "Build your own", location: "PGCLL", station: "Chopped Leaf", brand: "Chopped Leaf",
+    rowName: "🥗 Build your own", rowMeta: "PGCLL, Chopped Leaf · salad, bowl or wrap, pick every ingredient",
+    cats: /^(Salads|Bowls|Wraps)$/, stationQ: /build|byo|own|custom|salad|bowl|wrap/, searchQ: /\b(build|byo|chopped)/,
+    defaults: () => ({ format: "bowl", greens: "romaine", grain: "rice", protein: { chicken: 1 }, tops: {}, dress: {}, amount: 1 }),
+    unit: b => BYO.formats.find(x => x.key === b.format).name.toLowerCase(),
+    prefix: b => "Build your own " + BYO.formats.find(x => x.key === b.format).name.toLowerCase(),
+    extraParts: b => (b.format === "wrap" ? [{ ...BYO.tortilla, k: 1 }] : []),
+    onPick: (b, key) => { if (key === "format") b.grain = BYO.formats.find(x => x.key === b.format).grain; },
+    steps: [
+      { key: "format", label: "Make it a", kind: "one", options: BYO.formats, noName: true,
+        hint: b => BYO.formats.find(x => x.key === b.format).note },
+      { key: "greens", label: "Greens", kind: "one", options: BYO.greens, noName: true },
+      { key: "grain", label: "Grain", kind: "one", options: BYO.grains, nameIf: b => !(b.format === "bowl" && b.grain === "rice") },
+      { key: "protein", label: "Protein", tip: "tap + for double", kind: "qty", max: 3, options: BYO.proteins },
+      ...BYO.toppings.map(([group, list]) => ({ key: "tops", label: group, tip: "tap twice for extra", kind: "toggle", extra: true,
+        options: list.map(([key, name, n]) => ({ key, name, n, src: "est" })) })),
+      { key: "dress", label: "Dressing", kind: "share", amountKey: "amount", options: BYO_DRESS,
+        hint: b => Object.values(b.dress).filter(Boolean).length > 1 ? "Two dressings share one portion, half each." : "" },
+      { key: "amount", label: "How much dressing", kind: "amount", options: BYO.amounts, noName: true }
+    ],
+    note: "Proteins and dressings are Chopped Leaf's official numbers. The rice and wrap are worked out from their official salad, bowl and wrap numbers. Items marked ≈ are estimates for a typical portion, since Chopped Leaf doesn't publish them."
+  },
+  pas: {
+    id: "pas", title: "Build your pasta", location: "Centro", station: "Pas Noodle", brand: "Pas Noodle",
+    rowName: "🍝 Build your own pasta", rowMeta: "Centro, Pas Noodle · pick the pasta, sauce, protein and veggies",
+    cats: /^All$/, stationQ: /build|byo|own|custom|pasta/, searchQ: /\b(build|byo|pas noodle|pasta)/,
+    defaults: () => ({ pasta: "cavatappi", sauce: { tomato: true }, amount: 1, protein: {}, veg: {}, cheese: {} }),
+    unit: () => "pasta",
+    prefix: b => "Pas Noodle " + PAS.pastas.find(x => x.key === b.pasta).name.toLowerCase(),
+    steps: [
+      { key: "pasta", label: "Pasta", kind: "one", options: PAS.pastas, noName: true },
+      { key: "sauce", label: "Sauce", kind: "share", amountKey: "amount", options: PAS.sauces,
+        hint: b => Object.values(b.sauce).filter(Boolean).length > 1 ? "Two sauces share one portion, half each." : "" },
+      { key: "amount", label: "How much sauce", kind: "amount", options: [["Light", 0.5], ["Regular", 1], ["Extra", 1.5]], noName: true },
+      { key: "protein", label: "Protein", tip: "tap + for double", kind: "qty", max: 3, options: PAS.proteins },
+      { key: "veg", label: "Veggies", tip: "tap twice for extra", kind: "toggle", extra: true, options: PAS.veggies },
+      { key: "cheese", label: "Cheese", tip: "tap twice for extra", kind: "toggle", extra: true, options: PAS.cheese }
+    ],
+    note: "Every ingredient uses McMaster's own nutrition numbers. Portion sizes (80 g pasta, 100 g sauce and protein, 40 g per veggie, 20 g cheese) are worked out so McMaster's published build-your-own pasta totals come out right."
+  }
+};
+let byo = null, byoB = BUILDERS.chopped;  // current build and its builder
 // Every picked part with how many portions of it
-function byoParts(b) {
-  const find = (list, k) => list.find(x => x.key === k);
-  const parts = [];
-  if (b.format === "wrap") parts.push({ ...BYO.tortilla, k: 1 });
-  const gr = find(BYO.greens, b.greens); if (gr && gr.key !== "none") parts.push({ ...gr, k: 1 });
-  const gn = find(BYO.grains, b.grain); if (gn && gn.key !== "none") parts.push({ ...gn, k: 1 });
-  Object.entries(b.protein).forEach(([k, q]) => q > 0 && parts.push({ ...find(BYO.proteins, k), k: q }));
-  Object.keys(b.tops).forEach(k => b.tops[k] && parts.push({ ...BYO_TOPS.find(x => x.key === k), k: b.tops[k] }));
-  // One dressing portion, shared when you pick more than one (matches Chopped Leaf's two-dressing menu items)
-  const dressings = Object.keys(b.dress).filter(k => b.dress[k]);
-  dressings.forEach(k => parts.push({ ...BYO_DRESS.find(x => x.key === k), k: b.amount / dressings.length }));
+function byoParts(b, B = byoB) {
+  const parts = [...(B.extraParts ? B.extraParts(b) : [])];
+  const seen = new Set();
+  B.steps.forEach(st => {
+    const v = b[st.key];
+    if (st.kind === "one") { const o = st.options.find(x => x.key === v); if (o && o.n && o.key !== "none") parts.push({ ...o, k: 1, st }); }
+    else if (st.kind === "qty" || st.kind === "toggle") {
+      st.options.forEach(o => { const q = v[o.key]; if (q > 0 && !seen.has(st.key + o.key)) { seen.add(st.key + o.key); parts.push({ ...o, k: q, st }); } });
+    } else if (st.kind === "share") {
+      const on = st.options.filter(o => v[o.key]);
+      on.forEach(o => parts.push({ ...o, k: b[st.amountKey] / on.length, st }));
+    }
+  });
   return parts;
 }
-function byoTotals(b) {
+function byoTotals(b, B = byoB) {
   const t = [0, 0, 0, 0, 0, 0, 0];
-  byoParts(b).forEach(p => p.n.forEach((v, i) => { t[i] += v * p.k; }));
+  byoParts(b, B).forEach(p => p.n.forEach((v, i) => { t[i] += v * p.k; }));
   return t;
 }
-function byoName(b) {
-  const f = BYO.formats.find(x => x.key === b.format).name;
-  const bits = [];
-  if (b.grain !== "none" && !(b.format === "bowl" && b.grain === "rice")) bits.push(BYO.grains.find(x => x.key === b.grain).name.toLowerCase());
-  Object.entries(b.protein).forEach(([k, q]) => q > 0 && bits.push(BYO.proteins.find(x => x.key === k).name.toLowerCase() + (q !== 1 ? " ×" + q : "")));
-  Object.keys(b.tops).forEach(k => b.tops[k] && bits.push(BYO_TOPS.find(x => x.key === k).name.toLowerCase() + (b.tops[k] > 1 ? " ×2" : "")));
-  Object.keys(b.dress).forEach(k => b.dress[k] && bits.push(BYO_DRESS.find(x => x.key === k).name.toLowerCase()));
-  return `Build your own ${f.toLowerCase()}${bits.length ? ": " + bits.join(", ") : ""}`;
+function byoName(b, B = byoB) {
+  const bits = byoParts(b, B).filter(p => p.st && !p.st.noName && (!p.st.nameIf || p.st.nameIf(b)))
+    .map(p => p.name.toLowerCase() + (p.st.kind === "share" || p.k === 1 ? "" : " ×" + fmtG(p.k)));
+  return B.prefix(b) + (bits.length ? ": " + bits.join(", ") : "");
 }
-function openBYO() {
-  byo = newBuild();
+function openBYO(id) {
+  byoB = BUILDERS[id] || BUILDERS.chopped;
+  byo = byoB.defaults();
+  $("#byoTitle").textContent = byoB.title;
   document.querySelectorAll(".sheet.open").forEach(s => { s.classList.remove("open"); s.setAttribute("aria-hidden", "true"); });
   renderBYO(); openSheet("byoSheet"); $("#byoBody").scrollTop = 0;
 }
 function renderBYO() {
-  const b = byo, t = byoTotals(b);
+  const b = byo, B = byoB, t = byoTotals(b);
   $("#byoTotal").innerHTML = `<span class="bt-cal"><b>${fmt(t[0])}</b> cal</span>
     <span class="p">P <b>${fmtG(t[5])}g</b></span><span class="c">C <b>${fmtG(t[2])}g</b></span><span class="f">F <b>${fmtG(t[1])}g</b></span>`;
-  const est = x => x.src === "est" ? `<i class="est" title="Estimate">≈</i>` : "";
-  const chip = (attr, key, label, on, extra = "") => `<button class="opt" data-${attr}="${esc(key)}" aria-pressed="${on}">${esc(label)}${extra}</button>`;
-  const step = (group, key, q) => `<div class="stepper small"><button data-bq="${group}|${key}" data-d="-0.5" aria-label="Less">−</button><output>${q ? fmtG(q) + "×" : "–"}</output><button data-bq="${group}|${key}" data-d="0.5" aria-label="More">+</button></div>`;
-  const fmtRow = BYO.formats.find(f => f.key === b.format);
-  $("#byoBody").innerHTML = `
-    <div class="byo-sec"><div class="opt-label">Make it a</div><div class="opt-row">${BYO.formats.map(f => chip("bformat", f.key, f.name, b.format === f.key)).join("")}</div>
-      ${fmtRow.note ? `<p class="hint byo-hint">${fmtRow.note}</p>` : ""}</div>
-    <div class="byo-sec"><div class="opt-label">Greens</div><div class="opt-row">${BYO.greens.map(g => chip("bgreens", g.key, g.name, b.greens === g.key, est(g))).join("")}</div></div>
-    <div class="byo-sec"><div class="opt-label">Grain</div><div class="opt-row">${BYO.grains.map(g => chip("bgrain", g.key, g.name, b.grain === g.key, est(g))).join("")}</div></div>
-    <div class="byo-sec"><div class="opt-label">Protein <small>(tap + for double)</small></div>
-      <ul class="byo-list">${BYO.proteins.map(p => `<li><span>${esc(p.name)} <small>${p.n[0]} cal · ${p.n[5]}g protein</small></span>${step("protein", p.key, b.protein[p.key] || 0)}</li>`).join("")}</ul></div>
-    ${BYO.toppings.map(([group, list]) => `<div class="byo-sec"><div class="opt-label">${group} <small>(tap twice for extra)</small></div>
-      <div class="opt-row">${list.map(([k, name]) => chip("btop", k, name + (b.tops[k] > 1 ? " ×2" : ""), !!b.tops[k], `<i class="est">≈</i>`)).join("")}</div></div>`).join("")}
-    <div class="byo-sec"><div class="opt-label">Dressing</div>
-      <div class="opt-row">${BYO_DRESS.map(d => chip("bdress", d.key, d.name, !!b.dress[d.key])).join("")}</div>
-      <div class="opt-label amt-label">How much dressing</div>
-      <div class="opt-row amt">${BYO.amounts.map(([name, k]) => chip("bamount", k, name, b.amount === k)).join("")}</div>
-      ${Object.values(b.dress).filter(Boolean).length > 1 ? `<p class="hint byo-hint">Two dressings share one portion, half each.</p>` : ""}</div>
-    <p class="facts-note byo-note">Proteins and dressings are Chopped Leaf's official numbers. The rice and wrap are worked out from their official
-      salad, bowl and wrap numbers. Items marked ≈ are estimates for a typical portion, since Chopped Leaf doesn't publish them.</p>
+  const est = o => o.src === "est" ? `<i class="est" title="Estimate">≈</i>` : "";
+  const chip = (i, o, on, label = o.name) => `<button class="opt" data-bstep="${i}" data-bopt="${esc(o.key)}" aria-pressed="${on}">${esc(label)}${est(o)}</button>`;
+  const sec = (st, inner) => {
+    const hint = st.hint && st.hint(b);
+    return `<div class="byo-sec"><div class="opt-label">${st.label}${st.tip ? ` <small>(${st.tip})</small>` : ""}</div>${inner}${hint ? `<p class="hint byo-hint">${hint}</p>` : ""}</div>`;
+  };
+  $("#byoBody").innerHTML = B.steps.map((st, i) => {
+    const v = b[st.key];
+    if (st.kind === "one") return sec(st, `<div class="opt-row">${st.options.map(o => chip(i, o, v === o.key)).join("")}</div>`);
+    if (st.kind === "amount") return sec(st, `<div class="opt-row">${st.options.map(([name, k]) => chip(i, { key: k, name }, v === k)).join("")}</div>`);
+    if (st.kind === "share") return sec(st, `<div class="opt-row">${st.options.map(o => chip(i, o, !!v[o.key])).join("")}</div>`);
+    if (st.kind === "toggle") return sec(st, `<div class="opt-row">${st.options.map(o => chip(i, o, !!v[o.key], o.name + (v[o.key] > 1 ? " ×2" : ""))).join("")}</div>`);
+    return sec(st, `<ul class="byo-list">${st.options.map(o => `<li><span>${esc(o.name)}${est(o)} <small>${o.sub ? esc(o.sub) + " · " : ""}${fmt(o.n[0])} cal · ${fmtG(o.n[5])}g protein</small></span>
+      <div class="stepper small"><button data-bstep="${i}" data-bopt="${esc(o.key)}" data-d="-1" aria-label="Less ${esc(o.name)}">−</button><output>${v[o.key] ? fmtG(v[o.key]) + "×" : "–"}</output><button data-bstep="${i}" data-bopt="${esc(o.key)}" data-d="1" aria-label="More ${esc(o.name)}">+</button></div></li>`).join("")}</ul>`);
+  }).join("") + `
+    <p class="facts-note byo-note">${B.note}</p>
     <button class="primary" data-badd>Add to log</button>
     <p class="hint byo-hint">It's also saved to My foods so you can re-add your usual in one tap.</p>`;
 }
 $("#byoBody").addEventListener("click", e => {
-  const t = k => e.target.closest(k), b = byo;
-  let x;
-  if ((x = t("[data-bformat]"))) { const f = BYO.formats.find(f => f.key === x.dataset.bformat); if (b.format !== f.key) { b.format = f.key; b.grain = f.grain; } }
-  else if ((x = t("[data-bgreens]"))) b.greens = x.dataset.bgreens;
-  else if ((x = t("[data-bgrain]"))) b.grain = x.dataset.bgrain;
-  else if ((x = t("[data-bq]"))) { const [, k] = x.dataset.bq.split("|"); b.protein[k] = Math.min(3, Math.max(0, (b.protein[k] || 0) + Number(x.dataset.d))); }
-  else if ((x = t("[data-btop]"))) { const k = x.dataset.btop; b.tops[k] = ((b.tops[k] || 0) + 1) % 3; }  // off -> on -> extra -> off
-  else if ((x = t("[data-bdress]"))) { const k = x.dataset.bdress; b.dress[k] = !b.dress[k]; }
-  else if ((x = t("[data-bamount]"))) b.amount = Number(x.dataset.bamount);
-  else if (t("[data-badd]")) return addBYO();
-  else return;
+  if (e.target.closest("[data-badd]")) return addBYO();
+  const x = e.target.closest("[data-bstep]"); if (!x) return;
+  const b = byo, st = byoB.steps[Number(x.dataset.bstep)], k = x.dataset.bopt, v = b[st.key];
+  if (st.kind === "one") b[st.key] = k;
+  else if (st.kind === "amount") b[st.key] = Number(k);
+  else if (st.kind === "share") v[k] = !v[k];
+  else if (st.kind === "toggle") v[k] = ((v[k] || 0) + 1) % (st.extra ? 3 : 2);  // off -> on -> extra -> off
+  else if (st.kind === "qty") v[k] = Math.min(st.max || 3, Math.max(0, (v[k] || 0) + Number(x.dataset.d)));
+  if (byoB.onPick) byoB.onPick(b, st.key);
   const top = $("#byoBody").scrollTop; renderBYO(); $("#byoBody").scrollTop = top;
 });
 function addBYO() {
   const t = byoTotals(byo), r1 = v => Math.round(v * 10) / 10;
   const name = byoName(byo);
   const key = "byo:" + fold(name).replace(/[^a-z0-9]+/g, "-");
-  state.custom[key] = { code: null, name, brand: "Chopped Leaf", serving: "1 " + BYO.formats.find(f => f.key === byo.format).name.toLowerCase(),
+  state.custom[key] = { code: null, name, brand: byoB.brand, serving: "1 " + byoB.unit(byo),
     grams: null, unit: "g", source: "Built by you", calories: Math.round(t[0]), protein: r1(t[5]), carbs: r1(t[2]), fat: r1(t[1]),
     micro: [null, null, Math.round(t[6]), r1(t[3]), r1(t[4]), null, null, null] };
   saveState();
   const f = registerCustom(key);
   addFood(f.id, 1);
 }
-function byoRow() {
-  return `<ul class="foods byo-entry"><li><button class="food-btn" data-byo>
-    <div class="info"><div class="name">🥗 Build your own</div><div class="meta">PGCLL, Chopped Leaf · salad, bowl or wrap, pick every ingredient</div></div>
-    <div class="cal">›</div></button></li></ul>`;
+// "Build your own" rows for the food list: on the builder's own station, or when the search asks for it
+function byoRows(q) {
+  if (activeTab !== "all") return "";
+  return Object.values(BUILDERS).filter(B => (activeLoc === "All" || activeLoc === B.location) &&
+    (activeCat === "All" || B.cats.test(activeCat)) &&
+    (activeStation === B.station ? !q || B.stationQ.test(q) : activeStation === "All" && B.searchQ.test(q)))
+    .map(B => `<ul class="foods byo-entry"><li><button class="food-btn" data-byo="${B.id}">
+      <div class="info"><div class="name">${B.rowName}</div><div class="meta">${B.rowMeta}</div></div>
+      <div class="cal">›</div></button></li></ul>`).join("");
 }
-
 /* ---------- Goals ---------- */
 const GOAL_FIELDS = [
   { key: "calories", label: "Calories", unit: "cal", color: "var(--muted)" },
@@ -2012,7 +2069,7 @@ $("#foodArea").addEventListener("click", e => {
   const size = e.target.closest("[data-size]");
   const milk = e.target.closest("[data-milk]");
   if (e.target.closest("[data-facts]")) { showFacts = !showFacts; renderFoods(); return; }
-  if (e.target.closest("[data-byo]")) { openBYO(); return; }
+  if (e.target.closest("[data-byo]")) { openBYO(e.target.closest("[data-byo]").dataset.byo); return; }
   if (food) {
     const id = food.dataset.food;
     if (expandedId === id) expandedId = null; else openRow(id, rowPicks.get(id));
