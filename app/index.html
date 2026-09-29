@@ -360,8 +360,6 @@ img { max-width: 100%; }
 .code-note { margin: 4px 16px 0; }
 
 /* Build your own */
-.customize-row { padding: 0 16px 12px; background: var(--surface-2); }
-.customize-row .customize { margin-top: 0; height: 42px; background: var(--surface); }
 .byo-entry { margin-bottom: 10px; border: 2px solid var(--maroon); }
 .byo-entry .cal { font-size: 1.4rem; color: var(--muted); }
 .byo-total {
@@ -1070,16 +1068,18 @@ function foodRow(g, rowId, rep) {
     const unit = SERVING_WORDS[f.serving] || f.serving || "1 serving";
     const milks = milksFor(g, f.size);
     html += optChips("Size", g.sizes, f.size, o => `data-size="${esc(o)}"`) + optChips("Milk", milks, f.milk, o => `data-milk="${esc(o)}"`);
-    html += `<div class="picker">
+    // Build-your-own menu items go to their builder instead of being logged as-is
+    const cust = customizeFor(g);
+    html += cust ? `<div class="picker"><button class="add-btn" data-byo="${cust}">Customize ingredients →</button></div>` : `<div class="picker">
       <div class="stepper">
         <button data-step="-0.5" aria-label="Fewer servings">−</button>
         <output aria-live="polite">${fmtG(pickServings)}×</output>
         <button data-step="0.5" aria-label="More servings">+</button>
       </div>
       <button class="add-btn" data-add="${esc(f.id)}">Add to log</button>
-    </div>
-    ${customizeFor(g) ? `<div class="customize-row"><button class="ghost customize" data-byo="${customizeFor(g)}">Customize ingredients →</button></div>` : ""}
-    <div class="picker-totals">Serving: ${esc(unit)}. ${fmt(f.calories * pickServings)} cal, P ${fmtG(f.protein * pickServings)}g, C ${fmtG(f.carbs * pickServings)}g, F ${fmtG(f.fat * pickServings)}g
+    </div>`;
+    html += `
+    <div class="picker-totals">${cust ? "McMaster's standard build" : "Serving: " + esc(unit)}. ${fmt(f.calories * pickServings)} cal, P ${fmtG(f.protein * pickServings)}g, C ${fmtG(f.carbs * pickServings)}g, F ${fmtG(f.fat * pickServings)}g
       <button class="facts-toggle" data-facts aria-expanded="${showFacts}">${showFacts ? "Hide" : "Nutrition facts"}</button></div>
     ${showFacts ? `<div class="picker-facts">${factsHTML(nutrition([{ food: f, micro: f.micro || NO_MICRO, mult: pickServings }]), false)}</div>` : ""}`;
   }
