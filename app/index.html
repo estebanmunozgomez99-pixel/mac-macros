@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#7A003C">
+<script>
+// Light / dark choice from Settings, applied before the page draws so it never flashes the wrong theme
+try { var t = JSON.parse(localStorage.getItem("macmacros:v1") || "{}").theme; if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
 <title>Mac Macros</title>
 <style>
 /* Figtree, bundled in vendor/fonts (SIL Open Font License) */
@@ -407,6 +411,10 @@ img { max-width: 100%; }
 .byo-note { margin: 4px 2px 0; }
 
 /* Settings */
+.seg3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; background: var(--surface-2); border-radius: 999px; }
+.seg3 button { height: 38px; border: none; border-radius: 999px; background: transparent; font-weight: 700; color: var(--muted); }
+.seg3 button[aria-checked="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+.seg-hint { margin: 6px 4px 4px; }
 .set-card { padding: 4px 16px 16px; }
 .set-card .primary, .set-card .ghost { margin-top: 10px; }
 .set-card .file-btn { margin-top: 10px; }
@@ -999,10 +1007,10 @@ function loadState() {
     if (raw) {
       const s = JSON.parse(raw);
       return { log: s.log || {}, goals: s.goals || {}, recents: s.recents || [], profile: s.profile || {}, custom: s.custom || {}, dayGoals: s.dayGoals || {},
-        onboarded: s.onboarded !== false };
+        onboarded: s.onboarded !== false, theme: s.theme || "auto" };
     }
   } catch (e) { /* storage unavailable: start fresh */ }
-  return { log: {}, goals: {}, recents: [], profile: {}, custom: {}, dayGoals: {}, onboarded: false };
+  return { log: {}, goals: {}, recents: [], profile: {}, custom: {}, dayGoals: {}, onboarded: false, theme: "auto" };
 }
 function saveState() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
@@ -2408,6 +2416,13 @@ function renderSettings() {
   const mine = Object.entries(state.custom).sort((a, b) => a[1].name.localeCompare(b[1].name));
   const menuDate = MENU.version ? new Date(MENU.version).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "unknown";
   $("#setBody").innerHTML = `
+    <div class="group-label">Appearance</div>
+    <div class="seg3" role="radiogroup" aria-label="Appearance">
+      ${[["auto", "Automatic"], ["light", "Light"], ["dark", "Dark"]].map(([k, name]) =>
+        `<button role="radio" data-theme-pick="${k}" aria-checked="${(state.theme || "auto") === k}">${name}</button>`).join("")}
+    </div>
+    <p class="hint seg-hint">${(state.theme || "auto") === "auto" ? "Follows your phone's light or dark setting." : "Always " + state.theme + ", whatever your phone is set to."}</p>
+
     <div class="group-label">My foods</div>
     ${mine.length ? `<ul class="foods my-foods">${mine.map(([k, c]) => `<li>
         <div class="info"><div class="name">${esc(c.name)}</div><div class="meta">${SOURCE_WORDS[c.source] || "Saved"} · ${fmt(c.calories)} cal · ${esc(c.serving || "1 serving")}</div></div>
@@ -2453,6 +2468,10 @@ function renderSettings() {
       <p><a href="${PRIVACY_URL}" target="_blank" rel="noopener">Privacy policy</a></p>
     </div>`;
 }
+function applyTheme() {
+  if (state.theme === "light" || state.theme === "dark") document.documentElement.dataset.theme = state.theme;
+  else delete document.documentElement.dataset.theme;
+}
 function openSettings() { renderSettings(); openSheet("setSheet"); $("#setBody").scrollTop = 0; }
 function exportBackup() {
   const data = JSON.stringify({ app: "Mac Macros", version: 1, exported: new Date().toISOString(), state }, null, 1);
@@ -2481,7 +2500,8 @@ $("#setBody").addEventListener("change", e => { if (e.target.id === "importFile"
 $("#setBody").addEventListener("click", e => {
   const t = k => e.target.closest(k);
   let b;
-  if (t("[data-export]")) exportBackup();
+  if ((b = t("[data-theme-pick]"))) { state.theme = b.dataset.themePick; applyTheme(); saveState(); renderSettings(); }
+  else if (t("[data-export]")) exportBackup();
   else if (t("[data-menucheck]")) checkMenuUpdate(true);
   else if (t("[data-reportapp]")) sendReport("Mac Macros: feedback", `What happened or what would you like to see?\n\n\n--- \nApp ${APP_VERSION} · Menu data ${MENU.version || "?"}`);
   else if (t("[data-tour]")) { closeSheets(); setTimeout(showWelcome, 250); }
