@@ -365,6 +365,11 @@ img { max-width: 100%; }
 .manual .primary { width: calc(100% - 32px); margin: 8px 16px 16px; }
 .code-note { margin: 4px 16px 0; }
 
+/* Make it a meal */
+.meal-sides .opt-label small { font-weight: 500; }
+.meal-sides .opt { font-size: 0.85rem; height: 34px; padding: 0 12px; }
+.meal-sides .opt small { font-weight: 500; opacity: 0.7; margin-left: 2px; }
+
 /* Build your own */
 .customize-row { padding: 0 16px 12px; background: var(--surface-2); }
 .customize-row .customize { margin-top: 0; height: 42px; background: var(--surface); }
@@ -947,6 +952,7 @@ const isHighProtein = f => f.calories > 0 && f.protein >= 5 && f.protein / f.cal
 let expandedId = null;
 let pickServings = 1;
 let pickSize = null, pickMilk = null;
+let pickSides = {};  // "Make it a meal": side id -> portions (1 or 2)
 
 /* ---------- Summary ---------- */
 function totalsFor(key) {
@@ -1144,6 +1150,13 @@ function foodRow(g, rowId, rep) {
     const unit = SERVING_WORDS[f.serving] || f.serving || "1 serving";
     const milks = milksFor(g, f.size);
     html += optChips("Size", g.sizes, f.size, o => `data-size="${esc(o)}"`) + optChips("Milk", milks, f.milk, o => `data-milk="${esc(o)}"`);
+    const sides = customizeFor(g) && !customizeFor(g).keepAdd ? [] : mealSides(f);
+    if (sides.length) html += `<div class="opts meal-sides" role="group" aria-label="Make it a meal">
+      <span class="opt-label">Make it a meal <small>(pick your sides · tap twice for a double)</small></span>
+      <div class="opt-row">${sides.map(x => `<button class="opt" data-side="${esc(x.id)}" aria-pressed="${!!pickSides[x.id]}">${esc(x.item.replace(/^(Centro|Lah|Smpl) /i, ""))}${pickSides[x.id] > 1 ? " ×2" : ""} <small>${fmt(x.calories)}</small></button>`).join("")}</div>
+    </div>`;
+    const chosen = sidesChosen();
+    const withSides = key => f[key] * pickServings + chosen.reduce((a, x) => a + x.f[key] * x.q, 0);
     // Build-your-own menu items go to their builder instead of being logged as-is
     const cust = customizeFor(g);
     const custBtn = c => `data-byo="${c.id}"${c.preset ? ` data-preset="${esc(JSON.stringify(c.preset))}"` : ""}`;
@@ -1156,12 +1169,29 @@ function foodRow(g, rowId, rep) {
       <button class="add-btn" data-add="${esc(f.id)}">Add to log</button>
     </div>${cust ? `<div class="customize-row"><button class="ghost customize" ${custBtn(cust)}>Customize: add extras →</button></div>` : ""}`;
     html += `
-    <div class="picker-totals">${cust && !cust.keepAdd ? "McMaster's standard build" : "Serving: " + esc(unit)}. ${fmt(f.calories * pickServings)} cal, P ${fmtG(f.protein * pickServings)}g, C ${fmtG(f.carbs * pickServings)}g, F ${fmtG(f.fat * pickServings)}g
+    <div class="picker-totals">${cust && !cust.keepAdd ? "McMaster's standard build" : chosen.length ? `With ${chosen.length} side${chosen.length > 1 ? "s" : ""}` : "Serving: " + esc(unit)}. ${fmt(withSides("calories"))} cal, P ${fmtG(withSides("protein"))}g, C ${fmtG(withSides("carbs"))}g, F ${fmtG(withSides("fat"))}g
       <button class="facts-toggle" data-facts aria-expanded="${showFacts}">${showFacts ? "Hide" : "Nutrition facts"}</button></div>
-    ${showFacts ? `<div class="picker-facts">${factsHTML(nutrition([{ food: f, micro: f.micro || NO_MICRO, mult: pickServings }]), false)}</div>` : ""}`;
+    ${showFacts ? `<div class="picker-facts">${factsHTML(nutrition([{ food: f, micro: f.micro || NO_MICRO, mult: pickServings },
+      ...chosen.map(x => ({ food: x.f, micro: x.f.micro || NO_MICRO, mult: x.q }))]), chosen.length > 0)}</div>` : ""}`;
   }
   return html + "</li>";
 }
+// "Make it a meal": the sides a main can come with, from its own station's extras (for Centro SMPL only today's).
+// Sides = side-dish categories, or side-dish names (fries, rice, potatoes, veggies...); swaps ("Sub ...") left out.
+const SIDE_CATS = /^(Carb Sides|Plant Based Sides|Salads|Sides|All Day|Brunch|Breakfast|Entrée)$/;
+const SIDE_NAME = /fries|rice|potato|noodle|vegetable|veggie|naan|salad|mash|homefries|hash ?brown|tater|onion rings|corn|beans|carrot|broccoli|medley|pilaf|cornbread|green beans|parsnip|cauliflower|kale|bok choy|zucchini|garlic bread|french toast|pancake/i;
+// Add-on lists also hold raw ingredients (Pas Noodle); only these count as sides from them
+const SIDE_ADDON = /fries|onion rings|hash ?brown|tater/i;
+const BREAKFAST = /^(Breakfast|Brunch)$/;
+function mealSides(f) {
+  if (!f.isMeal) return [];
+  return (EXTRAS_BY_STATION[stationKey(f.location, f.station)] || [])
+    .filter(x => !/^sub\b/i.test(x.item) && isServed(x, viewKey) &&
+      (!BREAKFAST.test(x.category) || BREAKFAST.test(f.category)) &&  // hashbrowns and pancakes only with breakfast
+      ((SIDE_CATS.test(x.category) && SIDE_NAME.test(x.item)) || (x.category === "Add Ons" && SIDE_ADDON.test(x.item))));
+}
+const sidesChosen = () => Object.entries(pickSides).filter(([, q]) => q > 0).map(([id, q]) => ({ f: FOOD_BY_ID.get(id), q })).filter(x => x.f);
+
 // Menu items that are really a build-your-own: their picker gets a "Customize" button that opens the builder
 // [name pattern, builder, keep Add to log?, preset from the name]. Generic build-your-own items can't be logged as-is;
 // full meals (Flavour Junction) keep Add to log and open the builder set to that meal.
@@ -1192,7 +1222,7 @@ function optionsText(g) {
   return [g.sizes.length > 1 && `${g.sizes.length} sizes`, milks > 1 && `${milks} milks`].filter(Boolean).join(", ") || g.sizes[0] || "";
 }
 // Open a row with a variant picked: its size and milk become the picker's starting choice
-function openRow(rowId, v) { expandedId = rowId; pickSize = v.size; pickMilk = v.milk; pickServings = 1; }
+function openRow(rowId, v) { expandedId = rowId; pickSize = v.size; pickMilk = v.milk; pickServings = 1; pickSides = {}; }
 
 // Category tabs for a big station (e.g. Chopped Leaf: Salads, Bowls, Wraps, ... Soups). Counted on what's served
 // today, ignoring the search box so the tabs don't jump around while typing.
@@ -1279,13 +1309,13 @@ function renderFoods() {
 
 const rowPicks = new Map();  // row id -> variant the row opens on
 // Log a food. keepOpen leaves the Add food sheet up (voice results with more items still to add).
-function addFood(id, servings = pickServings, keepOpen = false) {
+function addFood(id, servings = pickServings, keepOpen = false, extras = []) {
   const f = FOOD_BY_ID.get(id);
   if (!f) return;
   const entry = {
     id: f.id, item: f.item, location: f.location, station: f.station, serving: f.serving,
     calories: f.calories, protein: f.protein, carbs: f.carbs, fat: f.fat, micro: f.micro,
-    servings, extras: [], at: Date.now()
+    servings, extras, at: Date.now()
   };
   (state.log[viewKey] = state.log[viewKey] || []).push(entry);
   if (!state.dayGoals[viewKey] && state.goals.calories) state.dayGoals[viewKey] = { ...state.goals };
@@ -1294,7 +1324,8 @@ function addFood(id, servings = pickServings, keepOpen = false) {
   if (!keepOpen) closeSheets();
   renderAll();
   const idx = state.log[viewKey].length - 1;
-  toast(`Added ${f.item}`, !keepOpen && extrasFor(entry).length ? { label: "Add extras", fn: () => openEdit(idx) } : null);
+  toast(`Added ${f.item}${extras.length ? ` with ${extras.length} side${extras.length > 1 ? "s" : ""}` : ""}`,
+    !keepOpen && extrasFor(entry).length ? { label: extras.length ? "Edit" : "Add extras", fn: () => openEdit(idx) } : null);
 }
 
 /* ---------- Voice logging ----------
@@ -2462,6 +2493,8 @@ $("#foodArea").addEventListener("click", e => {
   const add = e.target.closest("[data-add]");
   if (e.target.closest("[data-more]")) { showLimit += 50; renderFoods(); return; }
   if (e.target.closest("[data-fullrot]")) { showFullRotation = !showFullRotation; expandedId = null; showLimit = 50; renderFoods(); return; }
+  const side = e.target.closest("[data-side]");
+  if (side) { const id = side.dataset.side; pickSides[id] = ((pickSides[id] || 0) + 1) % 3; renderFoods(); return; }
   const size = e.target.closest("[data-size]");
   const milk = e.target.closest("[data-milk]");
   if (e.target.closest("[data-facts]")) { showFacts = !showFacts; renderFoods(); return; }
@@ -2479,7 +2512,9 @@ $("#foodArea").addEventListener("click", e => {
     pickServings = Math.min(10, Math.max(0.5, pickServings + Number(step.dataset.step)));
     renderFoods();
   } else if (add) {
-    addFood(add.dataset.add);
+    // Sides picked under "Make it a meal" go in as the meal's extras (editable later like any extra)
+    const extras = sidesChosen().map(({ f, q }) => ({ item: f.item, calories: f.calories, protein: f.protein, carbs: f.carbs, fat: f.fat, micro: f.micro, qty: q }));
+    addFood(add.dataset.add, pickServings, false, extras);
   }
 });
 
