@@ -195,7 +195,8 @@ img { max-width: 100%; }
 .fab svg { width: 22px; height: 22px; }
 .fab-row { display: flex; gap: 10px; max-width: 488px; margin: 0 auto; }
 .fab-row .fab { flex: 1; margin: 0; }
-.fab-row .fab.mic { flex: 0 0 56px; width: 56px; padding: 0; background: var(--maroon); color: var(--on-maroon); }
+.fab-row .fab.side { flex: 0 0 56px; width: 56px; padding: 0; background: var(--surface); color: var(--text); border: 1px solid var(--line); }
+.fab-row .fab.mic { background: var(--maroon); color: var(--on-maroon); border: none; }
 .fab.mic.on { animation: pulse 1.2s ease-in-out infinite; }
 
 /* ---------- Sheets ---------- */
@@ -231,13 +232,17 @@ img { max-width: 100%; }
   border: 1px solid var(--line); background: var(--surface);
   padding: 0 14px 0 44px; font-size: 1rem;
 }
-.search .mic {
-  position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%;
-  border: none; background: var(--maroon); color: var(--on-maroon); display: flex; align-items: center; justify-content: center; padding: 0;
+.search-actions { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: flex; gap: 6px; }
+.search-actions button {
+  width: 38px; height: 38px; border-radius: 50%; border: none; padding: 0;
+  display: flex; align-items: center; justify-content: center;
 }
-.search .mic svg { position: static; transform: none; color: currentColor; width: 20px; height: 20px; }
+.search-actions .mic { background: var(--maroon); color: var(--on-maroon); }
+.search-actions .scan { background: var(--surface-2); color: var(--text); }
+.search .search-actions svg { position: static; transform: none; color: currentColor; width: 20px; height: 20px; }
 .search .mic.on { animation: pulse 1.2s ease-in-out infinite; }
-.search:has(.mic:not([hidden])) input { padding-right: 52px; }
+.search input { padding-right: 56px; }
+.search:has(.mic:not([hidden])) input { padding-right: 100px; }
 @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(122,0,60,0.45); } 50% { box-shadow: 0 0 0 10px rgba(122,0,60,0); } }
 #voiceArea { margin: 0 0 14px; }
 .voice-head { font-size: 0.9rem; color: var(--muted); margin: 0 2px 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
@@ -333,6 +338,26 @@ img { max-width: 100%; }
   width: 100%; height: 46px; border: 1px solid var(--line); border-radius: var(--radius-sm);
   background: transparent; font-weight: 700; margin-top: 10px;
 }
+
+/* Barcode scanner */
+.scan-view { position: relative; border-radius: var(--radius-md); overflow: hidden; background: #111; aspect-ratio: 4 / 3; }
+.scan-view video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.scan-frame { position: absolute; left: 12%; right: 12%; top: 32%; bottom: 32%; border: 3px solid var(--gold); border-radius: 12px; box-shadow: 0 0 0 999px rgba(0,0,0,0.25); }
+.scan-alts { display: grid; gap: 10px; margin-top: 4px; }
+.file-btn { display: flex; align-items: center; justify-content: center; cursor: pointer; margin-top: 0; }
+.code-row { display: flex; gap: 8px; }
+.code-row input { flex: 1; min-width: 0; height: 44px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); padding: 0 12px; font-size: 1rem; }
+.code-row .add-btn { flex: 0 0 auto; padding: 0 16px; }
+.scan-card { background: var(--surface-2); border-radius: var(--radius-md); overflow: hidden; }
+.scan-card .name { font-weight: 800; font-size: 1.1rem; padding: 14px 16px 0; }
+.scan-card .meta { color: var(--muted); font-size: 0.85rem; padding: 2px 16px 0; }
+.grams-row { display: flex; align-items: center; gap: 8px; padding: 0 16px 10px; font-size: 0.88rem; color: var(--muted); }
+.grams-row input { width: 80px; height: 38px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); text-align: right; padding: 0 8px; font-size: 0.95rem; }
+.scan-more { display: grid; gap: 0; }
+.manual .field.col { flex-direction: column; align-items: stretch; gap: 6px; }
+.manual .field.col input { width: 100%; height: 42px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); padding: 0 12px; font-size: 1rem; text-align: left; }
+.manual .primary { width: calc(100% - 32px); margin: 8px 16px 16px; }
+.code-note { margin: 4px 16px 0; }
 
 /* Goal calculator */
 .calc-link-row { display: flex; justify-content: flex-end; margin-top: 8px; }
@@ -483,7 +508,8 @@ img { max-width: 100%; }
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     Add food
   </button>
-  <button class="fab mic" id="fabMic" hidden aria-label="Say what you ate">
+  <button class="fab side" id="fabScan" aria-label="Scan a barcode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M7.5 8v8M10.5 8v8M13 8v8M16.5 8v8"/></svg></button>
+  <button class="fab mic side" id="fabMic" hidden aria-label="Say what you ate">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
   </button>
   </div>
@@ -503,9 +529,12 @@ img { max-width: 100%; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
       <label class="sr-only" for="searchInput">Search food</label>
       <input id="searchInput" type="search" placeholder="Search food or location" autocomplete="off" enterkeyhint="done">
+      <div class="search-actions">
+      <button class="scan" id="scanBtn" aria-label="Scan a barcode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M7.5 8v8M10.5 8v8M13 8v8M16.5 8v8"/></svg></button>
       <button class="mic" id="micBtn" hidden aria-label="Say what you ate">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
       </button>
+      </div>
     </div>
     <div id="voiceArea" hidden aria-live="polite"></div>
     <div class="tabs" role="tablist" aria-label="Food list">
@@ -534,6 +563,32 @@ img { max-width: 100%; }
     <div class="calc-link-row"><button class="link-btn" id="openCalc">Don't know where to start? <b>Calculate my goals →</b></button></div>
     <button class="primary" id="saveGoals">Save goals</button>
     <p class="hint" style="margin-top:16px">Your log is saved on this device only.</p>
+  </div>
+</div>
+
+<!-- Barcode scanner sheet -->
+<div class="sheet" id="scanSheet" role="dialog" aria-modal="true" aria-labelledby="scanTitle" aria-hidden="true">
+  <div class="sheet-head">
+    <h2 id="scanTitle">Scan a barcode</h2>
+    <button class="icon-btn" data-close aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body" id="scanBody">
+    <div id="scanCam">
+      <div class="scan-view"><video id="scanVideo" playsinline muted></video><div class="scan-frame"></div></div>
+      <p class="hint" id="scanStatus" aria-live="polite">Point the camera at the barcode on the package.</p>
+      <div class="scan-alts">
+        <label class="ghost file-btn">Use a photo instead<input type="file" accept="image/*" id="scanFile" hidden></label>
+        <form class="code-row" id="codeForm">
+          <label class="sr-only" for="scanCode">Barcode number</label>
+          <input id="scanCode" inputmode="numeric" pattern="[0-9]*" placeholder="Or type the number" autocomplete="off">
+          <button class="add-btn" type="submit">Look up</button>
+        </form>
+        <button class="link-btn" data-manual>Not on a package? <b>Enter a food yourself →</b></button>
+      </div>
+    </div>
+    <div id="scanResult" hidden aria-live="polite"></div>
   </div>
 </div>
 
@@ -756,10 +811,10 @@ function loadState() {
     const raw = localStorage.getItem(STORE_KEY);
     if (raw) {
       const s = JSON.parse(raw);
-      return { log: s.log || {}, goals: s.goals || {}, recents: s.recents || [], profile: s.profile || {} };
+      return { log: s.log || {}, goals: s.goals || {}, recents: s.recents || [], profile: s.profile || {}, custom: s.custom || {} };
     }
   } catch (e) { /* storage unavailable: start fresh */ }
-  return { log: {}, goals: {}, recents: [], profile: {} };
+  return { log: {}, goals: {}, recents: [], profile: {}, custom: {} };
 }
 function saveState() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
@@ -1316,6 +1371,244 @@ if (SR) document.querySelectorAll(".mic").forEach(b => { b.hidden = false; });
 $("#micBtn").addEventListener("click", startListening);
 $("#fabMic").addEventListener("click", () => { openAddSheet(); startListening(); });
 
+/* ---------- Barcode scanning and My foods ----------
+   Scan a package (camera, a photo, or typing the number) -> look it up in Open Food Facts (free, no key) -> confirm
+   the amount -> log it. Anything scanned or typed in is saved on this phone as "My foods", so it shows in search,
+   Recent and voice like menu items. Browsers without a built-in barcode reader (Safari) load a small open-source
+   reader (barcode-detector / zxing-wasm) the first time. */
+const MY_FOODS = "My foods";
+const BD_URL = "https://cdn.jsdelivr.net/npm/barcode-detector@3.2.2/dist/es/ponyfill.js";
+const BARCODE_FORMATS = ["ean_13", "ean_8", "upc_a", "upc_e"];
+state.custom = state.custom || {};
+
+// Put a saved food into the menu (or update it after an edit)
+function registerCustom(key) {
+  const c = state.custom[key];
+  const id = "custom|" + key;
+  const station = c.source === "You" ? "Added by you" : "Scanned";
+  const fields = { location: MY_FOODS, station, item: c.name, serving: c.serving, calories: c.calories,
+    protein: c.protein, carbs: c.carbs, fat: c.fat, micro: c.micro, extra: false, isMeal: false, category: "Packaged",
+    search: fold(c.name + " " + (c.brand || "") + " " + MY_FOODS), size: null, milk: null, base: c.name, key };
+  let f = FOOD_BY_ID.get(id);
+  if (f) Object.assign(f, fields);
+  else {
+    f = { id, ...fields };
+    FOODS.push(f); MAINS.push(f); FOOD_BY_ID.set(id, f);
+    const g = { id: "g|" + id, location: MY_FOODS, station, category: "Packaged", variants: [f], sizes: [] };
+    f.group = g; GROUPS.set(id, g); GROUP_LIST.push(g);
+  }
+  const g = f.group;
+  g.name = c.name; g.search = f.search; g.station = station;
+  g.nameToks = [...new Set(toks(c.name))]; g.nameToks.forEach(t => DF.set(t, (DF.get(t) || 0) + 1));
+  g.type = FOOD_TYPES.find(([, test]) => test(g))[0];
+  if (!LOCATIONS.includes(MY_FOODS)) LOCATIONS.push(MY_FOODS);
+  return f;
+}
+
+let detector = null;
+async function getDetector() {
+  if (detector) return detector;
+  if ("BarcodeDetector" in window) {
+    try {
+      const have = await window.BarcodeDetector.getSupportedFormats();
+      if (BARCODE_FORMATS.some(x => have.includes(x))) return (detector = new window.BarcodeDetector({ formats: BARCODE_FORMATS.filter(x => have.includes(x)) }));
+    } catch (e) { /* fall through to the library */ }
+  }
+  const mod = await import(BD_URL);
+  return (detector = new mod.BarcodeDetector({ formats: BARCODE_FORMATS }));
+}
+
+let camStream = null, scanTimer = null, scanBusy = false;
+function stopCamera() {
+  clearInterval(scanTimer); scanTimer = null;
+  if (camStream) camStream.getTracks().forEach(t => t.stop());
+  camStream = null;
+  const v = $("#scanVideo"); if (v) v.srcObject = null;
+}
+const scanStatus = msg => { $("#scanStatus").textContent = msg; };
+async function startCamera() {
+  stopCamera();
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || location.protocol === "file:") {
+    scanStatus("The camera needs the app opened from its website. You can use a photo or type the number instead."); return;
+  }
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", width: { ideal: 1280 } }, audio: false });
+  } catch (e) {
+    scanStatus(e.name === "NotAllowedError" ? "Camera is blocked. Allow it in your browser settings, or use a photo or type the number."
+      : "Couldn't open the camera. Use a photo or type the number instead.");
+    return;
+  }
+  const v = $("#scanVideo"); v.srcObject = camStream; await v.play().catch(() => {});
+  scanStatus("Point the camera at the barcode on the package.");
+  let det;
+  try { det = await getDetector(); } catch (e) { scanStatus("Couldn't load the barcode reader (no internet?). Type the number instead."); return; }
+  scanTimer = setInterval(async () => {
+    if (scanBusy || !camStream || v.readyState < 2) return;
+    scanBusy = true;
+    try { const found = await det.detect(v); if (found.length) handleCode(found[0].rawValue); } catch (e) { /* keep trying */ }
+    scanBusy = false;
+  }, 250);
+}
+async function scanPhoto(file) {
+  scanStatus("Reading the photo…");
+  try {
+    const det = await getDetector();
+    const found = await det.detect(await createImageBitmap(file));
+    if (found.length) return handleCode(found[0].rawValue);
+    scanStatus("No barcode found in that photo. Try a closer, sharper one, or type the number.");
+  } catch (e) { scanStatus("Couldn't read that photo. Try again or type the number."); }
+}
+
+// Open Food Facts product -> one serving of a saved food (per serving if listed, else per 100 g / 100 mL)
+function fromOFF(code, p) {
+  const n = p.nutriments || {};
+  const num = k => (n[k] === undefined || n[k] === "" || n[k] === null ? null : Number(n[k]));
+  const mg = v => (v == null ? null : Math.round(v * 1000));
+  const kcal = suf => num("energy-kcal" + suf) ?? (num("energy" + suf) != null ? num("energy" + suf) / 4.184 : null);
+  const pick = suf => kcal(suf) == null ? null : {
+    calories: kcal(suf), protein: num("proteins" + suf) || 0, carbs: num("carbohydrates" + suf) || 0, fat: num("fat" + suf) || 0,
+    micro: [num("saturated-fat" + suf), mg(num("cholesterol" + suf)), mg(num("sodium" + suf)), num("fiber" + suf), num("sugars" + suf),
+      mg(num("vitamin-c" + suf)), mg(num("calcium" + suf)), mg(num("iron" + suf))] };
+  const unit = /\bml\b|\bl\b|litre|liter/i.test((p.quantity || "") + " " + (p.serving_size || "")) ? "mL" : "g";
+  const grams = Number(p.serving_quantity) || null;
+  let base = pick("_serving"), serving = p.serving_size ? p.serving_size.trim() : grams ? `1 serving (${grams} ${unit})` : "1 serving";
+  const per100 = pick("_100g");
+  if (!base && per100 && grams) base = scaleNut(per100, grams / 100);
+  let servingGrams = grams;
+  if (!base && per100) { base = per100; serving = "100 " + unit; servingGrams = 100; }
+  if (!base) return null;
+  const brand = (p.brands || "").split(",")[0].trim();
+  let name = (p.product_name_en || p.product_name || "").trim() || "Unnamed product";
+  if (brand && !fold(name).includes(fold(brand))) name = brand + " " + name;
+  const r1 = v => (v == null ? null : Math.round(v * 10) / 10);
+  return { code, name, brand, serving, grams: servingGrams, unit, source: "Open Food Facts",
+    calories: Math.round(base.calories), protein: r1(base.protein), carbs: r1(base.carbs), fat: r1(base.fat), micro: base.micro.map(r1) };
+}
+function scaleNut(b, k) { return { calories: b.calories * k, protein: b.protein * k, carbs: b.carbs * k, fat: b.fat * k, micro: b.micro.map(v => (v == null ? null : v * k)) }; }
+
+async function handleCode(raw) {
+  const code = String(raw).replace(/\D/g, "");
+  if (!code) return;
+  stopCamera();
+  if (state.custom[code]) return showScanned(code);
+  showScanBox(`<p class="hint">Looking up <b>${esc(code)}</b>…</p>`);
+  let product = null;
+  try {
+    const ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(), 10000);
+    const r = await fetch(`https://world.openfoodfacts.org/api/v2/product/${code}.json?fields=product_name,product_name_en,brands,quantity,serving_size,serving_quantity,nutriments`, { signal: ctl.signal });
+    clearTimeout(timer);
+    const j = await r.json();
+    if (j && j.status === 1 && j.product) product = fromOFF(code, j.product);
+  } catch (e) {
+    return showScanBox(`<p class="hint">Couldn't reach the food database. Check your internet and try again, or enter it yourself.</p>
+      <button class="primary" data-retry="${esc(code)}">Try again</button><button class="ghost" data-manual data-code="${esc(code)}">Enter it yourself</button>`);
+  }
+  if (!product) return showManual({ code }, "This barcode isn't in the food database yet. Copy the numbers from the label once and it'll be saved on your phone for next time.");
+  state.custom[code] = product; saveState(); registerCustom(code);
+  showScanned(code);
+}
+
+function showScanBox(html) {
+  $("#scanCam").hidden = true;
+  const r = $("#scanResult"); r.hidden = false; r.innerHTML = html;
+  $("#scanBody").scrollTop = 0;
+}
+let scanPick = null;  // { key, servings, facts }
+function showScanned(key) { scanPick = { key, servings: 1, facts: false }; renderScanned(); }
+function renderScanned() {
+  const c = state.custom[scanPick.key], k = scanPick.servings;
+  const f = registerCustom(scanPick.key);
+  const gramsEaten = c.grams ? Math.round(c.grams * k) : null;
+  showScanBox(`<div class="scan-card">
+    <div class="name">${esc(c.name)}</div>
+    <div class="meta">Serving: ${esc(c.serving)} · ${c.source === "Open Food Facts" ? "from Open Food Facts" : "saved by you"}</div>
+    <div class="picker">
+      <div class="stepper">
+        <button data-sstep="-0.5" aria-label="Fewer servings">−</button>
+        <output>${fmtG(k)}×</output>
+        <button data-sstep="0.5" aria-label="More servings">+</button>
+      </div>
+      <button class="add-btn" data-sadd>Add to log</button>
+    </div>
+    ${c.grams ? `<label class="grams-row">or amount eaten <input id="scanGrams" type="number" inputmode="decimal" min="0" value="${gramsEaten}"> ${esc(c.unit || "g")}</label>` : ""}
+    <div class="picker-totals">${fmt(c.calories * k)} cal, P ${fmtG(c.protein * k)}g, C ${fmtG(c.carbs * k)}g, F ${fmtG(c.fat * k)}g
+      <button class="facts-toggle" data-sfacts>${scanPick.facts ? "Hide" : "Nutrition facts"}</button></div>
+    ${scanPick.facts ? `<div class="picker-facts">${factsHTML(nutrition([{ food: f, micro: c.micro, mult: k }]), false)}</div>` : ""}
+  </div>
+  <div class="scan-more">
+    <button class="ghost" data-again>Scan another</button>
+    <button class="ghost" data-manual data-edit-key="${esc(scanPick.key)}">Numbers look wrong? Edit</button>
+  </div>`);
+}
+
+// Type-it-in form: for barcodes that aren't in the database, food with no barcode, or fixing numbers
+const MANUAL_FIELDS = [
+  ["calories", "Calories", "cal", true], ["protein", "Protein", "g", true], ["carbs", "Carbs", "g", true], ["fat", "Fat", "g", true],
+  ["sugars", "Sugars", "g"], ["fibre", "Fibre", "g"], ["satfat", "Saturated fat", "g"], ["sodium", "Sodium", "mg"]
+];
+const MICRO_OF = { satfat: 0, sodium: 2, fibre: 3, sugars: 4 };
+let manualKey = null;
+function showManual(pre, note) {
+  const c = pre.key ? state.custom[pre.key] : { code: pre.code };
+  manualKey = pre.key || null;
+  const val = k => { if (!c.name) return ""; const v = k in MICRO_OF ? (c.micro || [])[MICRO_OF[k]] : c[k]; return v == null ? "" : v; };
+  showScanBox(`${note ? `<p class="hint">${note}</p>` : ""}
+    <form id="manualForm" class="card manual">
+      <div class="field col"><label for="m-name">Name</label><input id="m-name" required value="${esc(c.name || "")}" placeholder="e.g. Clif Bar Chocolate Chip"></div>
+      <div class="field col"><label for="m-serving">Serving on the label</label><input id="m-serving" value="${esc(c.serving || "")}" placeholder="e.g. 1 bar (68 g)"></div>
+      <div class="field"><label for="m-grams">Serving size <small class="sub-label">(optional)</small></label>
+        <span class="input-wrap"><input id="m-grams" type="number" inputmode="decimal" min="0" step="0.1" value="${c.grams || ""}" placeholder="—">g / mL</span></div>
+      ${MANUAL_FIELDS.map(([k, label, unit, req]) => `<div class="field"><label for="m-${k}">${label}${req ? "" : ` <small class="sub-label">(optional)</small>`}</label>
+        <span class="input-wrap"><input id="m-${k}" type="number" inputmode="decimal" min="0" step="0.1" ${k === "calories" ? "required" : ""} value="${val(k)}" placeholder="—">${unit}</span></div>`).join("")}
+      ${c.code ? `<p class="hint code-note">Barcode ${esc(c.code)}: scanning it again will find this.</p>` : ""}
+      <button class="primary" type="submit">Save and continue</button>
+    </form>
+    <button class="ghost" data-again>Back to scanner</button>`);
+  $("#manualForm").dataset.code = c.code || "";
+}
+$("#scanResult").addEventListener("submit", e => {
+  if (e.target.id !== "manualForm") return;
+  e.preventDefault();
+  const v = id => { const x = $("#m-" + id).value.trim(); return x === "" ? null : Number(x); };
+  const code = e.target.dataset.code;
+  const key = manualKey || code || "m" + Date.now();
+  const micro = [v("satfat"), null, v("sodium"), v("fibre"), v("sugars"), null, null, null];
+  const grams = v("grams");
+  state.custom[key] = { code: code || null, name: $("#m-name").value.trim() || "My food", brand: "",
+    serving: $("#m-serving").value.trim() || (grams ? `1 serving (${grams} g)` : "1 serving"), grams, unit: "g", source: "You",
+    calories: v("calories") || 0, protein: v("protein") || 0, carbs: v("carbs") || 0, fat: v("fat") || 0, micro };
+  saveState(); registerCustom(key); showScanned(key);
+});
+$("#scanResult").addEventListener("input", e => {
+  if (e.target.id !== "scanGrams" || !scanPick) return;
+  const c = state.custom[scanPick.key], g = parseFloat(e.target.value);
+  if (g > 0 && c.grams) { scanPick.servings = Math.round(g / c.grams * 100) / 100; const pos = e.target.selectionStart; renderScanned();
+    const el = $("#scanGrams"); el.focus(); try { el.setSelectionRange(pos, pos); } catch (err) { /* number inputs */ } }
+});
+$("#scanBody").addEventListener("click", e => {
+  const t = k => e.target.closest(k);
+  let b;
+  if ((b = t("[data-sstep]"))) { scanPick.servings = Math.min(10, Math.max(0.25, Math.round((scanPick.servings + Number(b.dataset.sstep)) * 4) / 4)); renderScanned(); }
+  else if (t("[data-sfacts]")) { scanPick.facts = !scanPick.facts; renderScanned(); }
+  else if (t("[data-sadd]")) { const f = registerCustom(scanPick.key); addFood(f.id, scanPick.servings); }
+  else if (t("[data-again]")) openScan();
+  else if ((b = t("[data-retry]"))) handleCode(b.dataset.retry);
+  else if ((b = t("[data-manual]"))) { stopCamera(); showManual(b.dataset.editKey ? { key: b.dataset.editKey } : { code: b.dataset.code || "" }, b.dataset.editKey ? "" : "Copy the numbers from the label. It's saved on your phone under My foods."); }
+});
+$("#codeForm").addEventListener("submit", e => { e.preventDefault(); const c = $("#scanCode").value.replace(/\D/g, ""); if (c.length >= 6) handleCode(c); else scanStatus("Type the full number under the barcode."); });
+$("#scanFile").addEventListener("change", e => { const f = e.target.files[0]; if (f) scanPhoto(f); e.target.value = ""; });
+function openScan() {
+  scanPick = null; manualKey = null;
+  $("#scanCam").hidden = false; $("#scanResult").hidden = true; $("#scanResult").innerHTML = ""; $("#scanCode").value = "";
+  if (!$("#scanSheet").classList.contains("open")) {
+    document.querySelectorAll(".sheet.open").forEach(s => { s.classList.remove("open"); s.setAttribute("aria-hidden", "true"); });
+    openSheet("scanSheet");
+  }
+  startCamera();
+}
+$("#scanBtn").addEventListener("click", openScan);
+$("#fabScan").addEventListener("click", openScan);
+
 /* ---------- Goals ---------- */
 const GOAL_FIELDS = [
   { key: "calories", label: "Calories", unit: "cal", color: "var(--muted)" },
@@ -1438,6 +1731,7 @@ function openSheet(id) {
   s.setAttribute("aria-hidden", "false");
 }
 function closeSheets() {
+  if (typeof stopCamera === "function") stopCamera();
   $("#scrim").classList.remove("open");
   document.querySelectorAll(".sheet").forEach(s => { s.classList.remove("open"); s.setAttribute("aria-hidden", "true"); });
   if (lastFocus) lastFocus.focus();
@@ -1653,6 +1947,9 @@ $("#saveGoals").addEventListener("click", () => {
   toast("Goals saved");
 });
 
+
+// Saved foods (scanned or typed in) join the menu
+Object.keys(state.custom).forEach(registerCustom);
 
 // Keep "Today" correct if the app stays open past midnight
 document.addEventListener("visibilitychange", () => { if (!document.hidden) renderDay(); });
