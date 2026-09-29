@@ -168,19 +168,21 @@ img { max-width: 100%; }
 .section-head h2 { margin: 0; font-size: 1.1rem; font-weight: 800; }
 .section-head span { color: var(--muted); font-size: 0.9rem; }
 
-.log { list-style: none; margin: 0; padding: 0; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--line); }
-.log li { display: flex; gap: 12px; align-items: center; padding: 14px 12px 14px 16px; }
-.log li + li { border-top: 1px solid var(--line); }
+.log { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.log li { display: flex; gap: 12px; align-items: center; padding: 14px 12px 14px 16px; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--line); }
+.log .qty { color: var(--muted); font-weight: 600; font-size: 0.9rem; margin-left: 4px; }
+.log .kcal-line { display: flex; align-items: center; gap: 6px; font-size: 1.15rem; font-weight: 800; margin-top: 6px; }
+.log .kcal-line .mi { width: 18px; height: 18px; }
+.log .mrow { display: flex; gap: 16px; margin-top: 6px; font-size: 0.88rem; font-weight: 600; }
+.log .mrow span { display: inline-flex; align-items: center; gap: 5px; }
+.log .mrow .mi { width: 15px; height: 15px; }
+.log .mrow .p .mi { color: var(--protein); } .log .mrow .c .mi { color: var(--carbs); } .log .mrow .f .mi { color: var(--fat); }
 .log .info { flex: 1; min-width: 0; }
 .log .name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.log .meta { color: var(--muted); font-size: 0.85rem; }
-.log .chips { display: flex; gap: 10px; font-size: 0.8rem; margin-top: 3px; color: var(--muted); }
 .chips b { font-weight: 700; }
 .chips .p b { color: var(--protein); }
 .chips .c b { color: var(--carbs); }
 .chips .f b { color: var(--fat); }
-.log .cal { font-weight: 800; white-space: nowrap; text-align: right; }
-.log .cal small { display: block; font-weight: 500; color: var(--muted); font-size: 0.75rem; }
 .remove {
   border: none; background: transparent; color: var(--muted);
   width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0;
@@ -626,7 +628,7 @@ img { max-width: 100%; }
   <section class="summary" aria-live="polite" id="summary"></section>
 
   <div class="section-head">
-    <h2>Meals</h2>
+    <h2 id="logTitle">Logged Today</h2>
     <span id="itemCount"></span>
   </div>
   <div id="logArea"></div>
@@ -873,7 +875,8 @@ const fmt = n => Math.round(n).toLocaleString();
 const round1 = n => Math.round(n * 10) / 10;
 // Search ignores case and accents ("caffe" finds "Caffé")
 const fold = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-const fmtG = n => String(Math.round(n));  // whole numbers everywhere (user asked: no decimals)
+const fmtG = n => String(Math.round(n));  // nutrition amounts: whole numbers (user asked: no decimals)
+const fmtQ = n => String(Math.round(n * 100) / 100);  // servings/quantities keep halves (0.5×, 1.5×)
 const FOODS = MENU.items.map(([si, item, serving, calories, protein, carbs, fat, kind, ci, micro]) => {
   const [li, station] = MENU.stations[si];
   const location = MENU.locations[li];
@@ -998,7 +1001,7 @@ function dateKey(d) {
 }
 function keyToDate(k) { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); }
 function shiftKey(k, n) { const d = keyToDate(k); d.setDate(d.getDate() + n); return dateKey(d); }
-function servingsLabel(s) { return s === 1 ? "1 serving" : `${fmtG(s)} servings`; }
+function servingsLabel(s) { return s === 1 ? "1 serving" : `${fmtQ(s)} servings`; }
 
 /* ---------- Storage ---------- */
 const STORE_KEY = "macmacros:v1";
@@ -1162,19 +1165,19 @@ function renderLog() {
     $("#logArea").innerHTML = `<div class="empty"><strong>Nothing logged ${viewKey === dateKey(new Date()) ? "yet today" : "this day"}</strong>Tap Add food to log what you ate.</div>`;
     return;
   }
+  const ic = k => `<svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${SUM_ICONS[k]}</svg>`;
   $("#logArea").innerHTML = `<ul class="log">${entries.map((e, i) => { const t = entryTotals(e); return `
     <li>
       <div class="info">
         <div class="name">${esc(e.item)}</div>
-        <div class="meta">${esc(e.location)}${e.station ? ", " + esc(e.station) : ""}, ${servingsLabel(e.servings)}</div>
         ${(e.extras || []).length ? `<div class="extras-line">+ ${esc(extrasText(e))}</div>` : ""}
-        <div class="chips">
-          <span class="p">P <b>${fmtG(t.protein)}g</b></span>
-          <span class="c">C <b>${fmtG(t.carbs)}g</b></span>
-          <span class="f">F <b>${fmtG(t.fat)}g</b></span>
+        <div class="kcal-line">${ic("calories")}${fmt(t.calories)} calories${e.servings !== 1 ? `<span class="qty">×${fmtQ(e.servings)}</span>` : ""}</div>
+        <div class="mrow">
+          <span class="p">${ic("protein")}${fmtG(t.protein)}g</span>
+          <span class="c">${ic("carbs")}${fmtG(t.carbs)}g</span>
+          <span class="f">${ic("fat")}${fmtG(t.fat)}g</span>
         </div>
       </div>
-      <div class="cal">${fmt(t.calories)}<small>cal</small></div>
       <button class="info-btn" data-facts-entry="${i}" aria-label="Nutrition facts for ${esc(e.item)}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>
       </button>
@@ -1192,6 +1195,7 @@ function renderDay() {
   else if (viewKey === shiftKey(today, -1)) label = "Yesterday";
   else label = keyToDate(viewKey).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
   $("#dayLabel").textContent = label;
+  $("#logTitle").textContent = "Logged " + (viewKey === today ? "Today" : viewKey === shiftKey(today, -1) ? "Yesterday" : label);
   $("#nextDay").disabled = viewKey >= today;
 }
 
@@ -1245,7 +1249,7 @@ function foodRow(g, rowId, rep) {
     html += cust && !cust.keepAdd ? `<div class="picker"><button class="add-btn" ${custBtn(cust)}>Customize ingredients →</button></div>` : `<div class="picker">
       <div class="stepper">
         <button data-step="-0.5" aria-label="Fewer servings">−</button>
-        <output aria-live="polite">${fmtG(pickServings)}×</output>
+        <output aria-live="polite">${fmtQ(pickServings)}×</output>
         <button data-step="0.5" aria-label="More servings">+</button>
       </div>
       <button class="add-btn" data-add="${esc(f.id)}">Add to log</button>
@@ -1542,7 +1546,7 @@ function voiceItem(it, i) {
     <div class="picker">
       <div class="stepper">
         <button data-vstep="${i}" data-d="-0.5" aria-label="Fewer servings">−</button>
-        <output>${fmtG(it.servings)}×</output>
+        <output>${fmtQ(it.servings)}×</output>
         <button data-vstep="${i}" data-d="0.5" aria-label="More servings">+</button>
       </div>
       <button class="add-btn" data-vadd="${i}">Add</button>
@@ -1781,7 +1785,7 @@ function renderScanned() {
     <div class="picker">
       <div class="stepper">
         <button data-sstep="-0.5" aria-label="Fewer servings">−</button>
-        <output>${fmtG(k)}×</output>
+        <output>${fmtQ(k)}×</output>
         <button data-sstep="0.5" aria-label="More servings">+</button>
       </div>
       <button class="add-btn" data-sadd>Add to log</button>
@@ -2171,7 +2175,7 @@ function byoTotals(b, B = byoB) {
 }
 function byoName(b, B = byoB) {
   const bits = byoParts(b, B).filter(p => p.st && !p.st.noName && (!p.st.nameIf || p.st.nameIf(b)))
-    .map(p => (p.st.namePrefix || "") + p.name.toLowerCase() + (p.st.kind === "share" || p.k === 1 ? "" : " ×" + fmtG(p.k)));
+    .map(p => (p.st.namePrefix || "") + p.name.toLowerCase() + (p.st.kind === "share" || p.k === 1 ? "" : " ×" + fmtQ(p.k)));
   return B.prefix(b) + (bits.length ? ": " + bits.join(", ") : "");
 }
 function openBYO(id, preset) {
@@ -2198,7 +2202,7 @@ function renderBYO() {
     if (st.kind === "share") return sec(st, `<div class="opt-row">${options.map(o => chip(i, o, !!v[o.key])).join("")}</div>`);
     if (st.kind === "toggle") return sec(st, `<div class="opt-row">${options.map(o => chip(i, o, !!v[o.key], o.name + (v[o.key] > 1 ? " ×2" : ""))).join("")}</div>`);
     return sec(st, `<ul class="byo-list">${options.map(o => `<li><span>${esc(o.name)}${est(o)} <small>${o.sub ? esc(o.sub) + " · " : ""}${fmt(o.n[0])} cal · ${fmtG(o.n[5])}g protein</small></span>
-      <div class="stepper small"><button data-bstep="${i}" data-bopt="${esc(o.key)}" data-d="-1" aria-label="Less ${esc(o.name)}">−</button><output>${v[o.key] ? fmtG(v[o.key]) + "×" : "–"}</output><button data-bstep="${i}" data-bopt="${esc(o.key)}" data-d="1" aria-label="More ${esc(o.name)}">+</button></div></li>`).join("")}</ul>`);
+      <div class="stepper small"><button data-bstep="${i}" data-bopt="${esc(o.key)}" data-d="-1" aria-label="Less ${esc(o.name)}">−</button><output>${v[o.key] ? fmtQ(v[o.key]) + "×" : "–"}</output><button data-bstep="${i}" data-bopt="${esc(o.key)}" data-d="1" aria-label="More ${esc(o.name)}">+</button></div></li>`).join("")}</ul>`);
   }).join("") + `
     <p class="facts-note byo-note">${B.note}</p>
     <button class="primary" data-badd>Add to log</button>
@@ -2798,7 +2802,7 @@ function renderEditTop() {
         <span class="field-label">Servings</span>
         <div class="stepper">
           <button data-eserv="-0.5" aria-label="Fewer servings">−</button>
-          <output>${fmtG(e.servings)}×</output>
+          <output>${fmtQ(e.servings)}×</output>
           <button data-eserv="0.5" aria-label="More servings">+</button>
         </div>
       </div>

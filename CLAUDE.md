@@ -38,6 +38,8 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 
 ## Product rules the user asked for (keep these)
 
+- **Log list ("Logged Today" / "Logged Yesterday" / "Logged <date>"):** each entry is its own card: name (truncated with …), extras line, flame + "397 calories" (+ "×2" if not 1 serving), then drumstick/wheat/drop icons with protein/carbs/fat grams. No location line (it's in the ⓘ page) and no timestamp. ⓘ and edit buttons on the right. Nutrition numbers are whole (`fmtG`); servings keep halves (`fmtQ`).
+
 - **Summary cards (Cal AI style):** a big Calories card plus Protein / Carbs / Fats cards, each with its own ring (fills as you eat; full when over) and an icon in the middle (flame, drumstick, wheat, drop; `SUM_ICONS`, from Lucide). Each shows only what's left ("1,250 Calories left") or how far over ("45g Protein **over**"), never "x of y". No goal set: shows what's been eaten. Cards are maroon (both themes) with white text; rings: calories white, protein pink `#F7B6CF`, carbs gold, fats `#8FD3D6`.
 
 - **Extras** (add-ons, toppings, sauces, sides) never appear in the main food list. They're added via the Edit button on a logged meal.
