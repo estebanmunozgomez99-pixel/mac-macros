@@ -909,11 +909,26 @@ MAINS.forEach(f => {
   const m = !f.size && f.item.match(/^(.*?)\s*-?\s*Small$/);
   if (m && NAMES.has(stationKey(f.location, f.station) + "|" + m[1])) { f.base = m[1]; f.size = "Small"; }
 });
-// Only sizes/milks are grouped; same-name dishes with different servings stay separate rows
-const SIZED = new Set(MAINS.filter(f => f.size).map(f => stationKey(f.location, f.station) + "|" + f.base));
+// Same dish with a choice of protein ("Japanese Udon Stir-Fry - Chicken" / "- Beef" …) is one row with Protein buttons.
+// The protein rides in the milk slot (label "Protein"); only grouped when the station has 2+ proteins of that dish.
+const PROTEIN_RE = /^(.*?)\s*-\s*(Chicken|Beef|Shrimp|Tofu|Pork)$/i;
+const PROTEIN_ORDER = ["Chicken", "Beef", "Shrimp", "Tofu", "Pork"];
+const protCount = new Map();
+MAINS.forEach(f => {
+  const m = !f.size && f.item.match(PROTEIN_RE);
+  if (m) { const k = stationKey(f.location, f.station) + "|" + m[1].toLowerCase(); protCount.set(k, (protCount.get(k) || 0) + 1); }
+});
+MAINS.forEach(f => {
+  const m = !f.size && f.item.match(PROTEIN_RE);
+  if (m && protCount.get(stationKey(f.location, f.station) + "|" + m[1].toLowerCase()) > 1) {
+    f.base = m[1]; f.milk = m[2][0].toUpperCase() + m[2].slice(1).toLowerCase(); f.protOpt = true;
+  }
+});
+// Only sizes/milks/proteins are grouped; same-name dishes with different servings stay separate rows
+const SIZED = new Set(MAINS.filter(f => f.size || f.protOpt).map(f => stationKey(f.location, f.station) + "|" + f.base));
 MAINS.forEach(f => {
   const sk = stationKey(f.location, f.station) + "|" + f.base;
-  const key = (f.size || SIZED.has(sk) ? sk : f.id).toLowerCase();
+  const key = (f.size || f.protOpt || SIZED.has(sk) ? sk : f.id).toLowerCase();
   if (!GROUPS.has(key)) GROUPS.set(key, { id: "g|" + key, name: f.base, location: f.location, station: f.station, category: f.category, variants: [] });
   const g = GROUPS.get(key);
   g.variants.push(f); f.group = g;
@@ -921,9 +936,11 @@ MAINS.forEach(f => {
 GROUPS.forEach(g => {
   const vs = g.variants;
   if (vs.length > 1 && vs.some(v => v.size)) vs.forEach(v => { if (!v.size) v.size = "Regular"; });
-  if (vs.some(v => v.milk)) vs.forEach(v => { if (!v.milk) v.milk = "No milk"; });
-  if (vs.length === 1 && !vs[0].size) g.name = vs[0].item;  // plain dish: keep its own name
-  vs.sort((a, b) => sizeRank(a.size) - sizeRank(b.size) || milkRank(a.milk) - milkRank(b.milk));
+  g.optLabel = vs.some(v => v.protOpt) ? "Protein" : "Milk";
+  if (g.optLabel === "Milk" && vs.some(v => v.milk)) vs.forEach(v => { if (!v.milk) v.milk = "No milk"; });
+  if (vs.length === 1 && !vs[0].size && !vs[0].protOpt) g.name = vs[0].item;  // plain dish: keep its own name
+  const optRank = g.optLabel === "Protein" ? m => PROTEIN_ORDER.indexOf(m) : milkRank;
+  vs.sort((a, b) => sizeRank(a.size) - sizeRank(b.size) || optRank(a.milk) - optRank(b.milk));
   g.sizes = [...new Set(vs.map(v => v.size).filter(Boolean))];
   g.search = [...new Set(vs.map(v => v.search))].join(" ");
 });
@@ -1235,7 +1252,7 @@ function foodRow(g, rowId, rep) {
     const f = pickVariant(g, pickSize, pickMilk);
     const unit = SERVING_WORDS[f.serving] || f.serving || "1 serving";
     const milks = milksFor(g, f.size);
-    html += optChips("Size", g.sizes, f.size, o => `data-size="${esc(o)}"`) + optChips("Milk", milks, f.milk, o => `data-milk="${esc(o)}"`);
+    html += optChips("Size", g.sizes, f.size, o => `data-size="${esc(o)}"`) + optChips(g.optLabel, milks, f.milk, o => `data-milk="${esc(o)}"`);
     const sides = customizeFor(g) && !customizeFor(g).keepAdd ? [] : mealSides(f);
     if (sides.length) html += `<div class="opts meal-sides" role="group" aria-label="Make it a meal">
       <span class="opt-label">Make it a meal <small>(pick your sides · tap twice for a double)</small></span>
@@ -1306,7 +1323,7 @@ function optChips(label, list, cur, attrs) {
 const milksFor = (g, size) => [...new Set(g.variants.filter(v => v.size === size).map(v => v.milk).filter(Boolean))];
 function optionsText(g) {
   const milks = new Set(g.variants.map(v => v.milk).filter(Boolean)).size;
-  return [g.sizes.length > 1 && `${g.sizes.length} sizes`, milks > 1 && `${milks} milks`].filter(Boolean).join(", ") || g.sizes[0] || "";
+  return [g.sizes.length > 1 && `${g.sizes.length} sizes`, milks > 1 && `${milks} ${g.optLabel === "Protein" ? "proteins" : "milks"}`].filter(Boolean).join(", ") || g.sizes[0] || "";
 }
 // Open a row with a variant picked: its size and milk become the picker's starting choice
 function openRow(rowId, v) { expandedId = rowId; pickSize = v.size; pickMilk = v.milk; pickServings = 1; pickSides = {}; }
@@ -1507,7 +1524,7 @@ function parseItem(raw, sentencePlace) {
   if (item.g) {
     fitVariant(item);
     // Said a size or milk this drink doesn't come in: say so instead of quietly swapping it
-    item.note = [size && item.size !== size && `No ${size} size`, milk && item.milk !== milk && `No ${milk} milk for this one`].filter(Boolean).join(" · ");
+    item.note = [size && item.size !== size && `No ${size} size`, milk && item.g.optLabel === "Milk" && item.milk !== milk && `No ${milk} milk for this one`].filter(Boolean).join(" · ");
   }
   return item;
 }
@@ -1516,6 +1533,11 @@ function fitVariant(it) {
   const g = it.g;
   if (!g.sizes.includes(it.size)) it.size = g.variants[0].size;
   const milks = milksFor(g, it.size);
+  if (g.optLabel === "Protein") {  // "udon stir fry with beef": pick the protein that was said, else the first
+    const said = fold(it.said || "");
+    it.milk = milks.find(p => new RegExp("\\b" + p.toLowerCase() + "\\b").test(said)) || milks[0];
+    return;
+  }
   if (milks.length && !milks.includes(it.milk)) it.milk = milks.includes("2%") ? "2%" : milks[0];
   if (!milks.length) it.milk = null;
 }
@@ -1542,7 +1564,7 @@ function voiceItem(it, i) {
       ${it.note ? `<div class="vnote">${esc(it.note)}</div>` : ""}</div>
       <button class="vx" data-vremove="${i}" aria-label="Remove ${esc(g.name)}">✕</button></div>
     ${optChips("Size", g.sizes, f.size, o => `data-vsize="${i}" data-val="${esc(o)}"`)}
-    ${optChips("Milk", milksFor(g, f.size), f.milk, o => `data-vmilk="${i}" data-val="${esc(o)}"`)}
+    ${optChips(g.optLabel, milksFor(g, f.size), f.milk, o => `data-vmilk="${i}" data-val="${esc(o)}"`)}
     <div class="picker">
       <div class="stepper">
         <button data-vstep="${i}" data-d="-0.5" aria-label="Fewer servings">−</button>
