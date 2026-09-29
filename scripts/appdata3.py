@@ -1,5 +1,8 @@
 import pandas as pd, json, re
 df=pd.read_pickle('data/build/clean.pkl'); df=df[df['Data Note']==''].copy()
+# Left out on request: covered by the app's build-your-own pasta builder
+DROP_ITEMS={'Centro Byo Two Protein Pasta'}
+df=df[~df['Menu Item'].isin(DROP_ITEMS)]
 EXTRA_CATS={'Add Ons','Toppings','Sides','Carb Sides','Plant Based Sides','Build Its'}
 KEEP_MAIN={'St Classic Poutine'}
 SIDE_NAMES={'centro brown spanish rice','centro jasmine rice','market vegetables','mashed potatoes','naan',
@@ -21,7 +24,9 @@ def kind(r):
     return 0
 df['kind']=df.apply(kind,axis=1)
 def nice_station(s): return s.title() if s.isupper() and len(s)>4 else s
-def nice_name(s): return re.sub(r'^(Lp|Smpl|Sub Smpl|Sub Lp|Sub)\s+',lambda m: 'Sub ' if m.group(1).startswith('Sub') else '',s).strip()
+def nice_name(s):
+    s=re.sub(r'^(Lp|Smpl|Sub Smpl|Sub Lp|Sub)\s+',lambda m: 'Sub ' if m.group(1).startswith('Sub') else '',s).strip()
+    return re.sub(r'\bByo\b','Build Your Own',s)
 df['st']=df['Station'].map(nice_station); df['nm']=df['Menu Item'].map(nice_name)
 # SMPL stations: savory mains first (meat, fish, plant-based, pasta, other), desserts last
 CAT_RANK={'Meat Based Entrees':0,'FISH DISHES':1,'Plant Based Entrees':2,'Pasta':3,'All Day':4,'Other':5}
