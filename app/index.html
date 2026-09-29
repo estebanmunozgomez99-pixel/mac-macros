@@ -97,12 +97,18 @@ img { max-width: 100%; }
 }
 :root[data-theme="dark"] .brand { color: var(--gold); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .brand { color: var(--gold); } }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .vnote, :root:not([data-theme="light"]) .link-btn b,
+  :root:not([data-theme="light"]) .facts-toggle, :root:not([data-theme="light"]) .rot-note button { color: var(--gold); }
+  :root:not([data-theme="light"]) .danger { color: #F2B8B5; }
+}
 .icon-btn {
   width: 42px; height: 42px; border-radius: 50%;
   border: 1px solid var(--line); background: var(--surface);
   display: grid; place-items: center;
 }
 .icon-btn svg { width: 20px; height: 20px; }
+.top-actions { display: flex; gap: 8px; }
 
 .daynav {
   display: flex; align-items: center; justify-content: space-between;
@@ -386,6 +392,58 @@ img { max-width: 100%; }
 .stepper.small output { min-width: 40px; font-size: 0.9rem; }
 .byo-note { margin: 4px 2px 0; }
 
+/* Progress */
+.score-chip {
+  display: inline-flex; align-items: center; gap: 5px; margin-top: 14px; padding: 5px 12px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.12); color: var(--on-maroon); font-size: 0.85rem; font-weight: 600;
+}
+.score-chip b { font-size: 1rem; font-weight: 900; }
+.score-chip.great b { color: var(--gold); }
+.prog-nudge { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 12px; font-size: 0.92rem; }
+.prog-nudge .primary { margin-top: 12px; height: 44px; }
+.prog-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 12px 12px 14px; margin-bottom: 12px; }
+.prog-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; text-align: center; }
+.prog-head .avg { display: block; font-size: 0.82rem; color: var(--muted); }
+.prog-head .up { color: #2E8B57; font-weight: 700; } .prog-head .down { color: var(--muted); font-weight: 700; }
+.prog-head .nav { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); font-size: 1.2rem; }
+.prog-head .nav:disabled { opacity: 0.3; }
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.wday { border: none; background: none; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 0; border-radius: 10px; }
+.wday.today { background: var(--surface-2); }
+.wday:disabled { opacity: 0.35; }
+.wd { font-size: 0.75rem; font-weight: 700; color: var(--muted); }
+.wcal { font-size: 0.78rem; font-weight: 700; }
+.ring .track { fill: none; stroke: var(--line); stroke-width: 4; }
+.ring .fill { fill: none; stroke-width: 4; stroke-linecap: round; }
+.ring.great .fill { stroke: var(--maroon); } .ring.close .fill { stroke: var(--gold); } .ring.off .fill { stroke: var(--muted); }
+:root[data-theme="dark"] .ring.great .fill, :root[data-theme="dark"] .legend .great::before { stroke: #D9508A; background: #D9508A; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ring.great .fill { stroke: #D9508A; } }
+.ring text { font-size: 12px; font-weight: 800; fill: var(--text); }
+.streak { margin: 10px 2px 0; font-size: 0.88rem; text-align: center; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-wd { text-align: center; font-size: 0.72rem; font-weight: 700; color: var(--muted); padding-bottom: 2px; }
+.cal-day {
+  aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); padding: 2px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.05;
+}
+.cal-day .d { font-size: 0.7rem; opacity: 0.75; }
+.cal-day .s { font-size: 0.85rem; font-weight: 800; }
+.cal-day.great { background: var(--maroon); border-color: var(--maroon); color: var(--on-maroon); }
+.cal-day.close { background: var(--gold); border-color: var(--gold); color: #2B1A00; }
+.cal-day.off { background: var(--surface-2); color: var(--text); }
+.cal-day.future { opacity: 0.35; }
+.cal-day.today { outline: 2px solid var(--text); outline-offset: 1px; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; font-size: 0.75rem; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; border: 1px solid var(--line); }
+.legend .great::before { background: var(--maroon); } .legend .close::before { background: var(--gold); }
+.legend .off::before { background: var(--surface-2); } .legend .none::before { background: var(--bg); }
+.stats-title { display: block; margin: 2px 4px 6px; }
+.stat { display: flex; justify-content: space-between; gap: 10px; padding: 8px 4px; font-size: 0.9rem; }
+.stat + .stat { border-top: 1px solid var(--line); }
+.stat span { color: var(--muted); }
+.how { margin: 4px 2px 8px; font-size: 0.85rem; color: var(--muted); }
+.how summary { font-weight: 700; color: var(--text); cursor: pointer; }
+
 /* Goal calculator */
 .calc-link-row { display: flex; justify-content: flex-end; margin-top: 8px; }
 .link-btn { border: none; background: none; padding: 4px 2px; font-size: 0.85rem; color: var(--muted); text-align: right; }
@@ -505,9 +563,12 @@ img { max-width: 100%; }
 <div class="app">
   <header class="top">
     <div class="brand">Mac Macros</div>
+    <div class="top-actions">
+    <button class="icon-btn" id="openProgress" aria-label="Progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></button>
     <button class="icon-btn" id="openGoals" aria-label="Daily goals">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="13" r="8.5"/><circle cx="11" cy="13" r="4.5"/><path d="M11 13 21 3"/><path d="M16.5 3.5v4h4"/><path d="M19 1.5v3.5h3.5"/></svg>
     </button>
+    </div>
   </header>
 
   <nav class="daynav" aria-label="Choose day">
@@ -629,6 +690,17 @@ img { max-width: 100%; }
   </div>
   <div class="byo-total" id="byoTotal" aria-live="polite"></div>
   <div class="sheet-body" id="byoBody"></div>
+</div>
+
+<!-- Progress sheet -->
+<div class="sheet" id="progSheet" role="dialog" aria-modal="true" aria-labelledby="progTitle" aria-hidden="true">
+  <div class="sheet-head">
+    <h2 id="progTitle">Progress</h2>
+    <button class="icon-btn" data-close aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body" id="progBody"></div>
 </div>
 
 <!-- Goal calculator sheet -->
@@ -850,10 +922,10 @@ function loadState() {
     const raw = localStorage.getItem(STORE_KEY);
     if (raw) {
       const s = JSON.parse(raw);
-      return { log: s.log || {}, goals: s.goals || {}, recents: s.recents || [], profile: s.profile || {}, custom: s.custom || {} };
+      return { log: s.log || {}, goals: s.goals || {}, recents: s.recents || [], profile: s.profile || {}, custom: s.custom || {}, dayGoals: s.dayGoals || {} };
     }
   } catch (e) { /* storage unavailable: start fresh */ }
-  return { log: {}, goals: {}, recents: [], profile: {}, custom: {} };
+  return { log: {}, goals: {}, recents: [], profile: {}, custom: {}, dayGoals: {} };
 }
 function saveState() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
@@ -964,7 +1036,7 @@ function renderSummary() {
 
   const macroBlock = (key, label, color) => {
     const val = t[key], goal = g[key];
-    const over = goal && val > goal;
+    const over = goal && val > goal && key !== "protein";  // going over on protein isn't a problem
     return `<div class="macro">
       <div class="label"><span class="dot" style="background:${color}"></span>${label}</div>
       <div class="val ${over ? "over" : ""}">${fmtG(val)}<small>g</small></div>
@@ -988,6 +1060,8 @@ function renderSummary() {
       ${macroBlock("carbs", "Carbs", "var(--gold)")}
       ${macroBlock("fat", "Fat", "#8FD3D6")}
     </div>
+    ${dayScore(viewKey) != null ? `<button class="score-chip ${scoreBand(dayScore(viewKey))}" data-open-progress>
+      ${viewKey === dateKey(new Date()) ? "Today" : "Score"} <b>${dayScore(viewKey)}</b> · ${SCORE_WORDS[scoreBand(dayScore(viewKey))]}</button>` : ""}
     ${(state.log[viewKey] || []).length ? `<button class="day-facts" data-day-facts aria-label="Full nutrition for the day">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg></button>` : ""}`;
 }
@@ -1214,6 +1288,7 @@ function addFood(id, servings = pickServings, keepOpen = false) {
     servings, extras: [], at: Date.now()
   };
   (state.log[viewKey] = state.log[viewKey] || []).push(entry);
+  if (!state.dayGoals[viewKey] && state.goals.calories) state.dayGoals[viewKey] = { ...state.goals };
   state.recents = [f.id, ...state.recents.filter(r => r !== f.id)].slice(0, 8);
   saveState();
   if (!keepOpen) closeSheets();
@@ -2045,6 +2120,135 @@ function byoRows(q) {
       <div class="info"><div class="name">${B.rowName}</div><div class="meta">${B.rowMeta}</div></div>
       <div class="cal">›</div></button></li></ul>`).join("");
 }
+/* ---------- Progress: daily score ----------
+   0-100 for how close a day landed to its goals. Calories 40 pts (full within ±10%, none at ±40%), protein 30
+   (full at or above goal, none at half), carbs and fat 15 each (full within ±15%, none at ±50%). Goals that
+   aren't set are left out and the rest scaled up to 100. Days with nothing logged have no score. */
+const SCORE_PARTS = [
+  { key: "calories", pts: 40, full: 0.10, zero: 0.40 },
+  { key: "protein", pts: 30, atLeast: true },
+  { key: "carbs", pts: 15, full: 0.15, zero: 0.50 },
+  { key: "fat", pts: 15, full: 0.15, zero: 0.50 }
+];
+const goalsFor = key => state.dayGoals[key] || state.goals;
+// Before goals change, days logged so far keep the goals they were logged under
+function pinPastGoals() {
+  if (!state.goals.calories) return;
+  Object.keys(state.log).forEach(k => { if ((state.log[k] || []).length && !state.dayGoals[k]) state.dayGoals[k] = { ...state.goals }; });
+}
+function dayScore(key) {
+  if (!(state.log[key] || []).length) return null;
+  const g = goalsFor(key), t = totalsFor(key);
+  if (!g.calories) return null;
+  let got = 0, max = 0;
+  SCORE_PARTS.forEach(p => {
+    const goal = g[p.key]; if (!goal) return;
+    max += p.pts;
+    const r = t[p.key] / goal;
+    const frac = p.atLeast ? Math.min(1, Math.max(0, (r - 0.5) / 0.5))
+      : Math.min(1, Math.max(0, 1 - (Math.abs(r - 1) - p.full) / (p.zero - p.full)));
+    got += p.pts * frac;
+  });
+  return Math.round(got / max * 100);
+}
+const scoreBand = sc => sc == null ? "none" : sc >= 85 ? "great" : sc >= 70 ? "close" : "off";
+const SCORE_WORDS = { great: "On target", close: "Close", off: "Off target", none: "Nothing logged" };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const mondayOf = d => addDays(d, -((d.getDay() + 6) % 7));
+function avg(list) { const v = list.filter(x => x != null); return v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length) : null; }
+// Days in a row scoring 80+, up to today (today counts once it's logged)
+function streak() {
+  let d = new Date(), n = 0;
+  if (!(state.log[dateKey(d)] || []).length) d = addDays(d, -1);
+  for (;;) { const sc = dayScore(dateKey(d)); if (sc == null || sc < 80) break; n++; d = addDays(d, -1); }
+  return n;
+}
+function ring(sc, size = 40) {
+  const r = size / 2 - 4, c = 2 * Math.PI * r, band = scoreBand(sc);
+  return `<svg class="ring ${band}" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">
+    <circle cx="${size / 2}" cy="${size / 2}" r="${r}" class="track"/>
+    ${sc != null ? `<circle cx="${size / 2}" cy="${size / 2}" r="${r}" class="fill" stroke-dasharray="${(c * sc / 100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${size / 2} ${size / 2})"/>` : ""}
+    <text x="50%" y="50%" dy="0.35em" text-anchor="middle">${sc == null ? "–" : sc}</text></svg>`;
+}
+let progWeek = 0, progMonth = 0;  // 0 = this week / month, -1 = the one before, ...
+function renderProgress() {
+  const today = new Date(), todayKey = dateKey(today), hasGoal = !!state.goals.calories;
+  // Week strip
+  const mon = addDays(mondayOf(today), progWeek * 7);
+  const week = [...Array(7)].map((_, i) => addDays(mon, i));
+  const wScores = week.map(d => dateKey(d) <= todayKey ? dayScore(dateKey(d)) : null);
+  const wAvg = avg(wScores), prevAvg = avg([...Array(7)].map((_, i) => dayScore(dateKey(addDays(mon, i - 7)))));
+  const trend = wAvg != null && prevAvg != null ? (wAvg >= prevAvg ? `<span class="up">▲ ${wAvg - prevAvg}</span>` : `<span class="down">▼ ${prevAvg - wAvg}</span>`) : "";
+  const wLabel = progWeek === 0 ? "This week" : progWeek === -1 ? "Last week" : mon.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " week";
+  // Month calendar
+  const first = new Date(today.getFullYear(), today.getMonth() + progMonth, 1);
+  const days = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+  const lead = (first.getDay() + 6) % 7;
+  const mKeys = [...Array(days)].map((_, i) => dateKey(new Date(first.getFullYear(), first.getMonth(), i + 1)));
+  const logged = mKeys.filter(k => (state.log[k] || []).length && k <= todayKey);
+  const mScores = logged.map(dayScore), mAvg = avg(mScores);
+  const onTarget = mScores.filter(x => x != null && x >= 80).length;
+  const hit = (k, test) => { const g = goalsFor(k), t = totalsFor(k); return test(t, g); };
+  const protHit = logged.filter(k => goalsFor(k).protein && hit(k, (t, g) => t.protein >= g.protein * 0.95)).length;
+  const protDays = logged.filter(k => goalsFor(k).protein).length;
+  const calHit = logged.filter(k => goalsFor(k).calories && hit(k, (t, g) => Math.abs(t.calories / g.calories - 1) <= 0.10)).length;
+  const calDays = logged.filter(k => goalsFor(k).calories).length;
+  const avgOf = f => logged.length ? Math.round(logged.reduce((a, k) => a + totalsFor(k)[f], 0) / logged.length) : 0;
+  const st = streak();
+  const cell = k => {
+    const future = k > todayKey, sc = future ? null : dayScore(k), band = future ? "future" : scoreBand(sc);
+    const has = (state.log[k] || []).length;
+    return `<button class="cal-day ${band}${k === todayKey ? " today" : ""}" data-day="${k}" ${future ? "disabled" : ""}
+      aria-label="${keyToDate(k).toLocaleDateString(undefined, { month: "long", day: "numeric" })}: ${sc != null ? "score " + sc : has ? "logged, no goal set" : "nothing logged"}">
+      <span class="d">${Number(k.slice(8))}</span>${sc != null ? `<span class="s">${sc}</span>` : has ? `<span class="s">•</span>` : ""}</button>`;
+  };
+  $("#progBody").innerHTML = `
+    ${hasGoal ? "" : `<div class="prog-nudge"><b>Set a daily goal to get a score.</b> You'll see how close each day lands to your calories and protein.
+      <button class="primary" data-progcalc>Calculate my goals</button></div>`}
+    <section class="prog-card">
+      <div class="prog-head"><button class="nav" data-week="-1" aria-label="Previous week">‹</button>
+        <div><b>${wLabel}</b>${hasGoal ? `<span class="avg">avg ${wAvg ?? "–"} ${trend}</span>` : ""}</div>
+        <button class="nav" data-week="1" aria-label="Next week" ${progWeek >= 0 ? "disabled" : ""}>›</button></div>
+      <div class="week">${week.map((d, i) => { const k = dateKey(d), fut = k > todayKey; return `<button class="wday${k === todayKey ? " today" : ""}" data-day="${k}" ${fut ? "disabled" : ""}>
+        <span class="wd">${"MTWTFSS"[i]}</span>${hasGoal ? ring(fut ? null : wScores[i]) : `<span class="wcal">${(state.log[k] || []).length ? fmt(totalsFor(k).calories) : "–"}</span>`}</button>`; }).join("")}</div>
+      ${hasGoal && progWeek === 0 ? `<p class="streak">${st ? `🔥 <b>${st}-day streak</b> of 80+` : "Score 80+ today to start a streak."}</p>` : ""}
+    </section>
+    <section class="prog-card">
+      <div class="prog-head"><button class="nav" data-month="-1" aria-label="Previous month">‹</button>
+        <div><b>${first.toLocaleDateString(undefined, { month: "long", year: "numeric" })}</b>${hasGoal ? `<span class="avg">avg ${mAvg ?? "–"}</span>` : ""}</div>
+        <button class="nav" data-month="1" aria-label="Next month" ${progMonth >= 0 ? "disabled" : ""}>›</button></div>
+      <div class="cal-grid">${"MTWTFSS".split("").map(x => `<span class="cal-wd">${x}</span>`).join("")}${"<span></span>".repeat(lead)}${mKeys.map(cell).join("")}</div>
+      ${hasGoal ? `<div class="legend"><span class="great">85+</span><span class="close">70–84</span><span class="off">under 70</span><span class="none">not logged</span></div>` : ""}
+    </section>
+    <section class="prog-card stats">
+      <b class="stats-title">This month</b>
+      ${logged.length ? `
+        ${hasGoal ? `<div class="stat"><span>Days on target (80+)</span><b>${onTarget} / ${logged.length}</b></div>` : ""}
+        ${calDays ? `<div class="stat"><span>Calories within 10%</span><b>${calHit} / ${calDays}</b></div>` : ""}
+        ${protDays ? `<div class="stat"><span>Protein goal hit</span><b>${protHit} / ${protDays}</b></div>` : ""}
+        <div class="stat"><span>Average day</span><b>${fmt(avgOf("calories"))} cal · ${fmt(avgOf("protein"))} g protein</b></div>
+        <div class="stat"><span>Days logged</span><b>${logged.length}</b></div>`
+      : `<p class="hint">Nothing logged this month yet.</p>`}
+    </section>
+    ${hasGoal ? `<details class="how"><summary>How the score works</summary>
+      <p>Each day gets up to 100 points: calories 40 (full marks within 10% of your goal), protein 30 (full marks at or above
+      your goal), carbs 15 and fat 15 (full marks within 15%). Points drop off the further you are from a goal.
+      Days with nothing logged don't count, and each day is scored against the goals you had that day.</p></details>` : ""}`;
+}
+function openProgress() {
+  progWeek = 0; progMonth = 0;
+  renderProgress(); openSheet("progSheet"); $("#progBody").scrollTop = 0;
+}
+$("#openProgress").addEventListener("click", openProgress);
+$("#progBody").addEventListener("click", e => {
+  const t = k => e.target.closest(k);
+  let b;
+  if ((b = t("[data-day]"))) { viewKey = b.dataset.day; closeSheets(); renderAll(); window.scrollTo({ top: 0 }); return; }
+  if ((b = t("[data-week]"))) { progWeek = Math.min(0, progWeek + Number(b.dataset.week)); renderProgress(); return; }
+  if ((b = t("[data-month]"))) { progMonth = Math.min(0, progMonth + Number(b.dataset.month)); renderProgress(); return; }
+  if (t("[data-progcalc]")) { closeSheets(); setTimeout(() => $("#openCalc").click(), 50); }
+});
+
 /* ---------- Goals ---------- */
 const GOAL_FIELDS = [
   { key: "calories", label: "Calories", unit: "cal", color: "var(--muted)" },
@@ -2149,7 +2353,9 @@ $("#calcBody").addEventListener("click", e => {
   else if (t("[data-prio]")) p.priority = t("[data-prio]").dataset.prio;
   else if (t("[data-use]")) {
     const pl = calcPlans().plans.find(x => x.key === t("[data-use]").dataset.use);
+    pinPastGoals();
     state.goals = { calories: pl.calories, protein: pl.protein, carbs: pl.carbs, fat: pl.fat };
+    state.dayGoals[dateKey(new Date())] = { ...state.goals };
     saveState(); closeSheets(); renderSummary();
     toast(`Goal set: ${pl.name}, ${fmt(pl.calories)} cal, ${pl.protein}g protein`);
     return;
@@ -2275,6 +2481,7 @@ $("#logArea").addEventListener("click", e => {
   }
 });
 $("#summary").addEventListener("click", e => {
+  if (e.target.closest("[data-open-progress]")) { openProgress(); return; }
   if (!e.target.closest("[data-day-facts]")) return;
   const entries = state.log[viewKey] || [];
   openFacts("Nutrition for " + ($("#dayLabel").textContent === "Today" ? "today" : $("#dayLabel").textContent),
@@ -2375,12 +2582,14 @@ $("#editRemove").addEventListener("click", () => {
 });
 
 $("#saveGoals").addEventListener("click", () => {
+  pinPastGoals();
   const goals = {};
   GOAL_FIELDS.forEach(f => {
     const v = parseFloat($("#goal-" + f.key).value);
     if (v > 0) goals[f.key] = Math.round(v);
   });
   state.goals = goals;
+  state.dayGoals[dateKey(new Date())] = { ...goals };  // today is scored against the new goals
   saveState(); closeSheets(); renderSummary();
   toast("Goals saved");
 });
