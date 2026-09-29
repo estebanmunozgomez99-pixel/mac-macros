@@ -98,5 +98,6 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 ## Style
 
 - Colours: McMaster maroon `#7A003C`, gold `#FDBF57`; light and dark themes via CSS tokens.
-- Font: Figtree (Google Fonts) with system fallbacks.
+- Font: Figtree (bundled in `app/vendor/fonts`) with system fallbacks.
+- Logo: "MAROON." in Horizon (Fontense, commercial font the user supplied). It's an inline SVG path in `.brand` (converted with fontTools), so the font file is NOT in the repo. To change the logo text, regenerate the path from the user's Horizon.otf.
 - Keep the app a single HTML file unless the user asks otherwise.
