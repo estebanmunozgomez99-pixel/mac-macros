@@ -360,6 +360,8 @@ img { max-width: 100%; }
 .code-note { margin: 4px 16px 0; }
 
 /* Build your own */
+.customize-row { padding: 0 16px 12px; background: var(--surface-2); }
+.customize-row .customize { margin-top: 0; height: 42px; background: var(--surface); }
 .byo-entry { margin-bottom: 10px; border: 2px solid var(--maroon); }
 .byo-entry .cal { font-size: 1.4rem; color: var(--muted); }
 .byo-total {
@@ -1070,24 +1072,39 @@ function foodRow(g, rowId, rep) {
     html += optChips("Size", g.sizes, f.size, o => `data-size="${esc(o)}"`) + optChips("Milk", milks, f.milk, o => `data-milk="${esc(o)}"`);
     // Build-your-own menu items go to their builder instead of being logged as-is
     const cust = customizeFor(g);
-    html += cust ? `<div class="picker"><button class="add-btn" data-byo="${cust}">Customize ingredients →</button></div>` : `<div class="picker">
+    const custBtn = c => `data-byo="${c.id}"${c.preset ? ` data-preset="${esc(JSON.stringify(c.preset))}"` : ""}`;
+    html += cust && !cust.keepAdd ? `<div class="picker"><button class="add-btn" ${custBtn(cust)}>Customize ingredients →</button></div>` : `<div class="picker">
       <div class="stepper">
         <button data-step="-0.5" aria-label="Fewer servings">−</button>
         <output aria-live="polite">${fmtG(pickServings)}×</output>
         <button data-step="0.5" aria-label="More servings">+</button>
       </div>
       <button class="add-btn" data-add="${esc(f.id)}">Add to log</button>
-    </div>`;
+    </div>${cust ? `<div class="customize-row"><button class="ghost customize" ${custBtn(cust)}>Customize: add extras →</button></div>` : ""}`;
     html += `
-    <div class="picker-totals">${cust ? "McMaster's standard build" : "Serving: " + esc(unit)}. ${fmt(f.calories * pickServings)} cal, P ${fmtG(f.protein * pickServings)}g, C ${fmtG(f.carbs * pickServings)}g, F ${fmtG(f.fat * pickServings)}g
+    <div class="picker-totals">${cust && !cust.keepAdd ? "McMaster's standard build" : "Serving: " + esc(unit)}. ${fmt(f.calories * pickServings)} cal, P ${fmtG(f.protein * pickServings)}g, C ${fmtG(f.carbs * pickServings)}g, F ${fmtG(f.fat * pickServings)}g
       <button class="facts-toggle" data-facts aria-expanded="${showFacts}">${showFacts ? "Hide" : "Nutrition facts"}</button></div>
     ${showFacts ? `<div class="picker-facts">${factsHTML(nutrition([{ food: f, micro: f.micro || NO_MICRO, mult: pickServings }]), false)}</div>` : ""}`;
   }
   return html + "</li>";
 }
 // Menu items that are really a build-your-own: their picker gets a "Customize" button that opens the builder
-const CUSTOMIZE = [[/build your own pasta/i, "pas"], [/build your own omelette|eggsactly your omelette/i, "omelette"]];
-const customizeFor = g => (CUSTOMIZE.find(([re]) => re.test(g.name)) || [])[1];
+// [name pattern, builder, keep Add to log?, preset from the name]. Generic build-your-own items can't be logged as-is;
+// full meals (Flavour Junction) keep Add to log and open the builder set to that meal.
+const CUSTOMIZE = [
+  [/build your own pasta/i, "pas"],
+  [/build your own omelette|eggsactly your omelette/i, "omelette"],
+  [/^bistro omelette bar$/i, "bistro"],
+  [/^Lah (Fiesta Fare|Flavour Junction Shawarma|Mediterranean|Thai One) (Beef|Chicken|Pork|Tofu|Falafel)$/, "flavour", true, m => ({
+    style: FJ.styles.find(x => x.item === "Lah " + m[1]).key, protein: m[2].toLowerCase() })]
+];
+function customizeFor(g) {
+  for (const [re, id, keepAdd, preset] of CUSTOMIZE) {
+    const m = g.name.match(re);
+    if (m) return { id, keepAdd: !!keepAdd, preset: preset ? preset(m) : null };
+  }
+  return null;
+}
 // Size / Milk buttons for a picker; attrs(o) gives the data attributes of each button
 function optChips(label, list, cur, attrs) {
   return list.length > 1 ? `<div class="opts" role="group" aria-label="${label}">
@@ -1758,13 +1775,81 @@ const OMELETTE = {
   fat: { key: "fat", name: "Oil / butter to cook it", n: [120, 13.6, 0, 0, 0, 0, 0], src: "est" }
 };
 
+/* The Bistro @ MKR omelette bar. Fillings and eggs: McMaster numbers (Bistro toppings list, per 100 g, at typical
+   portions). Side: McMaster's "Bistro Breakfast - Bacon" minus its 2 eggs and 3 bacon slices = home fries & toast.
+   Cooking oil/butter is an estimate. A typical build lands at 1,087-1,227 cal vs McMaster's 1,174 for the bar. */
+const BISTRO_OM = {
+  fillings: [
+    { key: "bacon", name: "Bacon", n: [40, 2.8, 0.5, 0, 0.3, 3.4, 168], sub: "2 slices" },
+    { key: "chorizo", name: "Chorizo", n: [204, 19.8, 1.5, 0.6, 0.6, 5.4, 354], sub: "30 g" },
+    { key: "spinach", name: "Baby spinach", n: [6.9, 0.1, 1.1, 0.7, 0.1, 0.9, 23.7], sub: "30 g" },
+    { key: "mushrooms", name: "Mushrooms", n: [8.8, 0.1, 1.3, 0.4, 0.6, 1.2, 2], sub: "40 g" },
+    { key: "redpep", name: "Red peppers", n: [9.3, 0.1, 1.8, 0.6, 1.3, 0.3, 1.2], sub: "30 g" },
+    { key: "onion", name: "Red onion", n: [7.6, 0, 1.9, 0.4, 0.9, 0.2, 0], sub: "20 g" },
+    { key: "avocado", name: "Avocado", n: [79.5, 7.4, 4.5, 3.3, 0.5, 1, 3.5], sub: "50 g" }
+  ],
+  cheese: [
+    { key: "cheddar", name: "Cheddar blend", n: [103.5, 7.9, 0.8, 0.1, 0, 7.3, 201.6], sub: "30 g" },
+    { key: "feta", name: "Feta", n: [60, 4.7, 1.3, 0, 0, 4, 219.8], sub: "20 g" }
+  ],
+  sides: [
+    { key: "both", name: "Home fries & toast", n: [536, 26.2, 67.9, 4.7, 1.9, 7.6, 863] },
+    { key: "toast", name: "Toast only", n: [269, 13.4, 32.2, 1.4, 2.3, 5.7, 331] },
+    { key: "none", name: "No side", n: [0, 0, 0, 0, 0, 0, 0] }
+  ]
+};
+
+/* LAH The Flavour Hub, Flavour Junction. Each style + protein is an official McMaster meal, used as-is; the
+   builder adds extras on top from McMaster's per-100 g numbers (extra protein, pita, udon, fries, greens, more base). */
+const FJ = {
+  styles: [
+    { key: "fiesta", name: "Fiesta Fare", item: "Lah Fiesta Fare", base: "Lah Flavour Junction Fiesta Base" },
+    { key: "shawarma", name: "Shawarma", item: "Lah Flavour Junction Shawarma", base: "Lah Flavour Junction Shawarma Base" },
+    { key: "med", name: "Mediterranean", item: "Lah Mediterranean", base: "Lah Flavour Junction Mediterranean Base" },
+    { key: "thai", name: "Thai One", item: "Lah Thai One", base: "Lah Flavour Junction Thai One Base" }
+  ],
+  proteinNames: { beef: "Beef", chicken: "Chicken", pork: "Pork", tofu: "Tofu", falafel: "Falafel" },
+  extraProtein: [
+    { key: "beef", name: "Taco beef", n: [202, 11.5, 3.5, 0.4, 0.4, 19.9, 165], sub: "100 g" },
+    { key: "chicken", name: "Chicken", n: [165, 3.6, 0, 0, 0, 31.3, 343], sub: "1 portion" },
+    { key: "shawarma", name: "Chicken shawarma", n: [263, 14, 1.3, 0.2, 0.6, 31.2, 216], sub: "100 g" },
+    { key: "pork", name: "Roasted pork", n: [253, 17.1, 6.4, 0, 6.3, 17, 70], sub: "½ portion" },
+    { key: "tofu", name: "Tofu", n: [130, 8, 3, 1, 1, 14, 5], sub: "100 g" },
+    { key: "falafel", name: "Falafel", n: [202, 11.4, 22.7, 5.1, 3.8, 6.3, 366], sub: "1 portion" }
+  ],
+  carbs: [
+    { key: "pita", name: "Pita", n: [139.8, 1.1, 27.8, 1, 0.9, 4.7, 119.4], sub: "60 g", src: "est" },
+    { key: "udon", name: "Udon noodles", n: [225, 0.6, 48, 4.9, 0, 7.2, 0], sub: "150 g", src: "est" },
+    { key: "fries", name: "Crispy fries", n: [134, 5.1, 21.5, 1.9, 3.4, 1.9, 494], sub: "100 g", src: "est" },
+    { key: "greens", name: "Spring mix", n: [10.5, 0, 1.7, 0.9, 0, 0.9, 18], sub: "50 g", src: "est" }
+  ]
+};
+// The official meal for a style + protein, from the menu data: [cal, fat, carbs, fibre, sugars, protein, sodium]
+function fjMeal(style, protein) {
+  const st = FJ.styles.find(x => x.key === style);
+  const f = FOODS.find(x => x.location === "Lincoln Alexander Hall" && x.station === "The Flavour Hub" && x.item === st.item + " " + FJ.proteinNames[protein]);
+  if (!f) return null;
+  const m = f.micro || NO_MICRO;
+  return [f.calories, f.fat, f.carbs, m[3] || 0, m[4] || 0, f.protein, m[2] || 0];
+}
+const fjProteins = style => Object.keys(FJ.proteinNames).filter(p => fjMeal(style, p));
+function fjBase(style) {
+  const st = FJ.styles.find(x => x.key === style);
+  const f = FOODS.find(x => x.location === "Lincoln Alexander Hall" && x.item === st.base);
+  if (!f) return [];
+  const m = f.micro || NO_MICRO, h = v => Math.round((v || 0) * 5) / 10;  // 50 g of a per-100 g number
+  return [{ key: "base", name: "Extra " + st.name + " base", n: [f.calories, f.fat, f.carbs, m[3], m[4], f.protein, m[2]].map(h), sub: "50 g", src: "est" }];
+}
+
 /* ---------- Build-your-own engine ----------
    A builder is a list of steps. Step kinds:
      one    pick exactly one option (b[key] = option key)
      qty    amounts per option, e.g. chicken ×2 (b[key] = { option: count })
      toggle tick any; with extra: true a second tap makes it ×2 (b[key] = { option: 1 | 2 })
      share  tick any; they split one portion scaled by the amount step (b[key] = { option: true })
-     amount a multiplier such as Light / Regular / Extra (b[key] = number) */
+     amount a multiplier such as Light / Regular / Extra (b[key] = number)
+   A step's options can be a function of the build (e.g. the proteins a style comes with). */
+const stepOpts = (st, b) => (typeof st.options === "function" ? st.options(b) : st.options);
 const BUILDERS = {
   chopped: {
     id: "chopped", title: "Build your own", location: "PGCLL", station: "Chopped Leaf", brand: "Chopped Leaf",
@@ -1807,6 +1892,47 @@ const BUILDERS = {
     ],
     note: "Eggs, fillings, toast and hashbrown use McMaster's own nutrition numbers (toast is worked out from their Two Eggs & Toast). The oil or butter it's cooked in is an estimate. The default build comes to 800 cal vs 831 for McMaster's own build-your-own omelette."
   },
+  bistro: {
+    id: "bistro", title: "Build your omelette", brand: "The Bistro",
+    places: [["The Bistro @ MKR", "Breakfast Classics"]],
+    rowName: "🍳 Build your own omelette", rowMeta: "The Bistro omelette bar: eggs, fillings, cheese and a side",
+    cats: /^(All|Other)$/, stationQ: /build|byo|own|custom|omelet|egg/, searchQ: /\b(omelet|omlet|omelette)/,
+    defaults: () => ({ eggs: "3", fill: { bacon: 1, spinach: 1, mushrooms: 1, redpep: 1, onion: 1 }, cheese: { cheddar: 1 }, side: "both" }),
+    unit: () => "omelette",
+    prefix: b => "Bistro " + b.eggs + "-egg omelette",
+    extraParts: () => [{ ...OMELETTE.fat, k: 1 }],
+    steps: [
+      { key: "eggs", label: "Eggs", kind: "one", options: OMELETTE.eggs, noName: true },
+      { key: "fill", label: "Fillings", tip: "tap twice for extra", kind: "toggle", extra: true, options: BISTRO_OM.fillings },
+      { key: "cheese", label: "Cheese", tip: "tap twice for extra", kind: "toggle", extra: true, options: BISTRO_OM.cheese },
+      { key: "side", label: "Side", kind: "one", options: BISTRO_OM.sides, nameIf: b => b.side !== "none" }
+    ],
+    note: "Eggs and fillings use McMaster's own numbers for The Bistro. Home fries & toast are worked out from McMaster's Bistro Breakfast (minus its eggs and bacon). The oil or butter it's cooked in is an estimate. A typical build comes to 1,090-1,230 cal; McMaster lists the omelette bar at 1,174."
+  },
+  flavour: {
+    id: "flavour", title: "Build your Flavour Junction", brand: "The Flavour Hub",
+    places: [["Lincoln Alexander Hall", "The Flavour Hub"]],
+    rowName: "🥙 Build your own Flavour Junction", rowMeta: "Pick a style and protein, then add extras",
+    cats: /^(All|Entrée)$/, stationQ: /build|byo|own|custom|fiesta|shawarma|mediterranean|thai|junction/, searchQ: /\b(flavour junction|flavor junction)/,
+    defaults: () => ({ style: "fiesta", protein: "chicken", more: {}, carbs: {}, base: {} }),
+    unit: () => "meal",
+    prefix: b => FJ.styles.find(x => x.key === b.style).name + " " + FJ.proteinNames[b.protein].toLowerCase(),
+    extraParts: b => { const n = fjMeal(b.style, b.protein); return n ? [{ key: "meal", name: "meal", n, k: 1 }] : []; },
+    onPick: (b, key) => {
+      const ok = fjProteins(b.style);
+      if (!ok.includes(b.protein)) b.protein = ok[0];
+      if (key === "style") b.base = {};
+    },
+    steps: [
+      { key: "style", label: "Style", kind: "one", options: FJ.styles, noName: true },
+      { key: "protein", label: "Protein", kind: "one", options: b => fjProteins(b.style).map(k => ({ key: k, name: FJ.proteinNames[k] })), noName: true,
+        hint: b => { const n = fjMeal(b.style, b.protein); return n ? `McMaster's ${FJ.styles.find(x => x.key === b.style).name} ${FJ.proteinNames[b.protein].toLowerCase()}: ${fmt(n[0])} cal, ${fmtG(n[5])} g protein.` : ""; } },
+      { key: "more", label: "Extra protein", tip: "on top of the meal", kind: "qty", max: 2, options: FJ.extraProtein, namePrefix: "extra " },
+      { key: "carbs", label: "Add a side", tip: "tap twice for extra", kind: "toggle", extra: true, options: FJ.carbs },
+      { key: "base", label: "More base", kind: "toggle", options: b => fjBase(b.style) }
+    ],
+    note: "Every style + protein is McMaster's own meal, used as-is. Extras use McMaster's per-100 g numbers; the portion sizes of sides and extra base (marked ≈) are estimates."
+  },
   pas: {
     id: "pas", title: "Build your pasta", location: "Centro", station: "Pas Noodle", brand: "Pas Noodle",
     rowName: "🍝 Build your own pasta", rowMeta: "Centro, Pas Noodle · pick the pasta, sauce, protein and veggies",
@@ -1832,12 +1958,12 @@ function byoParts(b, B = byoB) {
   const parts = [...(B.extraParts ? B.extraParts(b) : [])];
   const seen = new Set();
   B.steps.forEach(st => {
-    const v = b[st.key];
-    if (st.kind === "one") { const o = st.options.find(x => x.key === v); if (o && o.n && o.key !== "none") parts.push({ ...o, k: 1, st }); }
+    const v = b[st.key], options = stepOpts(st, b);
+    if (st.kind === "one") { const o = options.find(x => x.key === v); if (o && o.n && o.key !== "none") parts.push({ ...o, k: 1, st }); }
     else if (st.kind === "qty" || st.kind === "toggle") {
-      st.options.forEach(o => { const q = v[o.key]; if (q > 0 && !seen.has(st.key + o.key)) { seen.add(st.key + o.key); parts.push({ ...o, k: q, st }); } });
+      options.forEach(o => { const q = v[o.key]; if (q > 0 && !seen.has(st.key + o.key)) { seen.add(st.key + o.key); parts.push({ ...o, k: q, st }); } });
     } else if (st.kind === "share") {
-      const on = st.options.filter(o => v[o.key]);
+      const on = options.filter(o => v[o.key]);
       on.forEach(o => parts.push({ ...o, k: b[st.amountKey] / on.length, st }));
     }
   });
@@ -1850,12 +1976,12 @@ function byoTotals(b, B = byoB) {
 }
 function byoName(b, B = byoB) {
   const bits = byoParts(b, B).filter(p => p.st && !p.st.noName && (!p.st.nameIf || p.st.nameIf(b)))
-    .map(p => p.name.toLowerCase() + (p.st.kind === "share" || p.k === 1 ? "" : " ×" + fmtG(p.k)));
+    .map(p => (p.st.namePrefix || "") + p.name.toLowerCase() + (p.st.kind === "share" || p.k === 1 ? "" : " ×" + fmtG(p.k)));
   return B.prefix(b) + (bits.length ? ": " + bits.join(", ") : "");
 }
-function openBYO(id) {
+function openBYO(id, preset) {
   byoB = BUILDERS[id] || BUILDERS.chopped;
-  byo = byoB.defaults();
+  byo = { ...byoB.defaults(), ...(preset || {}) };
   $("#byoTitle").textContent = byoB.title;
   document.querySelectorAll(".sheet.open").forEach(s => { s.classList.remove("open"); s.setAttribute("aria-hidden", "true"); });
   renderBYO(); openSheet("byoSheet"); $("#byoBody").scrollTop = 0;
@@ -1871,12 +1997,12 @@ function renderBYO() {
     return `<div class="byo-sec"><div class="opt-label">${st.label}${st.tip ? ` <small>(${st.tip})</small>` : ""}</div>${inner}${hint ? `<p class="hint byo-hint">${hint}</p>` : ""}</div>`;
   };
   $("#byoBody").innerHTML = B.steps.map((st, i) => {
-    const v = b[st.key];
-    if (st.kind === "one") return sec(st, `<div class="opt-row">${st.options.map(o => chip(i, o, v === o.key)).join("")}</div>`);
-    if (st.kind === "amount") return sec(st, `<div class="opt-row">${st.options.map(([name, k]) => chip(i, { key: k, name }, v === k)).join("")}</div>`);
-    if (st.kind === "share") return sec(st, `<div class="opt-row">${st.options.map(o => chip(i, o, !!v[o.key])).join("")}</div>`);
-    if (st.kind === "toggle") return sec(st, `<div class="opt-row">${st.options.map(o => chip(i, o, !!v[o.key], o.name + (v[o.key] > 1 ? " ×2" : ""))).join("")}</div>`);
-    return sec(st, `<ul class="byo-list">${st.options.map(o => `<li><span>${esc(o.name)}${est(o)} <small>${o.sub ? esc(o.sub) + " · " : ""}${fmt(o.n[0])} cal · ${fmtG(o.n[5])}g protein</small></span>
+    const v = b[st.key], options = stepOpts(st, b);
+    if (st.kind === "one") return sec(st, `<div class="opt-row">${options.map(o => chip(i, o, v === o.key)).join("")}</div>`);
+    if (st.kind === "amount") return sec(st, `<div class="opt-row">${options.map(([name, k]) => chip(i, { key: k, name }, v === k)).join("")}</div>`);
+    if (st.kind === "share") return sec(st, `<div class="opt-row">${options.map(o => chip(i, o, !!v[o.key])).join("")}</div>`);
+    if (st.kind === "toggle") return sec(st, `<div class="opt-row">${options.map(o => chip(i, o, !!v[o.key], o.name + (v[o.key] > 1 ? " ×2" : ""))).join("")}</div>`);
+    return sec(st, `<ul class="byo-list">${options.map(o => `<li><span>${esc(o.name)}${est(o)} <small>${o.sub ? esc(o.sub) + " · " : ""}${fmt(o.n[0])} cal · ${fmtG(o.n[5])}g protein</small></span>
       <div class="stepper small"><button data-bstep="${i}" data-bopt="${esc(o.key)}" data-d="-1" aria-label="Less ${esc(o.name)}">−</button><output>${v[o.key] ? fmtG(v[o.key]) + "×" : "–"}</output><button data-bstep="${i}" data-bopt="${esc(o.key)}" data-d="1" aria-label="More ${esc(o.name)}">+</button></div></li>`).join("")}</ul>`);
   }).join("") + `
     <p class="facts-note byo-note">${B.note}</p>
@@ -2120,7 +2246,8 @@ $("#foodArea").addEventListener("click", e => {
   const size = e.target.closest("[data-size]");
   const milk = e.target.closest("[data-milk]");
   if (e.target.closest("[data-facts]")) { showFacts = !showFacts; renderFoods(); return; }
-  if (e.target.closest("[data-byo]")) { openBYO(e.target.closest("[data-byo]").dataset.byo); return; }
+  const byoBtn = e.target.closest("[data-byo]");
+  if (byoBtn) { openBYO(byoBtn.dataset.byo, byoBtn.dataset.preset ? JSON.parse(byoBtn.dataset.preset) : null); return; }
   if (food) {
     const id = food.dataset.food;
     if (expandedId === id) expandedId = null; else openRow(id, rowPicks.get(id));
