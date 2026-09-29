@@ -19,7 +19,7 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 - The mic (voice logging) only works on https or localhost, so test voice on the live site.
 - **Menu updates without an app update:** `build.sh` → `inject_menu.py` writes `const MENU_BUNDLED` into `app/index.html` and publishes `app/menu.json` (same data + `rotations`, stamped with `version` = build time UTC). The app uses the bundled copy unless a newer `menu.json` was downloaded earlier (`localStorage` `macmacros:menu`); it checks `MENU_URL` 3 s after opening and when returning after 6 h, and offers "Load it". `ROTATIONS = MENU.rotations || ROTATIONS_BUNDLED`. To ship a menu change: run `build.sh`, commit, push.
 - **Nothing loads from other servers at runtime** (App Store rule): Figtree fonts and the barcode reader (barcode-detector + zxing wasm) are in `app/vendor/` (see its README). The ES-module reader can't load from `file://`; test scanning over http (e.g. `python3 -m http.server`).
-- `privacy.html` (site root) is the privacy policy URL for the App Store. Contact email still to be added there and in `CONTACT_EMAIL` (`app/index.html`).
+- `privacy.html` (site root) is the privacy policy URL for the App Store. Contact email: esteban.munoz.gomez99@gmail.com (also `CONTACT_EMAIL` in `app/index.html`, used by Report a problem).
 
 ## Data pipeline
 
@@ -85,7 +85,7 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 
 ## To-do
 
-- Before the App Store: McMaster Hospitality permission for their data (user is asking), replace Booster Juice's Nutritionix data with Booster Juice's own guide, add a contact email, then wrap with Capacitor (bundle `app/`), Apple developer account, TestFlight beta.
+- Before the App Store: McMaster Hospitality permission for their data (user is asking), replace Booster Juice's Nutritionix data with Booster Juice's own guide, then wrap with Capacitor (bundle `app/`), Apple developer account, TestFlight beta.
 
 - Starbucks: needs the Canadian nutrition guide (starbucks.ca).
 - Teriyaki Experience (student centre): not started.
