@@ -1146,8 +1146,8 @@ function renderSummary() {
       ${macroBlock("carbs", "Carbs", "var(--gold)")}
       ${macroBlock("fat", "Fat", "#8FD3D6")}
     </div>
-    ${dayScore(viewKey) != null ? `<button class="score-chip ${scoreBand(dayScore(viewKey))}" data-open-progress>
-      ${viewKey === dateKey(new Date()) ? "Today" : "Score"} <b>${dayScore(viewKey)}</b> · ${SCORE_WORDS[scoreBand(dayScore(viewKey))]}</button>` : ""}
+    ${dayScore(viewKey) != null && viewKey < dateKey(new Date()) ? `<button class="score-chip ${scoreBand(dayScore(viewKey))}" data-open-progress>
+      Score <b>${dayScore(viewKey)}</b> · ${SCORE_WORDS[scoreBand(dayScore(viewKey))]}</button>` : ""}
     ${(state.log[viewKey] || []).length ? `<button class="day-facts" data-day-facts aria-label="Full nutrition for the day">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg></button>` : ""}`;
 }
