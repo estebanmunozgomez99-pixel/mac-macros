@@ -85,7 +85,9 @@ for r in FR:
     k=(r['location'],r['station'],r['item'],r['serving'],*vals)
     if k in seen: continue
     seen.add(k); rows.append([stations.index(key),r['item'],r['serving'],*vals,r['kind'],cat_index(r['station'],r['category']),micro([r['satfat'],r['chol'],r['sodium'],r['fibre'],r['sugars'],None,None,None])])
-out={'locations':locs,'stations':[[locs.index(l),s] for l,s in stations],'categories':cats,'items':rows}
+# version = build time (UTC); the app uses a downloaded menu.json only if its version is newer than its own copy
+import datetime
+out={'version':datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),'locations':locs,'stations':[[locs.index(l),s] for l,s in stations],'categories':cats,'items':rows}
 open('data/build/data.json','w').write(json.dumps(out,ensure_ascii=False,separators=(',',':')))
 from collections import Counter
 print(Counter(r[7] for r in rows))
