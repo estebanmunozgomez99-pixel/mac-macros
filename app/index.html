@@ -2160,8 +2160,8 @@ function dayScore(key) {
   });
   return Math.round(got / max * 100);
 }
-// On target = 95+, close = 85-94, off = 84 and under
-const ON_TARGET = 95, CLOSE = 85;
+// On target = 95+, close = 80-94, off = under 80
+const ON_TARGET = 95, CLOSE = 80;
 const scoreBand = sc => sc == null ? "none" : sc >= ON_TARGET ? "great" : sc >= CLOSE ? "close" : "off";
 const SCORE_WORDS = { great: "On target", close: "Close", off: "Off target", none: "Nothing logged" };
 const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
@@ -2229,7 +2229,7 @@ function renderProgress() {
         <div><b>${first.toLocaleDateString(undefined, { month: "long", year: "numeric" })}</b>${hasGoal ? `<span class="avg">avg ${mAvg ?? "–"}</span>` : ""}</div>
         <button class="nav" data-month="1" aria-label="Next month" ${progMonth >= 0 ? "disabled" : ""}>›</button></div>
       <div class="cal-grid">${"MTWTFSS".split("").map(x => `<span class="cal-wd">${x}</span>`).join("")}${"<span></span>".repeat(lead)}${mKeys.map(cell).join("")}</div>
-      ${hasGoal ? `<div class="legend"><span class="great">${ON_TARGET}+ on target</span><span class="close">${CLOSE}–${ON_TARGET - 1}</span><span class="off">${CLOSE - 1} and under</span><span class="none">not logged</span></div>` : ""}
+      ${hasGoal ? `<div class="legend"><span class="great">${ON_TARGET}+ on target</span><span class="close">${CLOSE}–${ON_TARGET - 1}</span><span class="off">under ${CLOSE}</span><span class="none">not logged</span></div>` : ""}
     </section>
     <section class="prog-card stats">
       <b class="stats-title">This month</b>
