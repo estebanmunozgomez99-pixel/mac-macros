@@ -1,9 +1,10 @@
 import json, re
 out=[]
-def add(loc,st,cat,item,serving,cal,fat,sat,chol,sod,carb,fib,sug,prot,kind,src):
+def add(loc,st,cat,item,serving,cal,fat,sat,chol,sod,carb,fib,sug,prot,kind,src,calcium=None,iron=None):
     f=lambda v: None if v in (None,'') else float(str(v).replace('%',''))
     out.append(dict(location=loc,station=st,category=cat,item=item,serving=serving,calories=f(cal),fat=f(fat),satfat=f(sat),
-        chol=f(chol),sodium=f(sod),carbs=f(carb),fibre=f(fib),sugars=f(sug),protein=f(prot),kind=kind,source=src))
+        chol=f(chol),sodium=f(sod),carbs=f(carb),fibre=f(fib),sugars=f(sug),protein=f(prot),kind=kind,source=src,
+        calcium=f(calcium),iron=f(iron)))
 
 # ---- Tim Hortons (MUSC): drinks and baked goods only
 TIMS_SRC='Tim Hortons Canada Nutrition Information, August 2025'
@@ -98,22 +99,16 @@ for cat,suffix,serving,base,prots,src in BASES:
         if n in prots: plk(cat,n+suffix,serving,*[b+x for b,x in zip(base,PROT[n])],src=src)
 plk('Limited Time Offer','Beef Kafta Dinner','1 plate',950,30,106,44)
 for n,v in PROT.items(): plk('Proteins',f'Extra {n}','1 portion',*v,kind=1)
-# ---- Booster Juice (La Piazza and DBAC), from Nutritionix's Booster Juice menu
-BJ_SRC='Nutritionix Booster Juice menu (m.nutritionix.com/booster-juice/menu/premium), Sept 28, 2026'
-cat=None
-for line in open('data/sources/booster-juice-nutritionix.tsv',encoding='utf-8'):
-    if line.startswith('#') or not line.strip(): continue
-    f=line.rstrip('\n').split('\t')
-    if len(f)==1: cat=f[0].strip(); continue
-    name=f[0]; v=[x.replace(',','') for x in f[1:]]
-    v=['0' if x.startswith('<') else x for x in v]  # "<5" / "<1": trace amounts
-    cal,fat,sat,trans,chol,sod,carb,fib,sug,prot=v
-    size=re.search(r', (\d+ ?(?:mL|oz))$',name)
-    if size: name=name[:size.start()]+(' Shot' if cat=='Specialty' and 'Wheatgrass' not in name else '')+' - '+size.group(1)
-    serving=size.group(1) if size else ('480 mL' if cat=='Fresh Juices' else '1 serving')
+# ---- Booster Juice (La Piazza and DBAC), from Booster Juice's in-store Nutrition Guide v24.1
+# (typed from the photos data/sources/booster-juice-guide-v24.1-*.jpg)
+BJ_SRC='Booster Juice Nutrition Guide, Version 24.1 (in-store), Sept 29, 2026'
+for line in open('data/sources/booster-juice-nutrition-guide-v24.1.tsv',encoding='utf-8'):
+    if line.startswith(('#','category\t')) or not line.strip(): continue
+    cat,name,serving,cal,fat,sat,trans,prot,carb,fib,sug,chol,sod,pot,ca,fe=line.rstrip('\n').split('\t')
+    if cat=='Smoothies' or serving.endswith('oz'): name+=' - '+serving  # sizes group into one row in the app
     kind=0 if cat=='Grilled Fresh' else 2
     for loc in ('La Piazza','DBAC'):
-        add(loc,'Booster Juice',cat,name,serving,cal,fat,sat,chol,sod,carb,fib,sug,prot,kind,BJ_SRC)
+        add(loc,'Booster Juice',cat,name,serving,cal,fat,sat,chol,sod,carb,fib,sug,prot,kind,BJ_SRC,ca,fe)
 json.dump(out,open('data/build/franchise.json','w'),ensure_ascii=False,indent=0)
 from collections import Counter
 print(len(out), Counter((o['location'],o['station'],o['kind']) for o in out))

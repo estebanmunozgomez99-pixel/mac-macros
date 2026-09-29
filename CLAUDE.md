@@ -80,12 +80,12 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 - Several McMaster items list a "100g" serving while the numbers are clearly for the whole item. Kept as posted.
 - Two unlabeled blocks in the Second Cup PDF are named Espresso and Americano from their position on the menu.
 - Paramount Lebanese Kitchen publishes calories only. Macros are estimates (user approved), salad calories too. Build-your-own = posted base dish + posted protein calories. Recheck if Paramount releases a nutrition guide.
-- Booster Juice data is Nutritionix's Booster Juice menu (`data/sources/booster-juice-nutritionix.tsv`, pasted by the user). "<5"/"<1" values are entered as 0. `Booster-Juice-Menu-2023.pdf` (calories only) is kept for reference.
+- Booster Juice data is Booster Juice's own in-store Nutrition Guide v24.1, typed from the user's photos into `data/sources/booster-juice-nutrition-guide-v24.1.tsv` (photos: `booster-juice-guide-v24.1-*.jpg`). It includes calcium and iron (mg), which go into the franchise micro array. `Booster-Juice-Menu-2023.pdf` (calories only) is kept for reference.
 - Starbucks PDFs the user found were the Ireland/Northern Ireland menu, so Starbucks was not added.
 
 ## To-do
 
-- Before the App Store: McMaster Hospitality permission for their data (user is asking), replace Booster Juice's Nutritionix data with Booster Juice's own guide, then wrap with Capacitor (bundle `app/`), Apple developer account, TestFlight beta.
+- Before the App Store: McMaster Hospitality permission for their data (user is asking) then wrap with Capacitor (bundle `app/`), Apple developer account, TestFlight beta.
 
 - Starbucks: needs the Canadian nutrition guide (starbucks.ca).
 - Teriyaki Experience (student centre): not started.
