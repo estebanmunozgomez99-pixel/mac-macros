@@ -69,7 +69,10 @@ for line in open('data/build/cl.txt'):
         item=name if sec=='Kids Menu' else f"{name} {single}"+(f" ({sub})" if sub else '')
     if sec=='Chopped Water': item=f"Chopped Water, {name}"
     size=re.search(r' - (Small|Large)$',name)
-    add('PGCLL','Chopped Leaf',sec,item,size.group(1) if size else '1 serving',cal,fat,None,None,sod,carb,fib,sug,prot,kind,CL_SRC)
+    # PGCLL has the full menu; Eco Bean (MUMC) is "powered by Chopped Leaf" and has everything except soups and Chopped Water
+    for loc in ('PGCLL','Eco Bean - MUMC'):
+        if loc!='PGCLL' and sec in ('Soups','Chopped Water'): continue
+        add(loc,'Chopped Leaf',sec,item,size.group(1) if size else '1 serving',cal,fat,None,None,sod,carb,fib,sug,prot,kind,CL_SRC)
 # ---- Paramount Lebanese Kitchen (Centro)
 # Calories are from the menu boards (photos in data/sources/paramount-*.jpg, Sept 28, 2026). Paramount publishes no
 # protein/carb/fat numbers, so macros are estimates from typical portions, chosen so 4P + 4C + 9F ~= the posted calories.
