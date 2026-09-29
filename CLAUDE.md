@@ -38,6 +38,8 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 
 ## Product rules the user asked for (keep these)
 
+- **Summary cards (Cal AI style):** a big Calories card plus Protein / Carbs / Fats cards, each with its own ring (fills as you eat; full when over) and an icon in the middle (flame, drumstick, wheat, drop; `SUM_ICONS`, from Lucide). Each shows only what's left ("1,250 Calories left") or how far over ("45g Protein **over**"), never "x of y". No goal set: shows what's been eaten. Ring colours: calories = text colour, macros = `--protein`/`--carbs`/`--fat`.
+
 - **Extras** (add-ons, toppings, sauces, sides) never appear in the main food list. They're added via the Edit button on a logged meal.
 - Extras only work on **real meals** (not parfaits, desserts, drinks), and only extras from the **same station/restaurant** as the meal. Fruit toppings only on waffles, pancakes, French toast.
 - **SMPL stations:** savory mains first (meat, fish, plant-based, pasta, other), desserts last.
