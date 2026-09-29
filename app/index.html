@@ -365,6 +365,9 @@ img { max-width: 100%; }
 .manual .primary { width: calc(100% - 32px); margin: 8px 16px 16px; }
 .code-note { margin: 4px 16px 0; }
 
+.no-results .ghost { max-width: 320px; margin: 14px auto 4px; display: block; }
+.sentence-hint { display: block; font-size: 0.8rem; }
+
 /* Make it a meal */
 .meal-sides .opt-label small { font-weight: 500; }
 .meal-sides .opt { font-size: 0.85rem; height: 34px; padding: 0 12px; }
@@ -1297,7 +1300,9 @@ function renderFoods() {
     html += `<div class="group-label">All food</div>`;
   }
   if (!matches.length) {
-    html += `<div class="no-results">No food matches “${esc(q)}”${activeLoc !== "All" ? " at " + esc(activeLoc) : ""}. Try a shorter word or pick a different location.</div>`;
+    html += `<div class="no-results">No food matches “${esc(q)}”${activeLoc !== "All" ? " at " + esc(activeLoc) : ""}. Try a shorter word or pick a different location.
+      ${words.length >= 2 ? `<button class="ghost" data-sentence>Log it as a sentence instead</button>
+      <small class="sentence-hint">Like “medium protein latte from Tims and a donut”</small>` : ""}</div>`;
   } else {
     const shown = matches.slice(0, showLimit);
     if (!recent.length) html += `<div class="count-note">${matches.length.toLocaleString()} item${matches.length > 1 ? "s" : ""}</div>`;
@@ -1440,8 +1445,8 @@ function parseSpoken(text) {
 }
 
 let voice = null;  // { text, listening, items }
-function handleSpoken(text) {
-  voice = { text, listening: false, items: parseSpoken(text) };
+function handleSpoken(text, typed = false) {
+  voice = { text, typed, listening: false, items: parseSpoken(text) };
   renderVoice();
 }
 function voiceItem(it, i) {
@@ -1476,7 +1481,7 @@ function renderVoice() {
   const found = voice.items.filter(it => it.g).length;
   area.innerHTML = voice.listening
     ? `<div class="voice-head"><span class="pulse"></span> Listening… <b>${esc(voice.text || "say what you ate")}</b></div>`
-    : `<div class="voice-head">Heard: <b>“${esc(voice.text)}”</b> <button class="link-btn" data-vretry>${SR ? "Try again" : "Clear"}</button></div>
+    : `<div class="voice-head">${voice.typed ? "You typed" : "Heard"}: <b>“${esc(voice.text)}”</b> <button class="link-btn" data-vretry>${SR && !voice.typed ? "Try again" : "Clear"}</button></div>
        ${voice.items.length ? `<ul class="foods vlist">${voice.items.map(voiceItem).join("")}</ul>` : `<p class="hint">Nothing to add. Try naming the food, like “medium protein latte from Tims”.</p>`}
        ${found > 1 ? `<button class="primary" data-vall>Add all ${found}</button>` : ""}`;
 }
@@ -1506,13 +1511,14 @@ $("#voiceArea").addEventListener("click", e => {
     if (!voice) closeSheets();
     toast(`Added ${list.length} items`); renderVoice(); return;
   }
-  else if (t("[data-vretry]")) { voice = null; renderVoice(); if (SR) startListening(); return; }
+  else if (t("[data-vretry]")) { const again = SR && !voice.typed; voice = null; renderVoice(); if (again) startListening(); else renderFoods(); return; }
   else return;
   renderVoice();
 });
-// Typing a sentence and pressing Enter works like saying it (for browsers without speech recognition)
+// Enter just closes the keyboard; the results list is already showing. (A typed sentence can still be logged from
+// the "no results" message, for browsers without speech recognition.)
 $("#searchInput").addEventListener("keydown", e => {
-  if (e.key === "Enter" && $("#searchInput").value.trim()) { e.preventDefault(); handleSpoken($("#searchInput").value.trim()); }
+  if (e.key === "Enter") { e.preventDefault(); $("#searchInput").blur(); }
 });
 
 let rec = null;
@@ -2454,7 +2460,10 @@ $("#nextDay").addEventListener("click", () => {
   if (viewKey < dateKey(new Date())) { viewKey = shiftKey(viewKey, 1); renderAll(); }
 });
 
-$("#searchInput").addEventListener("input", () => { expandedId = null; showLimit = 50; renderFoods(); });
+$("#searchInput").addEventListener("input", () => {
+  if (voice && !voice.listening) { voice = null; renderVoice(); }  // typing a search replaces a voice result
+  expandedId = null; showLimit = 50; renderFoods();
+});
 
 $("#locRow").addEventListener("click", e => {
   const b = e.target.closest("[data-loc]");
@@ -2492,6 +2501,7 @@ $("#foodArea").addEventListener("click", e => {
   const step = e.target.closest("[data-step]");
   const add = e.target.closest("[data-add]");
   if (e.target.closest("[data-more]")) { showLimit += 50; renderFoods(); return; }
+  if (e.target.closest("[data-sentence]")) { handleSpoken($("#searchInput").value.trim(), true); return; }
   if (e.target.closest("[data-fullrot]")) { showFullRotation = !showFullRotation; expandedId = null; showLimit = 50; renderFoods(); return; }
   const side = e.target.closest("[data-side]");
   if (side) { const id = side.dataset.side; pickSides[id] = ((pickSides[id] || 0) + 1) % 3; renderFoods(); return; }
