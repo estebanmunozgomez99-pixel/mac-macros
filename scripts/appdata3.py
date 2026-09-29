@@ -65,7 +65,8 @@ def cat_index(station,c):
     n=cat_name(station,c)
     if n not in cats: cats.append(n)
     return cats.index(n)
-locs=sorted(set(df['Location'].unique())|{r['location'] for r in FR}); stations=[]; rows=[]; seen=set()
+# Alphabetical, ignoring a leading "The" so The Bistro @ MKR sits next to Bistro 2 Go
+locs=sorted(set(df['Location'].unique())|{r['location'] for r in FR}, key=lambda l: re.sub(r'^the ','',l.lower())); stations=[]; rows=[]; seen=set()
 for _,r in df.iterrows():
     key=(r['Location'],r['st'])
     if key not in stations: stations.append(key)
