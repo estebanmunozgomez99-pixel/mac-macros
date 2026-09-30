@@ -3,7 +3,7 @@
 name: Probe macnutrition
 on:
   push:
-    paths: [".github/workflows/probe-macnutrition.yml"]
+    paths: [".github/workflows/probe-macnutrition.yml", "scripts/fetch_macnutrition.py"]
   workflow_dispatch:
 permissions:
   contents: write
@@ -12,27 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch pages
-        run: |
-          set -x
-          mkdir -p data/probe && cd data/probe
-          UA="Mozilla/5.0 (Maroon menu updater; contact esteban.munoz.gomez99@gmail.com)"
-          BASE=https://macnutrition.mcmaster.ca
-          curl -sSL -A "$UA" -c jar.txt -b jar.txt -D today.headers -o today.html "$BASE/Nutrition/ServiceMenuReport/Today" || true
-          curl -sSL -A "$UA" -c jar.txt -b jar.txt -D root.headers -o root.html "$BASE/" || true
-          # Every same-site link and form action on those pages, fetched once each (max 40)
-          grep -ohiE '(href|action|src)="[^"#]+"' today.html root.html | sed -E 's/^[a-z]+="//I; s/"$//' | sed 's/&amp;/\&/g' \
-            | grep -viE '\.(css|png|jpg|gif|svg|ico|woff2?)(\?|$)|^(mailto|javascript):' | sort -u > links.txt || true
-          i=0
-          while read -r u; do
-            case "$u" in http*) url="$u" ;; /*) url="$BASE$u" ;; *) url="$BASE/Nutrition/ServiceMenuReport/$u" ;; esac
-            case "$url" in "$BASE"*) ;; *) continue ;; esac
-            i=$((i+1)); [ $i -gt 40 ] && break
-            curl -sSL -A "$UA" -c jar.txt -b jar.txt -D "link$i.headers" -o "link$i.body" "$url" || true
-            echo "link$i $url" >> fetched.txt
-          done < links.txt
-          rm -f jar.txt
-          ls -la
+      - name: Fetch station reports
+        run: python3 scripts/fetch_macnutrition.py --raw data/probe/reports
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
