@@ -1,0 +1,63 @@
+# Nightly: pull McMaster's menu from macnutrition.mcmaster.ca, rebuild, and publish if the food changed.
+# Students' apps download the new app/menu.json on their own (no App Store update needed).
+# If the site can't be read or the data looks wrong, nothing is published and an issue is opened on the repo.
+name: Update menu
+on:
+  schedule:
+    - cron: "17 8 * * *"   # 08:17 UTC = 4:17 am Toronto (3:17 am in winter)
+  workflow_dispatch:        # "Run workflow" button on the Actions tab
+  push:                     # also run right after the updater itself changes
+    paths: [".github/workflows/update-menu.yml", "scripts/fetch_macnutrition.py", "scripts/menu_changed.py"]
+permissions:
+  contents: write
+  issues: write
+concurrency: update-menu
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+          pip install -q pandas openpyxl pdfplumber
+      - name: Fetch today's menu
+        run: |
+          cp app/menu.json /tmp/menu-before.json
+          python3 scripts/fetch_macnutrition.py data/sources/mcmaster-menu-week.csv | tee /tmp/fetch.txt
+          test "${PIPESTATUS[0]}" = 0
+      - name: Rebuild
+        run: bash build.sh
+      - name: Publish if the food changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          if python3 scripts/menu_changed.py /tmp/menu-before.json; then
+            git add data/sources/mcmaster-menu-week.csv app/menu.json app/index.html mcmaster-menu-nutrition.xlsx
+            printf "Menu update from macnutrition.mcmaster.ca\n\n%s\n" "$(cat /tmp/fetch.txt)" > /tmp/msg.txt
+            git commit -q -F /tmp/msg.txt
+          else
+            # Nothing students would see changed: keep the old build (no pointless "new menu" in the app)
+            git checkout -- app/menu.json app/index.html mcmaster-menu-nutrition.xlsx
+            git add data/sources/mcmaster-menu-week.csv
+            git commit -q -m "Menu source refresh (no visible changes)" || echo "No changes at all"
+          fi
+          git pull -q --rebase origin main
+          git push origin HEAD:main
+      - name: Open an issue if the update failed
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Nightly menu update failed"
+          if [ -z "$(gh issue list --state open --search "$title in:title" --json number --jq '.[].number')" ]; then
+            printf '%s\n\n%s\n\n%s\n\n%s\n' \
+              "The nightly update couldn't publish a new menu, so the app keeps the last good one." \
+              "Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              "$(cat /tmp/fetch.txt 2>/dev/null)" \
+              "Common causes: macnutrition.mcmaster.ca was down (usually fixes itself the next night) or the site's layout changed (scripts/fetch_macnutrition.py needs updating)." > /tmp/body.txt
+            gh issue create --title "$title" --body-file /tmp/body.txt
+          fi

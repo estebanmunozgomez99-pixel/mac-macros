@@ -4,6 +4,7 @@ Bistro 2 Go,ALL DAY MENU,Sandwich,Teriyaki Chicken Wrap Crispy,100g,10.99,841,30
 Bistro 2 Go,ALL DAY MENU,Sandwich,Teriyaki Chicken Pita Grilled,100g,10.99,507,5.28,1.340,96,2911,62.13,4.7,17.60,49.52,44.7,420,0.54
 Bistro 2 Go,ALL DAY MENU,Sandwich,Teriyaki Chicken Wrap Grilled,100g,10.99,590,13.64,4.780,96,3076,64.06,4.7,17.69,47.84,44.7,420,0.54
 Bistro 2 Go,ALL DAY MENU,Sandwich,Turkey Club Wrap,100g,12.99,508,31.62,4.400,5,676,51.80,3.0,3.80,33.54,14.8,37,0.60
+Bistro 2 Go,ALL DAY MENU,Sandwich,Turkey Club Wrap,100g,12.99,508,31.62,4.400,5,676,51.80,3.0,3.80,33.54,14.8,37,0.60
 Bistro 2 Go,ALL DAY MENU,Sandwich,Lotus Pita,Each,9.99,821,20.47,2.720,0,1008,134.21,14.6,24.30,30.08,17.2,147,9.25
 Bistro 2 Go,ALL DAY MENU,Sandwich,Lotus Wrap,Each,9.99,903,28.83,6.161,0,1173,136.13,14.7,24.38,28.41,17.2,147,9.25
 Bistro 2 Go,ALL DAY MENU,Sandwich,Btg Crispy Chicken Caesar Wrap White,Portion,9.79,992,52.89,6.505,73,2449,80.44,6.5,7.52,47.29,2.2,244,1.42
@@ -344,6 +345,7 @@ Centro,Pas Noodle,Add Ons,Firm Tofu,100g,,120,7.00,1.000,0,0,0.00,0.0,0.00,14.00
 Centro,Pas Noodle,Add Ons,Medium Cheddar Shredded,100g,,296,20.60,16.900,48,1270,6.60,0.0,0.00,21.10,0.0,732,0.00
 Centro,Pas Noodle,Add Ons,Baby Spinach,100g,,23,0.40,0.100,0,79,3.60,2.2,0.40,2.90,27.9,80,2.70
 Centro,Pas Noodle,Add Ons,Peppers And Onions,100g,,33,0.18,0.025,0,4,7.15,1.8,3.75,1.03,126.0,25,0.15
+Centro,Pas Noodle,Add Ons,Baby Spinach,100g,,23,0.40,0.100,0,79,3.60,2.2,0.40,2.90,27.9,80,2.70
 Centro,Pas Noodle,Add Ons,Sliced Mushrooms,100g,,22,0.34,0.000,0,5,3.26,1.0,1.48,3.09,2.1,3,0.50
 Centro,Pas Noodle,Add Ons,Tomatoes,100g,,22,0.00,0.000,0,6,5.00,1.5,3.00,1.00,16.0,12,0.30
 Centro,Pas Noodle,Add Ons,"Peppers, Green, Diced 1/4""",100g,,20,0.20,0.100,0,3,4.60,1.7,2.40,0.90,274.5,10,0.40
@@ -484,6 +486,7 @@ Centro,SMPL Rotational Menu,Meat Based Entrees,Smpl Tandoori Chicken Leg,Portion
 Centro,SMPL Rotational Menu,Meat Based Entrees,Smpl Tandoori Chicken Taco,Portion,8.99,420,25.24,1.510,112,168,23.92,3.8,1.38,27.22,37.1,25,0.95
 Centro,SMPL Rotational Menu,Plant Based Sides,Sabji Mixed Vegetables,Portion,,82,3.55,0.375,0,212,10.55,3.7,4.85,2.89,0.7,17,0.55
 Centro,SMPL Rotational Menu,Plant Based Sides,Thai Vegetable Blend,Portion,,94,3.71,0.366,0,158,13.91,4.2,13.76,3.02,32.3,512,0.60
+Centro,SMPL Rotational Menu,Plant Based Sides,Sabji Mixed Vegetables,Portion,,82,3.55,0.375,0,212,10.55,3.7,4.85,2.89,0.7,17,0.55
 Centro,SMPL Rotational Menu,Plant Based Sides,Smpl Roast Parsnips And Carrots,Portion,4.99,117,4.82,0.560,0,126,16.80,4.6,5.70,1.30,116.1,0,0.36
 Centro,SMPL Rotational Menu,Plant Based Sides,Smpl Carrot And Corn Medley,Portion,4.99,91,3.27,0.312,0,86,15.90,2.9,4.30,1.88,2.1,2,0.32
 Centro,SMPL Rotational Menu,Plant Based Sides,Smpl Honey Glazed Carrots,Portion,4.99,299,13.86,1.500,0,204,42.00,5.0,30.96,1.66,5.0,2,0.51
@@ -657,6 +660,7 @@ IAHS Café,Bakery Items,Breakfast,Tomato Olive Trellis Pastry,Each,4.19,371,22.0
 IAHS Café,Bakery Items,Breakfast,S'mores Strudel,Portion,3.49,192,9.61,3.955,0,153,24.86,0.6,84.75,2.26,0.0,6,0.85
 IAHS Café,Bakery Items,Breakfast,Lemon Cheese Strudel,Portion,3.49,170,8.50,4.000,0,155,22.00,0.5,8.00,2.00,0.0,5,0.75
 IAHS Café,Bakery Items,Breakfast,Peaches And Cheese Strudel,Each,3.49,373,19.21,7.910,0,305,46.33,1.1,14.69,5.65,0.0,11,1.69
+IAHS Café,Bakery Items,Breakfast,S'mores Strudel,Portion,3.49,192,9.61,3.955,0,153,24.86,0.6,84.75,2.26,0.0,6,0.85
 IAHS Café,Bakery Items,Breakfast,Ham And Swiss Croissant,Each,4.99,170,11.13,6.545,33,170,14.40,0.0,2.62,3.93,0.0,26,1.18
 IAHS Café,Bakery Items,Breakfast,Bacon And Egg Croissant,Each,4.99,188,11.42,6.719,71,249,15.45,0.7,2.69,6.05,0.0,40,0.85
 IAHS Café,Bakery Items,Dessert,Macaroon Madness Dessert Bar,Slice,3.95,432,21.58,9.711,49,237,56.11,3.2,42.08,4.32,0.0,0,0.00
@@ -1204,6 +1208,7 @@ Reactor Café and Lounge,Baked Goods,Breakfast,Tomato Olive Trellis Pastry,Each,
 Reactor Café and Lounge,Baked Goods,Breakfast,S'mores Strudel,Portion,3.49,192,9.61,3.955,0,153,24.86,0.6,84.75,2.26,0.0,6,0.85
 Reactor Café and Lounge,Baked Goods,Breakfast,Lemon Cheese Strudel,Portion,3.49,170,8.50,4.000,0,155,22.00,0.5,8.00,2.00,0.0,5,0.75
 Reactor Café and Lounge,Baked Goods,Breakfast,Peaches And Cheese Strudel,Each,3.49,373,19.21,7.910,0,305,46.33,1.1,14.69,5.65,0.0,11,1.69
+Reactor Café and Lounge,Baked Goods,Breakfast,S'mores Strudel,Portion,3.49,192,9.61,3.955,0,153,24.86,0.6,84.75,2.26,0.0,6,0.85
 Reactor Café and Lounge,Baked Goods,Breakfast,Ham And Swiss Croissant,Each,4.99,170,11.13,6.545,33,170,14.40,0.0,2.62,3.93,0.0,26,1.18
 Reactor Café and Lounge,Baked Goods,Breakfast,Bacon And Egg Croissant,Each,4.99,188,11.42,6.719,71,249,15.45,0.7,2.69,6.05,0.0,40,0.85
 Reactor Café and Lounge,Baked Goods,Dessert,Macaroon Madness Dessert Bar,Slice,3.39,432,21.58,9.711,49,237,56.11,3.2,42.08,4.32,0.0,0,0.00

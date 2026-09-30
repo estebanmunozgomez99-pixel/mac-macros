@@ -80,7 +80,7 @@ for L in 'BCDEF': s.column_dimensions[L].width=16
 a=wb.create_sheet('About')
 lines=[('Maroon menu data',True),
 ('Source: McMaster Hospitality Services menu nutrition site, https://macnutrition.mcmaster.ca/Nutrition/ServiceMenuReport/Today',False),
-('Pulled: September 28, 2026. The site showed the same full menu for Monday, Tuesday and Saturday of that week, so one pull covers the rotation.',False),
+('Updated automatically: a GitHub Action (.github/workflows/update-menu.yml) pulls the site every night and publishes changes. McMaster Hospitality confirmed (Sept 2026) that Maroon may use this data.',False),
 ('Nutrition values are exactly as posted by McMaster, per the listed serving size. For allergens, the site says to ask a Hospitality Manager.',False),
 ('',False),
 ('Cleanup done',True),
