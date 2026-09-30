@@ -1,0 +1,10 @@
+link1 https://macnutrition.mcmaster.ca/Nutrition/DXR.axd?r=0_1970,0_1971,1_66,1_67,1_68,0_1973,1_72,1_73,1_206,0_1855,0_1856,1_205,0_1858,0_1871,0_1872,0_1874,1_82,1_83,24_378,24_379,24_389,1_6,24_396,24_397,24_407,26_37,26_36,26_35,0_1998,0_1999,26_34,0_2001,26_31,1_80,1_81-pS3tn&p=900d8466
+link2 https://macnutrition.mcmaster.ca/Nutrition/DXR.axd?r=1_0,1_2,1_3,1_4,1_10,1_62,1_11,1_12,1_13,1_14,1_15,1_19,1_64,1_47,1_16,1_8,17_0,17_7,1_26,1_38,1_30,17_35,1_22,1_54,17_34,1_40,1_53,1_52,17_33,1_179,1_180,1_23,1_32,1_45,1_209,1_207,1_236,1_46,1_51,17_6,1_50,17_14,1_20,1_21,1_39,1_33,1_18,1_220,1_221,1_208,1_214,1_212,1_215,1_216,1_213,1_217,1_210,1_218,1_219,1_223,1_232,1_234,1_235,1_222,1_227,1_228,1_229,1_211,1_224,1_225,1_226,1_230,1_231,1_233,17_48,17_49,17_2,1_58,1_56,17_38,1_55,17_39,1_57,17_40,17_41,1_59,17_3,1_48,17_8,17_9,1_34,17_10,1_61,17_11,1_49,1_37,17_43,1_42,17_12,17_13,1_65,1_181,1_178,17_23,1_201,17_24,1_190,17_17,1_199,17_19,1_184,1_186,1_194,1_195,1_196,1_200,1_182,1_189,17_16,17_21,1_188,17_18,1_60,1_191,1_185,17_15,1_193,1_187,17_42,1_198,1_192,17_20,1_1,24_364,24_365,24_366,24_367,24_359,24_362,24_363,24_360,24_361,1_5,24_408,24_409,26_19,26_21,24_368,24_394,24_395,26_23,26_20,26_22,17_26,26_24,17_27,26_11,26_16,26_18,17_25,26_15,26_13,26_14,26_12,26_17-pS3tn&p=89c3fb1d
+link3 https://macnutrition.mcmaster.ca/Nutrition/DXR.axd?r=1_85-9S3tn
+link4 https://macnutrition.mcmaster.ca/Nutrition/ServiceMenuReport/GetDate?dt=20261001
+link5 https://macnutrition.mcmaster.ca/Nutrition/ServiceMenuReport/GetDate?dt=20261002
+link6 https://macnutrition.mcmaster.ca/Nutrition/ServiceMenuReport/GetDate?dt=20261003
+link7 https://macnutrition.mcmaster.ca/Nutrition/ServiceMenuReport/GetDate?dt=20261004
+link8 https://macnutrition.mcmaster.ca/Nutrition/ServiceMenuReport/GetDate?dt=20261005
+link9 https://macnutrition.mcmaster.ca/Nutrition/ServiceMenuReport/GetDate?dt=20261006
+link10 https://macnutrition.mcmaster.ca/Nutrition/ServiceMenuReport/Today

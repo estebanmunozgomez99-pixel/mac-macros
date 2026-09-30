@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name='viewport' content="width=device-width, initial-scale=1" />
+    <title>Menu Nutritional Information</title>
+    
+    <link rel="stylesheet" type="text/css" href="/Nutrition/DXR.axd?r=0_1970,0_1971,1_66,1_67,1_68,0_1973,1_72,1_73,1_206,0_1855,0_1856,1_205,0_1858,0_1871,0_1872,0_1874,1_82,1_83,24_378,24_379,24_389,1_6,24_396,24_397,24_407,26_37,26_36,26_35,0_1998,0_1999,26_34,0_2001,26_31,1_80,1_81-pS3tn&p=900d8466" />
+    <script id="dxis_1297739630" src="/Nutrition/DXR.axd?r=1_0,1_2,1_3,1_4,1_10,1_62,1_11,1_12,1_13,1_14,1_15,1_19,1_64,1_47,1_16,1_8,17_0,17_7,1_26,1_38,1_30,17_35,1_22,1_54,17_34,1_40,1_53,1_52,17_33,1_179,1_180,1_23,1_32,1_45,1_209,1_207,1_236,1_46,1_51,17_6,1_50,17_14,1_20,1_21,1_39,1_33,1_18,1_220,1_221,1_208,1_214,1_212,1_215,1_216,1_213,1_217,1_210,1_218,1_219,1_223,1_232,1_234,1_235,1_222,1_227,1_228,1_229,1_211,1_224,1_225,1_226,1_230,1_231,1_233,17_48,17_49,17_2,1_58,1_56,17_38,1_55,17_39,1_57,17_40,17_41,1_59,17_3,1_48,17_8,17_9,1_34,17_10,1_61,17_11,1_49,1_37,17_43,1_42,17_12,17_13,1_65,1_181,1_178,17_23,1_201,17_24,1_190,17_17,1_199,17_19,1_184,1_186,1_194,1_195,1_196,1_200,1_182,1_189,17_16,17_21,1_188,17_18,1_60,1_191,1_185,17_15,1_193,1_187,17_42,1_198,1_192,17_20,1_1,24_364,24_365,24_366,24_367,24_359,24_362,24_363,24_360,24_361,1_5,24_408,24_409,26_19,26_21,24_368,24_394,24_395,26_23,26_20,26_22,17_26,26_24,17_27,26_11,26_16,26_18,17_25,26_15,26_13,26_14,26_12,26_17-pS3tn&amp;p=89c3fb1d" type="text/javascript"></script><script id="dxss_235158968" type="text/javascript">
+<!--
+ASPx.AccessibilitySR.AddStringResources({'MenuVerticalText':'Vertical','MenuHorizontalText':'Horizontal','MenuText':'menu','MenuBarText':'menubar','MenuLevelText':'level'});
+
+ASPx.AccessibilitySR.DefaultCallbackMessage = 'Callback in process.';
+
+//-->
+</script>
+    <link href="/Nutrition/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="/Nutrition/Content/UOT.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="content-wrapper">
+        <div class="content" role="main">
+            
+    <style>
+    </style>
+
+    <script>
+
+
+        function PostPartialView(url, container) {
+            var allergens = $("#AllergenSelections").val();
+            var tags = $("#TagSelections").val();
+
+            $("#tdAllergens").text(allergens);
+            if (allergens.length == 0) $("#tdAllergenLabel").hide(); else $("#tdAllergenLabel").show();
+            if (tags.length == 0) $("#tdPreferenceLabel").hide(); else $("#tdPreferenceLabel").show();
+
+            $("#tdPreferences").text(tags);
+
+            var postdata = {"allergens" : allergens,"tags" : tags };            
+            $.post(url, postdata).done(function (data) { $("#" + container).html(data); LoadingPanel.Hide(); }).fail(function () {LoadingPanel.Hide(); alert('fail ' + url); });
+        }
+
+
+    function MenuItemKeyPress(key,element, title, id, lineId) {
+        var presskeys = (key.which) ? key.which : key.presskeys;
+        if (presskeys == 13 || presskeys == 32) {
+            MenuItemClick(element, title, id, lineId);
+        }
+    }
+
+
+
+        function MenuItemClick(element, title, id, lineId) {
+            var url = '/Nutrition/ServiceMenuReport/GetLabel' + '/' + id + "/" + lineId;
+            PostPartialView(url, "divNutritionLabel");
+            //popLabel.SetHeaderText(title);
+            divPopupHeader.innerText = title;
+
+            popLabel.ShowAtElement(element);
+            popLabel.Focus();
+        }
+        function SelectedMenuDateItemChanged(e)
+        {
+            e.item.menu.SetSelectedItem(e.item.menu.GetRootItem());
+        }
+
+        function SelectedMenuItemChanged(e) {
+            if (e.item.name != 'noaction') {
+                tdMenuName.innerText = e.item.parent.GetText() + " " + e.item.GetText();
+                $("#CurrentMenu").val(e.item.name);
+                var url = '/Nutrition/ServiceMenuReport/GetReport' + '/' + e.item.name;
+                LoadingPanel.Show();
+                PostPartialView(url, "reportBody");
+                //var dataToPost = $("#dataForm").serialize();
+            }
+        }
+
+        function SelectedItemChanged(e) {
+            if (e.item.name != 'noaction') {
+                tdMenuName.innerText = e.item.group.GetText() + " " + e.item.GetText();
+                $("#CurrentMenu").val(e.item.name);
+                var url = '/Nutrition/ServiceMenuReport/GetReport' + '/' + e.item.name;
+                LoadingPanel.Show();
+                PostPartialView(url, "reportBody");
+                
+            }
+        }
+
+        function EndPost(data) {
+            $("#reportBody").html(data);
+        }
+        /*********************************************************************************************************/
+        function FilterResults() {
+            var url = '/Nutrition/ServiceMenuReport/FilterReport' + '/' + $("#CurrentMenu").val();
+            PostPartialView(url, "reportBody");
+
+
+        }
+
+
+        /*********************************************************************************************************/
+        
+        $(function () {
+            var idx = 0;
+            var firstItem = navUnits.GetGroup(idx).GetItem(0);
+            if (firstItem) {
+                firstItem.group.SetExpanded(true);
+                navUnits.SetSelectedItem(firstItem);
+                tdMenuName.innerText = firstItem.group.GetText() + " " + firstItem.GetText();
+                var id = firstItem.name;
+                $("#CurrentMenu").val(id);
+                var url = '/Nutrition/ServiceMenuReport/GetReport' + '/' + id;
+                PostPartialView(url, "reportBody");
+            }
+	    });	
+
+    </script>
+
+
+
+
+<div>
+
+    <input id="AllergenSelections" name="AllergenSelections" type="hidden" value="" />
+    <input id="TagSelections" name="TagSelections" type="hidden" value="" />
+    <input id="CurrentMenu" name="CurrentMenu" type="hidden" value="" />
+<table width="100%" border="0" style="background-color:mintcream;" role="presentation">
+    <tr>
+        
+        <td role="presentation" style="padding-left:8px;"><h1>Menu Nutritional Information</h1></td>
+        <td><h2>Monday, October 5, 2026</h2></td>
+        <td role="navigation" style="text-align:right;width:120px;padding-right:2px;">
+
+    <div class="dxmLite_MaterialCompact dxm-ltr">
+	<div class="dxm-main dxm-horizontal dxm-autoWidth" id="mnuDates" style="width:164px;">
+		<ul class="dx dxm-image-l dxm-noImages">
+			<li class="dxm-item" style="background-color:#002A5C;"><a class="dxm-content dxm-hasText dx" href="/Nutrition/ServiceMenuReport/Today" style="color:#FFFFFF;"><span class="dx-vam">TODAY</span></a></li>
+		</ul>
+	</div><b class="dx-clear"></b><div id="mnuDates_DXM0_" style="z-index:20002;display:none;">
+		<div class="dxm-shadow dxm-popup">
+			<ul class="dx dxm-noImages dxm-gutter" style="width:164px;">
+				<li class="dxm-item"><a class="dxm-content dxm-hasText dx" href="/Nutrition/ServiceMenuReport/GetDate?dt=20261001"><span class="dx-vam">Thursday</span></a><b class="dx-clear"></b></li><li class="dxm-spacing"></li><li class="dxm-item"><a class="dxm-content dxm-hasText dx" href="/Nutrition/ServiceMenuReport/GetDate?dt=20261002"><span class="dx-vam">Friday</span></a><b class="dx-clear"></b></li><li class="dxm-spacing"></li><li class="dxm-item"><a class="dxm-content dxm-hasText dx" href="/Nutrition/ServiceMenuReport/GetDate?dt=20261003"><span class="dx-vam">Saturday</span></a><b class="dx-clear"></b></li><li class="dxm-spacing"></li><li class="dxm-item"><a class="dxm-content dxm-hasText dx" href="/Nutrition/ServiceMenuReport/GetDate?dt=20261004"><span class="dx-vam">Sunday</span></a><b class="dx-clear"></b></li><li class="dxm-spacing"></li><li class="dxm-item"><a class="dxm-content dxm-hasText dx" href="/Nutrition/ServiceMenuReport/GetDate?dt=20261005"><span class="dx-vam">Monday</span></a><b class="dx-clear"></b></li><li class="dxm-spacing"></li><li class="dxm-item"><a class="dxm-content dxm-hasText dx" href="/Nutrition/ServiceMenuReport/GetDate?dt=20261006"><span class="dx-vam">Tuesday</span></a><b class="dx-clear"></b></li>
+			</ul>
+		</div>
+	</div>
+</div><script id="dxss_1885629360" type="text/javascript">
+<!--
+ASPx.AddHoverItems('mnuDates',[[['dxm-hovered',''],['',''],['DXI0_','DXI0i0_','DXI0i1_','DXI0i2_','DXI0i3_','DXI0i4_','DXI0i5_'],['','T']],[[''],[''],['DXME0_','DXMBC0_']]]);
+ASPx.AddSelectedItems('mnuDates',[[['dxm-selected',''],['',''],['DXI0_','DXI0i0_','DXI0i1_','DXI0i2_','DXI0i3_','DXI0i4_','DXI0i5_'],['','T']]]);
+ASPx.AddDisabledItems('mnuDates',[[['dxm-disabled'],[''],['DXI0_','DXI0i0_','DXI0i1_','DXI0i2_','DXI0i3_','DXI0i4_','DXI0i5_'],['','T']]]);
+ASPx.createControl(MVCxClientMenu,'mnuDates','',{'stateObject':{'itemsInfo':'BwEHAAINbm9hY3Rpb25EYXRlcwIFVE9EQVkCAAcGBwACCmR0MjAyNjEwMDECCFRodXJzZGF5AgAHAAcBAgpkdDIwMjYxMDAyAgZGcmlkYXkCAAcABwICCmR0MjAyNjEwMDMCCFNhdHVyZGF5AgAHAAcDAgpkdDIwMjYxMDA0AgZTdW5kYXkCAAcABwQCCmR0MjAyNjEwMDUCBk1vbmRheQIABwAHBQIKZHQyMDI2MTAwNgIHVHVlc2RheQIABwA='},'renderData':{'':[[0]],'0':[[0],[1],[2],[3],[4],[5]]},'appearAfter':100,'allowSelectItem':true,'selectedItemIndexPath':'0i4'},{'ItemClick':function(s,e){SelectedMenuDateItemChanged(e);}},null,{'items':[{'name':'noactionDates','items':[{'name':'dt20261001'},{'name':'dt20261002'},{'name':'dt20261003'},{'name':'dt20261004'},{'name':'dt20261005'},{'name':'dt20261006'}]}]});
+
+//-->
+</script>
+
+
+
+
+
+</td>
+
+    </tr>
+        <tr><td align="center"colspan="3" style="padding-bottom:24px;">Please speak to a Hospitality Manager for the most up-to-date allergen information.</td></tr>
+    
+</table>
+
+    <table border="0" width="100%" class="mnuOption" role="presentation">
+        <tr>
+            <td style="padding-bottom:12px;">
+
+    <div class="dxmLite_MaterialCompact dxm-ltr" role="application" aria-label="Horizontal menubar">
+	<div class="dxm-main dxm-horizontal dx-acc-r" id="mnuUnits" role="presentation">
+		<ul class="dx dxm-image-l dxm-noImages" role="menubar">
+			<li class="dxm-item menuButton" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-haspopup="true" aria-disabled="true"><span class="dx-vam">Locations</span></a></li>
+		</ul>
+	</div><b class="dx-clear"></b><div id="mnuUnits_DXM0_" style="z-index:20002;display:none;">
+		<div class="dxm-shadow dx-acc-r dxm-popup">
+			<ul class="dx dxm-noImages dxm-gutter" role="menu">
+				<li class="dxm-item dxm-subMenu" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-haspopup="true" aria-disabled="true"><span class="dx-vam">Bistro 2 Go</span></a><div class="dxm-popOut" aria-hidden="true">
+					<span class="dx-acc dxWeb_mVerticalPopOut_MaterialCompact dxm-pImage dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt=">" /></span>
+				</div><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item dxm-subMenu" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-haspopup="true" aria-disabled="true"><span class="dx-vam">Caf&#233; One</span></a><div class="dxm-popOut" aria-hidden="true">
+					<span class="dx-acc dxWeb_mVerticalPopOut_MaterialCompact dxm-pImage dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt=">" /></span>
+				</div><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item dxm-subMenu" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-haspopup="true" aria-disabled="true"><span class="dx-vam">Centro</span></a><div class="dxm-popOut" aria-hidden="true">
+					<span class="dx-acc dxWeb_mVerticalPopOut_MaterialCompact dxm-pImage dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt=">" /></span>
+				</div><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item dxm-subMenu" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-haspopup="true" aria-disabled="true"><span class="dx-vam">Eco Bean - MUMC</span></a><div class="dxm-popOut" aria-hidden="true">
+					<span class="dx-acc dxWeb_mVerticalPopOut_MaterialCompact dxm-pImage dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt=">" /></span>
+				</div><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item dxm-subMenu" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-haspopup="true" aria-disabled="true"><span class="dx-vam">IAHS Caf&#233;</span></a><div class="dxm-popOut" aria-hidden="true">
+					<span class="dx-acc dxWeb_mVerticalPopOut_MaterialCompact dxm-pImage dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt=">" /></span>
+				</div><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item dxm-subMenu" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-haspopup="true" aria-disabled="true"><span class="dx-vam">La Piazza</span></a><div class="dxm-popOut" aria-hidden="true">
+					<span class="dx-acc dxWeb_mVerticalPopOut_MaterialCompact dxm-pImage dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt=">" /></span>
+				</div><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item dxm-subMenu" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-haspopup="true" aria-disabled="true"><span class="dx-vam">Lincoln Alexander Hall</span></a><div class="dxm-popOut" aria-hidden="true">
+					<span class="dx-acc dxWeb_mVerticalPopOut_MaterialCompact dxm-pImage dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt=">" /></span>
+				</div><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item dxm-subMenu" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-haspopup="true" aria-disabled="true"><span class="dx-vam">Reactor Caf&#233; and Lounge</span></a><div class="dxm-popOut" aria-hidden="true">
+					<span class="dx-acc dxWeb_mVerticalPopOut_MaterialCompact dxm-pImage dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt=">" /></span>
+				</div><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item dxm-subMenu" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-haspopup="true" aria-disabled="true"><span class="dx-vam">The Bistro @ MKR</span></a><div class="dxm-popOut" aria-hidden="true">
+					<span class="dx-acc dxWeb_mVerticalPopOut_MaterialCompact dxm-pImage dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt=">" /></span>
+				</div><b class="dx-clear"></b></li>
+			</ul>
+		</div>
+	</div><div id="mnuUnits_DXM0i0_" style="z-index:20004;display:none;">
+		<div class="dxm-shadow dx-acc-r dxm-popup">
+			<ul class="dx dxm-noImages dxm-gutter" role="menu">
+				<li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">ALL DAY MENU</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">BTG: Breakfast</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Prepped Grab and Go</span></a><b class="dx-clear"></b></li>
+			</ul>
+		</div>
+	</div><div id="mnuUnits_DXM0i1_" style="z-index:20004;display:none;">
+		<div class="dxm-shadow dx-acc-r dxm-popup">
+			<ul class="dx dxm-noImages dxm-gutter" role="menu">
+				<li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Bakery Items</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Hot Grab and Go</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Prepped Grab and Go</span></a><b class="dx-clear"></b></li>
+			</ul>
+		</div>
+	</div><div id="mnuUnits_DXM0i2_" style="z-index:20004;display:none;">
+		<div class="dxm-shadow dx-acc-r dxm-popup">
+			<ul class="dx dxm-noImages dxm-gutter" role="menu">
+				<li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">BAKERY ITEMS</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Centro Perk</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Crave</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Pas Noodle</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Prepped Grab and Go</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">SMPL Rotational Menu</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Steeltown Grill</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Taste of Home</span></a><b class="dx-clear"></b></li>
+			</ul>
+		</div>
+	</div><div id="mnuUnits_DXM0i3_" style="z-index:20004;display:none;">
+		<div class="dxm-shadow dx-acc-r dxm-popup">
+			<ul class="dx dxm-noImages dxm-gutter" role="menu">
+				<li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Breakfast</span></a><b class="dx-clear"></b></li>
+			</ul>
+		</div>
+	</div><div id="mnuUnits_DXM0i4_" style="z-index:20004;display:none;">
+		<div class="dxm-shadow dx-acc-r dxm-popup">
+			<ul class="dx dxm-noImages dxm-gutter" role="menu">
+				<li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Bakery Items</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Capaletti&#39;s</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Grab &amp; Go</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Prepped Grab and Go</span></a><b class="dx-clear"></b></li>
+			</ul>
+		</div>
+	</div><div id="mnuUnits_DXM0i5_" style="z-index:20004;display:none;">
+		<div class="dxm-shadow dx-acc-r dxm-popup">
+			<ul class="dx dxm-noImages dxm-gutter" role="menu">
+				<li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Bakery Items</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Global Delights</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">GUACAMOLE</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Hammertown</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Prepped</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Promo Station</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Steeltown</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Tazij</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">The Cluck and Carry</span></a><b class="dx-clear"></b></li>
+			</ul>
+		</div>
+	</div><div id="mnuUnits_DXM0i6_" style="z-index:20004;display:none;">
+		<div class="dxm-shadow dx-acc-r dxm-popup">
+			<ul class="dx dxm-noImages dxm-gutter" role="menu">
+				<li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Brunch @ Global Fusion</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Fresh Pressed Waffles @ The Flavor Hub</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Global Fusion Feast</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Handheld Haus - The Flavour Hub</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Morning &amp; Mains</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Naan Stop - Global Fusion</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">SMPL</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">The Flavour Hub</span></a><b class="dx-clear"></b></li>
+			</ul>
+		</div>
+	</div><div id="mnuUnits_DXM0i7_" style="z-index:20004;display:none;">
+		<div class="dxm-shadow dx-acc-r dxm-popup">
+			<ul class="dx dxm-noImages dxm-gutter" role="menu">
+				<li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">ALL DAY MENU</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Baked Goods</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">Prepped Grab and Go</span></a><b class="dx-clear"></b></li>
+			</ul>
+		</div>
+	</div><div id="mnuUnits_DXM0i8_" style="z-index:20004;display:none;">
+		<div class="dxm-shadow dx-acc-r dxm-popup">
+			<ul class="dx dxm-noImages dxm-gutter" role="menu">
+				<li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">BREAKFAST CLASSICS</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">BTG+</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">CLASSICS</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">IL FORNO</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">SMPL</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">SOCIAL CORNER: BREAKFAST</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">SOCIAL CORNER</span></a><b class="dx-clear"></b></li><li class="dxm-spacing" role="presentation"></li><li class="dxm-item" role="presentation"><a class="dxm-content dxm-hasText dx dxalink" href="javascript:;" role="menuitem" aria-disabled="true"><span class="dx-vam">THE WOK</span></a><b class="dx-clear"></b></li>
+			</ul>
+		</div>
+	</div>
+</div><script id="dxss_881700885" type="text/javascript">
+<!--
+ASPx.AddHoverItems('mnuUnits',[[['dxm-hovered menuButton',''],['',''],['DXI0_'],['','T']],[[''],[''],['DXME0_','DXMBC0_','DXME0i0_','DXMBC0i0_','DXME0i1_','DXMBC0i1_','DXME0i2_','DXMBC0i2_','DXME0i3_','DXMBC0i3_','DXME0i4_','DXMBC0i4_','DXME0i5_','DXMBC0i5_','DXME0i6_','DXMBC0i6_','DXME0i7_','DXMBC0i7_','DXME0i8_','DXMBC0i8_']],[['dxm-hovered','',''],['','',''],['DXI0i0_','DXI0i1_','DXI0i2_','DXI0i3_','DXI0i4_','DXI0i5_','DXI0i6_','DXI0i7_','DXI0i8_'],['','P','T']],[['dxm-hovered',''],['',''],['DXI0i0i0_','DXI0i0i1_','DXI0i0i2_','DXI0i1i0_','DXI0i1i1_','DXI0i1i2_','DXI0i2i0_','DXI0i2i1_','DXI0i2i2_','DXI0i2i3_','DXI0i2i4_','DXI0i2i5_','DXI0i2i6_','DXI0i2i7_','DXI0i3i0_','DXI0i4i0_','DXI0i4i1_','DXI0i4i2_','DXI0i4i3_','DXI0i5i0_','DXI0i5i1_','DXI0i5i2_','DXI0i5i3_','DXI0i5i4_','DXI0i5i5_','DXI0i5i6_','DXI0i5i7_','DXI0i5i8_','DXI0i6i0_','DXI0i6i1_','DXI0i6i2_','DXI0i6i3_','DXI0i6i4_','DXI0i6i5_','DXI0i6i6_','DXI0i6i7_','DXI0i7i0_','DXI0i7i1_','DXI0i7i2_','DXI0i8i0_','DXI0i8i1_','DXI0i8i2_','DXI0i8i3_','DXI0i8i4_','DXI0i8i5_','DXI0i8i6_','DXI0i8i7_'],['','T']]]);
+ASPx.AddSelectedItems('mnuUnits',[[['dxm-selected menuButton',''],['',''],['DXI0_'],['','T']],[['dxm-selected','',''],['','',''],['DXI0i0_','DXI0i1_','DXI0i2_','DXI0i3_','DXI0i4_','DXI0i5_','DXI0i6_','DXI0i7_','DXI0i8_'],['','P','T']],[['dxm-selected',''],['',''],['DXI0i0i0_','DXI0i0i1_','DXI0i0i2_','DXI0i1i0_','DXI0i1i1_','DXI0i1i2_','DXI0i2i0_','DXI0i2i1_','DXI0i2i2_','DXI0i2i3_','DXI0i2i4_','DXI0i2i5_','DXI0i2i6_','DXI0i2i7_','DXI0i3i0_','DXI0i4i0_','DXI0i4i1_','DXI0i4i2_','DXI0i4i3_','DXI0i5i0_','DXI0i5i1_','DXI0i5i2_','DXI0i5i3_','DXI0i5i4_','DXI0i5i5_','DXI0i5i6_','DXI0i5i7_','DXI0i5i8_','DXI0i6i0_','DXI0i6i1_','DXI0i6i2_','DXI0i6i3_','DXI0i6i4_','DXI0i6i5_','DXI0i6i6_','DXI0i6i7_','DXI0i7i0_','DXI0i7i1_','DXI0i7i2_','DXI0i8i0_','DXI0i8i1_','DXI0i8i2_','DXI0i8i3_','DXI0i8i4_','DXI0i8i5_','DXI0i8i6_','DXI0i8i7_'],['','T']]]);
+ASPx.AddDisabledItems('mnuUnits',[[['dxm-disabled'],[''],['DXI0_','DXI0i0i0_','DXI0i0i1_','DXI0i0i2_','DXI0i1i0_','DXI0i1i1_','DXI0i1i2_','DXI0i2i0_','DXI0i2i1_','DXI0i2i2_','DXI0i2i3_','DXI0i2i4_','DXI0i2i5_','DXI0i2i6_','DXI0i2i7_','DXI0i3i0_','DXI0i4i0_','DXI0i4i1_','DXI0i4i2_','DXI0i4i3_','DXI0i5i0_','DXI0i5i1_','DXI0i5i2_','DXI0i5i3_','DXI0i5i4_','DXI0i5i5_','DXI0i5i6_','DXI0i5i7_','DXI0i5i8_','DXI0i6i0_','DXI0i6i1_','DXI0i6i2_','DXI0i6i3_','DXI0i6i4_','DXI0i6i5_','DXI0i6i6_','DXI0i6i7_','DXI0i7i0_','DXI0i7i1_','DXI0i7i2_','DXI0i8i0_','DXI0i8i1_','DXI0i8i2_','DXI0i8i3_','DXI0i8i4_','DXI0i8i5_','DXI0i8i6_','DXI0i8i7_'],['','T']],[['dxm-disabled'],[''],['DXI0i0_','DXI0i1_','DXI0i2_','DXI0i3_','DXI0i4_','DXI0i5_','DXI0i6_','DXI0i7_','DXI0i8_'],['','P','T']]]);
+ASPx.createControl(MVCxClientMenu,'mnuUnits','',{'accessibilityCompliant':true,'stateObject':{'itemsInfo':'BwEHAAIIbm9hY3Rpb24CCUxvY2F0aW9ucwIABwkHAAIIbm9hY3Rpb24CC0Jpc3RybyAyIEdvAgAHAwcAAiQyYjYzYmI1Ni1lYjZlLTQzZmYtOGM5MS1jNTc5MzhhZDdhZjcCDEFMTCBEQVkgTUVOVQIABwAHAQIkMjdlMzVmYWYtNTFmNC00ODkwLTg2YzQtZTkyMDVhZmI1MTliAg5CVEc6IEJyZWFrZmFzdAIABwAHAgIkM2Y3MmYxZjItZmY0OS00NDNjLWIwMTEtM2M1MzZhMDFiMzFlAhNQcmVwcGVkIEdyYWIgYW5kIEdvAgAHAAcBAghub2FjdGlvbgIJQ2Fmw6kgT25lAgAHAwcAAiQ3MWY0Mjg5Ny00YzU3LTRlNzgtYTU0Yy0yYzM5MTBiMDA2OWYCDEJha2VyeSBJdGVtcwIABwAHAQIkZDJjZDEzN2YtZGY0Ni00NGIwLTlmNDYtODliMzAyNzlmMDJkAg9Ib3QgR3JhYiBhbmQgR28CAAcABwICJGM1Yzg3MzU4LTIyYmYtNDA2Ni1iYmNjLTNkNzljZDU5MmEzNgITUHJlcHBlZCBHcmFiIGFuZCBHbwIABwAHAgIIbm9hY3Rpb24CBkNlbnRybwIABwgHAAIkZmQ4NjJlOTktNDZiOS00YjA0LWE4MjEtNDk0MzQ4ODAyYzE4AgxCQUtFUlkgSVRFTVMCAAcABwECJDcyYzRkMGQzLTZjNWYtNGEzMS1iZTdjLThiZjI0ZTQ2NjY0NQILQ2VudHJvIFBlcmsCAAcABwICJDkyMDRlZWQ3LWQ4N2EtNDg2NC1iM2ExLWEyMWYyMDRjODE0ZAIFQ3JhdmUCAAcABwMCJDk4MjFhM2Q4LWQ1MmItNDY3My1iYTg1LWEwNjc2YmM1MDM4NAIKUGFzIE5vb2RsZQIABwAHBAIkNTBmMjBjYjEtMmNjYy00YWFlLWE3NGYtMGFlZDE1NDQ2ZGE1AhNQcmVwcGVkIEdyYWIgYW5kIEdvAgAHAAcFAiRhYjEwNjljYS1hOGZlLTQ0NWMtOWI4Zi1mYWU2NGNiMzY5OTECFFNNUEwgUm90YXRpb25hbCBNZW51AgAHAAcGAiRiNjUzY2I0Yy1kZGNlLTRjMzEtOWEzNS01YjhjODkyZDhlZjICD1N0ZWVsdG93biBHcmlsbAIABwAHBwIkOGRmMGM5ZmItNmEwMS00MDc3LWI0YWItYzE2NTAyNmRiYWYyAg1UYXN0ZSBvZiBIb21lAgAHAAcDAghub2FjdGlvbgIPRWNvIEJlYW4gLSBNVU1DAgAHAQcAAiQ4MmY0Yjc2Ni1hNzJkLTQyYjEtODQ4Ny1iNGNlMzM3OTNjNzACCUJyZWFrZmFzdAIABwAHBAIIbm9hY3Rpb24CCklBSFMgQ2Fmw6kCAAcEBwACJGI1MDk4NjdiLTA0YTgtNDlmYi05M2I1LTU2M2Q5OWVjYjg2OAIMQmFrZXJ5IEl0ZW1zAgAHAAcBAiQ5N2NlZGM3Zi05MTVjLTQzM2YtYjYwZS1lYjJhMmJkY2ZjYTgCC0NhcGFsZXR0aSdzAgAHAAcCAiQxNmZiNjAwMS0zY2EyLTQ2NjItOTY4OS0xMzhiZTkzNjc0ZjkCCUdyYWIgJiBHbwIABwAHAwIkMWQ0NTU3MjEtYzJkZi00MGEwLTk5YmYtNjFlOGUwNjY0ZGMyAhNQcmVwcGVkIEdyYWIgYW5kIEdvAgAHAAcFAghub2FjdGlvbgIJTGEgUGlhenphAgAHCQcAAiRlMzY0YzUyOS05NDc1LTQwNzktOGMyNS04MmQ0NWZjNDVhNzECDEJha2VyeSBJdGVtcwIABwAHAQIkZjNhMDc5OTUtNzVlZS00MGUxLTlkNDktZmYyOWViODU4Y2I0Ag9HbG9iYWwgRGVsaWdodHMCAAcABwICJDIyYTcxYTA0LTE1NDUtNDg0Ni05MTRmLWQ2ZWQ0NzVkYTkxMQIJR1VBQ0FNT0xFAgAHAAcDAiRhMTcxMTgxMy1jMjI3LTQ1OTktOGM1Ny0zNzQ3NmVjMTA5OGECCkhhbW1lcnRvd24CAAcABwQCJGM0MTM2ZDI2LTFhYjUtNGYwZS04YjNlLTFkNjg1YWQyNDA1NwIHUHJlcHBlZAIABwAHBQIkZmUxZWQ3OGYtNjM3NS00MmQyLTljMGUtYzg5MTg5ZTVjNGM3Ag1Qcm9tbyBTdGF0aW9uAgAHAAcGAiRlZDY3Njg2MS1kNTFkLTQwNzYtODY3Mi1kMTVmOGQ3OTRmZGUCCVN0ZWVsdG93bgIABwAHBwIkNjE5ZDNiOGYtMjJmZC00YjZkLWIyMTEtMjdkN2JlNjE1Y2EzAgVUYXppagIABwAHCAIkNTg2ODc4NjctNTM2OS00YWU0LTg5MDUtOTgwZDRkMDI1MmIxAhNUaGUgQ2x1Y2sgYW5kIENhcnJ5AgAHAAcGAghub2FjdGlvbgIWTGluY29sbiBBbGV4YW5kZXIgSGFsbAIABwgHAAIkODE1MTdhYjQtNjI0ZS00N2JlLTk5YzEtOTgyYmYxODFiY2I2AhZCcnVuY2ggQCBHbG9iYWwgRnVzaW9uAgAHAAcBAiRkMjgzYWUxMS1iMjFlLTRmMDctYWZkOC1lODVmMTg5MDRlZmECJkZyZXNoIFByZXNzZWQgV2FmZmxlcyBAIFRoZSBGbGF2b3IgSHViAgAHAAcCAiQzZjQ5ZGVkOC1iYjcxLTQ1NGQtODMxZi1mZWRmNjcwZDViNWMCE0dsb2JhbCBGdXNpb24gRmVhc3QCAAcABwMCJDczZDc0ZDNhLTQxNzctNDdmYy05ODU3LTAzODJmNTc2OTMzYQIfSGFuZGhlbGQgSGF1cyAtIFRoZSBGbGF2b3VyIEh1YgIABwAHBAIkYTc0NWRkOWQtMGJhZS00N2IxLThiZmMtOTI5ZDlhOTI5NzA2Ag9Nb3JuaW5nICYgTWFpbnMCAAcABwUCJDRkNzFlNGRkLWVlYmMtNDc2MC04OTRiLTI4MWM4ZTExZmEwNwIZTmFhbiBTdG9wIC0gR2xvYmFsIEZ1c2lvbgIABwAHBgIkOWFkMmEyNWItMWNkOS00ZTVkLWI5NmUtZDJmNmEzMGU3ZWVkAgRTTVBMAgAHAAcHAiQ5Yjk2ZDViYS0yMmM0LTRmYWQtYWYxNy0wYzJlOTJmMGE2MmQCD1RoZSBGbGF2b3VyIEh1YgIABwAHBwIIbm9hY3Rpb24CGFJlYWN0b3IgQ2Fmw6kgYW5kIExvdW5nZQIABwMHAAIkZmMwYjVmNDUtZDQ1OC00ZmZmLThlMjEtNDI4NDkxOGUyMWJiAgxBTEwgREFZIE1FTlUCAAcABwECJDA4MThkOWNlLWJiNjktNGNmMy04N2U5LTczNTU5YWUxODI1YwILQmFrZWQgR29vZHMCAAcABwICJGI2MWNlN2QwLWM0MGYtNDRlMi05MmY5LTUwMzMyMTQ4NzdiNQITUHJlcHBlZCBHcmFiIGFuZCBHbwIABwAHCAIIbm9hY3Rpb24CEFRoZSBCaXN0cm8gQCBNS1ICAAcIBwACJGZhMGFhZTc0LTIzNjgtNDU1Yi05MTFjLTVjMWZlODIxN2IzZAISQlJFQUtGQVNUIENMQVNTSUNTAgAHAAcBAiQ1MDZkMGFmYS05NzI3LTQyNWItOTdiMy04MDhiYjM1NzkyMzYCBEJURysCAAcABwICJGIyN2YwYmM5LTk5ODQtNDY0YS04ZGI2LTY4ZGMyNGJjN2Y3OAIIQ0xBU1NJQ1MCAAcABwMCJDQxODQ4ZDBiLWZiNGYtNDA3Yy1hOGNjLTJiMzI4NGQwM2Q2NwIISUwgRk9STk8CAAcABwQCJDQzZDU2MWIwLWYwYTItNGRiMC05YzIwLWVlNGQ0NDA2NTk5MgIEU01QTAIABwAHBQIkYWViZDI3NWUtNGNiOC00YjEzLThkYmItODU1YzFlZmEyNTM1AhhTT0NJQUwgQ09STkVSOiBCUkVBS0ZBU1QCAAcABwYCJGJmNDYyMDBjLWEwYTktNGNmZi04MWJlLWU1NzgxOGE3N2I5OAINU09DSUFMIENPUk5FUgIABwAHBwIkZDZlOTdjM2YtNDA2My00M2YwLTlhNzMtMTU3YWZjZTNlMjk2AgdUSEUgV09LAgAHAA=='},'renderData':{'':[[0]],'0':[[0],[1],[2],[3],[4],[5],[6],[7],[8]],'0i0':[[0],[1],[2]],'0i1':[[0],[1],[2]],'0i2':[[0],[1],[2],[3],[4],[5],[6],[7]],'0i3':[[0]],'0i4':[[0],[1],[2],[3]],'0i5':[[0],[1],[2],[3],[4],[5],[6],[7],[8]],'0i6':[[0],[1],[2],[3],[4],[5],[6],[7]],'0i7':[[0],[1],[2]],'0i8':[[0],[1],[2],[3],[4],[5],[6],[7]]},'allowSelectItem':true,'selectedItemIndexPath':''},{'ItemClick':function(s,e){SelectedMenuItemChanged(e);}},null,{'items':[{'name':'noaction','items':[{'name':'noaction','items':[{'name':'2b63bb56-eb6e-43ff-8c91-c57938ad7af7'},{'name':'27e35faf-51f4-4890-86c4-e9205afb519b'},{'name':'3f72f1f2-ff49-443c-b011-3c536a01b31e'}]},{'name':'noaction','items':[{'name':'71f42897-4c57-4e78-a54c-2c3910b0069f'},{'name':'d2cd137f-df46-44b0-9f46-89b30279f02d'},{'name':'c5c87358-22bf-4066-bbcc-3d79cd592a36'}]},{'name':'noaction','items':[{'name':'fd862e99-46b9-4b04-a821-494348802c18'},{'name':'72c4d0d3-6c5f-4a31-be7c-8bf24e466645'},{'name':'9204eed7-d87a-4864-b3a1-a21f204c814d'},{'name':'9821a3d8-d52b-4673-ba85-a0676bc50384'},{'name':'50f20cb1-2ccc-4aae-a74f-0aed15446da5'},{'name':'ab1069ca-a8fe-445c-9b8f-fae64cb36991'},{'name':'b653cb4c-ddce-4c31-9a35-5b8c892d8ef2'},{'name':'8df0c9fb-6a01-4077-b4ab-c165026dbaf2'}]},{'name':'noaction','items':[{'name':'82f4b766-a72d-42b1-8487-b4ce33793c70'}]},{'name':'noaction','items':[{'name':'b509867b-04a8-49fb-93b5-563d99ecb868'},{'name':'97cedc7f-915c-433f-b60e-eb2a2bdcfca8'},{'name':'16fb6001-3ca2-4662-9689-138be93674f9'},{'name':'1d455721-c2df-40a0-99bf-61e8e0664dc2'}]},{'name':'noaction','items':[{'name':'e364c529-9475-4079-8c25-82d45fc45a71'},{'name':'f3a07995-75ee-40e1-9d49-ff29eb858cb4'},{'name':'22a71a04-1545-4846-914f-d6ed475da911'},{'name':'a1711813-c227-4599-8c57-37476ec1098a'},{'name':'c4136d26-1ab5-4f0e-8b3e-1d685ad24057'},{'name':'fe1ed78f-6375-42d2-9c0e-c89189e5c4c7'},{'name':'ed676861-d51d-4076-8672-d15f8d794fde'},{'name':'619d3b8f-22fd-4b6d-b211-27d7be615ca3'},{'name':'58687867-5369-4ae4-8905-980d4d0252b1'}]},{'name':'noaction','items':[{'name':'81517ab4-624e-47be-99c1-982bf181bcb6'},{'name':'d283ae11-b21e-4f07-afd8-e85f18904efa'},{'name':'3f49ded8-bb71-454d-831f-fedf670d5b5c'},{'name':'73d74d3a-4177-47fc-9857-0382f576933a'},{'name':'a745dd9d-0bae-47b1-8bfc-929d9a929706'},{'name':'4d71e4dd-eebc-4760-894b-281c8e11fa07'},{'name':'9ad2a25b-1cd9-4e5d-b96e-d2f6a30e7eed'},{'name':'9b96d5ba-22c4-4fad-af17-0c2e92f0a62d'}]},{'name':'noaction','items':[{'name':'fc0b5f45-d458-4fff-8e21-4284918e21bb'},{'name':'0818d9ce-bb69-4cf3-87e9-73559ae1825c'},{'name':'b61ce7d0-c40f-44e2-92f9-5033214877b5'}]},{'name':'noaction','items':[{'name':'fa0aae74-2368-455b-911c-5c1fe8217b3d'},{'name':'506d0afa-9727-425b-97b3-808bb3579236'},{'name':'b27f0bc9-9984-464a-8db6-68dc24bc7f78'},{'name':'41848d0b-fb4f-407c-a8cc-2b3284d03d67'},{'name':'43d561b0-f0a2-4db0-9c20-ee4d44065992'},{'name':'aebd275e-4cb8-4b13-8dbb-855c1efa2535'},{'name':'bf46200c-a0a9-4cff-81be-e57818a77b98'},{'name':'d6e97c3f-4063-43f0-9a73-157afce3e296'}]}]}]});
+
+//-->
+</script>
+
+
+
+
+</td>
+            <td class="menuName" id="tdMenuName">Description of Selected Menu</td>
+        </tr>
+    </table>
+    <table border="0" width="100%" role="presentation">
+        <tr>
+            <td width="380px" style="font-style:italic;padding-bottom:2px;text-align:left;">Click on a menu item to see its Nutritional Breakdown</td>
+            <td  id="tdAllergenLabel" width="150px" style="display:none;font-weight:bold;padding-bottom:2px;">Excluded Allergens:</td><td id="tdAllergens"></td>
+            <td id="tdPreferenceLabel" width="90px"style="display: none;font-weight: bold; padding-bottom: 2px;">Only Show:</td><td id="tdPreferences"></td>
+
+            <td style="text-align:right;width:40px;padding-right:8px;">
+                <a class="dxbButton_MaterialCompact dxbButtonSys" id="btnFilter" style="font-size:Small;"><img class="dx-vam" src="/Nutrition/Content/Images/FilterEditor.png" alt="" style="margin-right:4px;" /><span class="dx-vam">Allergen Filter</span></a><script id="dxss_39066382" type="text/javascript">
+<!--
+ASPx.AddDisabledItems('btnFilter',[[['dxbDisabled_MaterialCompact'],[''],[''],['','TC']]]);
+ASPx.InitializeSVGSprite();
+ASPx.createControl(MVCxClientButton,'btnFilter','',{'useSubmitBehavior':false},{'Click':function(s,e){popFilter.Show();}});
+
+//-->
+</script>
+            </td>
+        </tr>
+    </table>
+    <table border="0" width="100%" role="presentation">
+
+        <tr>
+            <td valign="top" class="navOption" role="navigation">
+
+<ul class="dxnbLite_MaterialCompact dx-acc-r dxnbSys" id="navUnits">
+	<li class="dxnb-gr" style="margin-bottom:0px;"><div class="dxnb-header" style="cursor:default;">
+		<span class="dx-acc dxWeb_nbCollapse_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="true" href="javascript:;"><span class="dxnb-ghtext">Bistro 2 Go</span></a>
+	</div><div class="dxnb-headerCollapsed" style="display:none;">
+		<span class="dx-acc dxWeb_nbExpand_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="true" href="javascript:;"><span class="dxnb-ghtext">Bistro 2 Go</span></a>
+	</div><ul class="dxnb-content dxnb-left">
+		<li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">ALL DAY MENU</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">BTG: Breakfast</span></a></li><li class="dxnb-item dxnb-last"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Prepped Grab and Go</span></a></li>
+	</ul></li><li class="dxnb-gr" style="margin-bottom:0px;"><div class="dxnb-header" style="display:none;cursor:default;">
+		<span class="dx-acc dxWeb_nbCollapse_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">Caf&#233; One</span></a>
+	</div><div class="dxnb-headerCollapsed">
+		<span class="dx-acc dxWeb_nbExpand_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">Caf&#233; One</span></a>
+	</div><ul class="dxnb-content dxnb-left" style="display:none;">
+		<li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Bakery Items</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Hot Grab and Go</span></a></li><li class="dxnb-item dxnb-last"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Prepped Grab and Go</span></a></li>
+	</ul></li><li class="dxnb-gr" style="margin-bottom:0px;"><div class="dxnb-header" style="display:none;cursor:default;">
+		<span class="dx-acc dxWeb_nbCollapse_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">Centro</span></a>
+	</div><div class="dxnb-headerCollapsed">
+		<span class="dx-acc dxWeb_nbExpand_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">Centro</span></a>
+	</div><ul class="dxnb-content dxnb-left" style="display:none;">
+		<li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">BAKERY ITEMS</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Centro Perk</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Crave</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Pas Noodle</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Prepped Grab and Go</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">SMPL Rotational Menu</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Steeltown Grill</span></a></li><li class="dxnb-item dxnb-last"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Taste of Home</span></a></li>
+	</ul></li><li class="dxnb-gr" style="margin-bottom:0px;"><div class="dxnb-header" style="display:none;cursor:default;">
+		<span class="dx-acc dxWeb_nbCollapse_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">Eco Bean - MUMC</span></a>
+	</div><div class="dxnb-headerCollapsed">
+		<span class="dx-acc dxWeb_nbExpand_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">Eco Bean - MUMC</span></a>
+	</div><ul class="dxnb-content dxnb-left" style="display:none;">
+		<li class="dxnb-item dxnb-last"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Breakfast</span></a></li>
+	</ul></li><li class="dxnb-gr" style="margin-bottom:0px;"><div class="dxnb-header" style="display:none;cursor:default;">
+		<span class="dx-acc dxWeb_nbCollapse_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">IAHS Caf&#233;</span></a>
+	</div><div class="dxnb-headerCollapsed">
+		<span class="dx-acc dxWeb_nbExpand_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">IAHS Caf&#233;</span></a>
+	</div><ul class="dxnb-content dxnb-left" style="display:none;">
+		<li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Bakery Items</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Capaletti&#39;s</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Grab &amp; Go</span></a></li><li class="dxnb-item dxnb-last"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Prepped Grab and Go</span></a></li>
+	</ul></li><li class="dxnb-gr" style="margin-bottom:0px;"><div class="dxnb-header" style="display:none;cursor:default;">
+		<span class="dx-acc dxWeb_nbCollapse_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">La Piazza</span></a>
+	</div><div class="dxnb-headerCollapsed">
+		<span class="dx-acc dxWeb_nbExpand_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">La Piazza</span></a>
+	</div><ul class="dxnb-content dxnb-left" style="display:none;">
+		<li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Bakery Items</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Global Delights</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">GUACAMOLE</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Hammertown</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Prepped</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Promo Station</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Steeltown</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Tazij</span></a></li><li class="dxnb-item dxnb-last"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">The Cluck and Carry</span></a></li>
+	</ul></li><li class="dxnb-gr" style="margin-bottom:0px;"><div class="dxnb-header" style="display:none;cursor:default;">
+		<span class="dx-acc dxWeb_nbCollapse_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">Lincoln Alexander Hall</span></a>
+	</div><div class="dxnb-headerCollapsed">
+		<span class="dx-acc dxWeb_nbExpand_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">Lincoln Alexander Hall</span></a>
+	</div><ul class="dxnb-content dxnb-left" style="display:none;">
+		<li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Brunch @ Global Fusion</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Fresh Pressed Waffles @ The Flavor Hub</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Global Fusion Feast</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Handheld Haus - The Flavour Hub</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Morning &amp; Mains</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Naan Stop - Global Fusion</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">SMPL</span></a></li><li class="dxnb-item dxnb-last"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">The Flavour Hub</span></a></li>
+	</ul></li><li class="dxnb-gr" style="margin-bottom:0px;"><div class="dxnb-header" style="display:none;cursor:default;">
+		<span class="dx-acc dxWeb_nbCollapse_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">Reactor Caf&#233; and Lounge</span></a>
+	</div><div class="dxnb-headerCollapsed">
+		<span class="dx-acc dxWeb_nbExpand_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">Reactor Caf&#233; and Lounge</span></a>
+	</div><ul class="dxnb-content dxnb-left" style="display:none;">
+		<li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">ALL DAY MENU</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Baked Goods</span></a></li><li class="dxnb-item dxnb-last"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">Prepped Grab and Go</span></a></li>
+	</ul></li><li class="dxnb-gr"><div class="dxnb-header" style="display:none;cursor:default;">
+		<span class="dx-acc dxWeb_nbCollapse_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">The Bistro @ MKR</span></a>
+	</div><div class="dxnb-headerCollapsed">
+		<span class="dx-acc dxWeb_nbExpand_MaterialCompact dxnb-btnLeft dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" /></span><a class="dxalink dx-vam" aria-expanded="false" href="javascript:;"><span class="dxnb-ghtext">The Bistro @ MKR</span></a>
+	</div><ul class="dxnb-content dxnb-left" style="display:none;">
+		<li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">BREAKFAST CLASSICS</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">BTG+</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">CLASSICS</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">IL FORNO</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">SMPL</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">SOCIAL CORNER: BREAKFAST</span></a></li><li class="dxnb-item"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">SOCIAL CORNER</span></a></li><li class="dxnb-item dxnb-last"><a class="dxnb-link dxalink" href="javascript:;" style="padding-left:50px;"><span class="dx-vam">THE WOK</span></a></li>
+	</ul></li>
+</ul><b class="dx-clear"></b><script id="dxss_1529666019" type="text/javascript">
+<!--
+ASPx.AddHoverItems('navUnits',[[['dxnb-headerHover'],[''],['GHE0','GHE1','GHE2','GHE3','GHE4','GHE5','GHE6','GHE7','GHE8']],[['dxnb-headerCollapsedHover'],[''],['GHC0','GHC1','GHC2','GHC3','GHC4','GHC5','GHC6','GHC7','GHC8']],[['dxnb-itemHover',''],['','padding-left:50px;'],['I0i0_','I0i1_','I0i2_','I1i0_','I1i1_','I1i2_','I2i0_','I2i1_','I2i2_','I2i3_','I2i4_','I2i5_','I2i6_','I2i7_','I3i0_','I4i0_','I4i1_','I4i2_','I4i3_','I5i0_','I5i1_','I5i2_','I5i3_','I5i4_','I5i5_','I5i6_','I5i7_','I5i8_','I6i0_','I6i1_','I6i2_','I6i3_','I6i4_','I6i5_','I6i6_','I6i7_','I7i0_','I7i1_','I7i2_','I8i0_','I8i1_','I8i2_','I8i3_','I8i4_','I8i5_','I8i6_','I8i7_'],['','T']]]);
+ASPx.AddSelectedItems('navUnits',[[['dxnb-itemSelected',''],['','padding-left:50px;'],['I0i0_','I0i1_','I0i2_','I1i0_','I1i1_','I1i2_','I2i0_','I2i1_','I2i2_','I2i3_','I2i4_','I2i5_','I2i6_','I2i7_','I3i0_','I4i0_','I4i1_','I4i2_','I4i3_','I5i0_','I5i1_','I5i2_','I5i3_','I5i4_','I5i5_','I5i6_','I5i7_','I5i8_','I6i0_','I6i1_','I6i2_','I6i3_','I6i4_','I6i5_','I6i6_','I6i7_','I7i0_','I7i1_','I7i2_','I8i0_','I8i1_','I8i2_','I8i3_','I8i4_','I8i5_','I8i6_','I8i7_'],['','T']]]);
+ASPx.AddDisabledItems('navUnits',[[['dxnb-itemDisabled dxnbLiteDisabled_MaterialCompact',''],['',''],['I0i0_','I0i1_','I0i2_','I1i0_','I1i1_','I1i2_','I2i0_','I2i1_','I2i2_','I2i3_','I2i4_','I2i5_','I2i6_','I2i7_','I3i0_','I4i0_','I4i1_','I4i2_','I4i3_','I5i0_','I5i1_','I5i2_','I5i3_','I5i4_','I5i5_','I5i6_','I5i7_','I5i8_','I6i0_','I6i1_','I6i2_','I6i3_','I6i4_','I6i5_','I6i6_','I6i7_','I7i0_','I7i1_','I7i2_','I8i0_','I8i1_','I8i2_','I8i3_','I8i4_','I8i5_','I8i6_','I8i7_'],['','T']]]);
+ASPx.createControl(MVCxClientNavBar,'navUnits','',{'accessibilityCompliant':true,'ariaDescription':'{"n":"","c":[{"n":"groupHeaderContainer","s":"ul[role=\\"tablist\\"] > li","0":"presentation"},{"6":1,"n":"groupHeaderItem","s":"ul[role=\\"tablist\\"] > li > div > a","0":"tab"},{"n":"contentItemsContainer","s":"ul[role=\\"tablist\\"] > li > ul","0":"tablist"},{"n":"contentItemContainer","s":"ul[role=\\"tablist\\"] > li > ul > li","0":"presentation"},{"n":"contentItem","s":"ul[role=\\"tablist\\"] > li > ul > li > a","0":"tab"},{"n":"presentationElements","s":"div:not([role]), span:not([role]), img:not([role])","0":"presentation"}],"s":"","1":"Navigation bar. Use the Tab key for navigation.","0":"tablist"}','stateObject':{'itemsInfo':'BwkHAAIAAgtCaXN0cm8gMiBHbwcDBwACJDJiNjNiYjU2LWViNmUtNDNmZi04YzkxLWM1NzkzOGFkN2FmNwIMQUxMIERBWSBNRU5VBwECJDI3ZTM1ZmFmLTUxZjQtNDg5MC04NmM0LWU5MjA1YWZiNTE5YgIOQlRHOiBCcmVha2Zhc3QHAgIkM2Y3MmYxZjItZmY0OS00NDNjLWIwMTEtM2M1MzZhMDFiMzFlAhNQcmVwcGVkIEdyYWIgYW5kIEdvBwECAAIJQ2Fmw6kgT25lBwMHAAIkNzFmNDI4OTctNGM1Ny00ZTc4LWE1NGMtMmMzOTEwYjAwNjlmAgxCYWtlcnkgSXRlbXMHAQIkZDJjZDEzN2YtZGY0Ni00NGIwLTlmNDYtODliMzAyNzlmMDJkAg9Ib3QgR3JhYiBhbmQgR28HAgIkYzVjODczNTgtMjJiZi00MDY2LWJiY2MtM2Q3OWNkNTkyYTM2AhNQcmVwcGVkIEdyYWIgYW5kIEdvBwICAAIGQ2VudHJvBwgHAAIkZmQ4NjJlOTktNDZiOS00YjA0LWE4MjEtNDk0MzQ4ODAyYzE4AgxCQUtFUlkgSVRFTVMHAQIkNzJjNGQwZDMtNmM1Zi00YTMxLWJlN2MtOGJmMjRlNDY2NjQ1AgtDZW50cm8gUGVyawcCAiQ5MjA0ZWVkNy1kODdhLTQ4NjQtYjNhMS1hMjFmMjA0YzgxNGQCBUNyYXZlBwMCJDk4MjFhM2Q4LWQ1MmItNDY3My1iYTg1LWEwNjc2YmM1MDM4NAIKUGFzIE5vb2RsZQcEAiQ1MGYyMGNiMS0yY2NjLTRhYWUtYTc0Zi0wYWVkMTU0NDZkYTUCE1ByZXBwZWQgR3JhYiBhbmQgR28HBQIkYWIxMDY5Y2EtYThmZS00NDVjLTliOGYtZmFlNjRjYjM2OTkxAhRTTVBMIFJvdGF0aW9uYWwgTWVudQcGAiRiNjUzY2I0Yy1kZGNlLTRjMzEtOWEzNS01YjhjODkyZDhlZjICD1N0ZWVsdG93biBHcmlsbAcHAiQ4ZGYwYzlmYi02YTAxLTQwNzctYjRhYi1jMTY1MDI2ZGJhZjICDVRhc3RlIG9mIEhvbWUHAwIAAg9FY28gQmVhbiAtIE1VTUMHAQcAAiQ4MmY0Yjc2Ni1hNzJkLTQyYjEtODQ4Ny1iNGNlMzM3OTNjNzACCUJyZWFrZmFzdAcEAgACCklBSFMgQ2Fmw6kHBAcAAiRiNTA5ODY3Yi0wNGE4LTQ5ZmItOTNiNS01NjNkOTllY2I4NjgCDEJha2VyeSBJdGVtcwcBAiQ5N2NlZGM3Zi05MTVjLTQzM2YtYjYwZS1lYjJhMmJkY2ZjYTgCC0NhcGFsZXR0aSdzBwICJDE2ZmI2MDAxLTNjYTItNDY2Mi05Njg5LTEzOGJlOTM2NzRmOQIJR3JhYiAmIEdvBwMCJDFkNDU1NzIxLWMyZGYtNDBhMC05OWJmLTYxZThlMDY2NGRjMgITUHJlcHBlZCBHcmFiIGFuZCBHbwcFAgACCUxhIFBpYXp6YQcJBwACJGUzNjRjNTI5LTk0NzUtNDA3OS04YzI1LTgyZDQ1ZmM0NWE3MQIMQmFrZXJ5IEl0ZW1zBwECJGYzYTA3OTk1LTc1ZWUtNDBlMS05ZDQ5LWZmMjllYjg1OGNiNAIPR2xvYmFsIERlbGlnaHRzBwICJDIyYTcxYTA0LTE1NDUtNDg0Ni05MTRmLWQ2ZWQ0NzVkYTkxMQIJR1VBQ0FNT0xFBwMCJGExNzExODEzLWMyMjctNDU5OS04YzU3LTM3NDc2ZWMxMDk4YQIKSGFtbWVydG93bgcEAiRjNDEzNmQyNi0xYWI1LTRmMGUtOGIzZS0xZDY4NWFkMjQwNTcCB1ByZXBwZWQHBQIkZmUxZWQ3OGYtNjM3NS00MmQyLTljMGUtYzg5MTg5ZTVjNGM3Ag1Qcm9tbyBTdGF0aW9uBwYCJGVkNjc2ODYxLWQ1MWQtNDA3Ni04NjcyLWQxNWY4ZDc5NGZkZQIJU3RlZWx0b3duBwcCJDYxOWQzYjhmLTIyZmQtNGI2ZC1iMjExLTI3ZDdiZTYxNWNhMwIFVGF6aWoHCAIkNTg2ODc4NjctNTM2OS00YWU0LTg5MDUtOTgwZDRkMDI1MmIxAhNUaGUgQ2x1Y2sgYW5kIENhcnJ5BwYCAAIWTGluY29sbiBBbGV4YW5kZXIgSGFsbAcIBwACJDgxNTE3YWI0LTYyNGUtNDdiZS05OWMxLTk4MmJmMTgxYmNiNgIWQnJ1bmNoIEAgR2xvYmFsIEZ1c2lvbgcBAiRkMjgzYWUxMS1iMjFlLTRmMDctYWZkOC1lODVmMTg5MDRlZmECJkZyZXNoIFByZXNzZWQgV2FmZmxlcyBAIFRoZSBGbGF2b3IgSHViBwICJDNmNDlkZWQ4LWJiNzEtNDU0ZC04MzFmLWZlZGY2NzBkNWI1YwITR2xvYmFsIEZ1c2lvbiBGZWFzdAcDAiQ3M2Q3NGQzYS00MTc3LTQ3ZmMtOTg1Ny0wMzgyZjU3NjkzM2ECH0hhbmRoZWxkIEhhdXMgLSBUaGUgRmxhdm91ciBIdWIHBAIkYTc0NWRkOWQtMGJhZS00N2IxLThiZmMtOTI5ZDlhOTI5NzA2Ag9Nb3JuaW5nICYgTWFpbnMHBQIkNGQ3MWU0ZGQtZWViYy00NzYwLTg5NGItMjgxYzhlMTFmYTA3AhlOYWFuIFN0b3AgLSBHbG9iYWwgRnVzaW9uBwYCJDlhZDJhMjViLTFjZDktNGU1ZC1iOTZlLWQyZjZhMzBlN2VlZAIEU01QTAcHAiQ5Yjk2ZDViYS0yMmM0LTRmYWQtYWYxNy0wYzJlOTJmMGE2MmQCD1RoZSBGbGF2b3VyIEh1YgcHAgACGFJlYWN0b3IgQ2Fmw6kgYW5kIExvdW5nZQcDBwACJGZjMGI1ZjQ1LWQ0NTgtNGZmZi04ZTIxLTQyODQ5MThlMjFiYgIMQUxMIERBWSBNRU5VBwECJDA4MThkOWNlLWJiNjktNGNmMy04N2U5LTczNTU5YWUxODI1YwILQmFrZWQgR29vZHMHAgIkYjYxY2U3ZDAtYzQwZi00NGUyLTkyZjktNTAzMzIxNDg3N2I1AhNQcmVwcGVkIEdyYWIgYW5kIEdvBwgCAAIQVGhlIEJpc3RybyBAIE1LUgcIBwACJGZhMGFhZTc0LTIzNjgtNDU1Yi05MTFjLTVjMWZlODIxN2IzZAISQlJFQUtGQVNUIENMQVNTSUNTBwECJDUwNmQwYWZhLTk3MjctNDI1Yi05N2IzLTgwOGJiMzU3OTIzNgIEQlRHKwcCAiRiMjdmMGJjOS05OTg0LTQ2NGEtOGRiNi02OGRjMjRiYzdmNzgCCENMQVNTSUNTBwMCJDQxODQ4ZDBiLWZiNGYtNDA3Yy1hOGNjLTJiMzI4NGQwM2Q2NwIISUwgRk9STk8HBAIkNDNkNTYxYjAtZjBhMi00ZGIwLTljMjAtZWU0ZDQ0MDY1OTkyAgRTTVBMBwUCJGFlYmQyNzVlLTRjYjgtNGIxMy04ZGJiLTg1NWMxZWZhMjUzNQIYU09DSUFMIENPUk5FUjogQlJFQUtGQVNUBwYCJGJmNDYyMDBjLWEwYTktNGNmZi04MWJlLWU1NzgxOGE3N2I5OAINU09DSUFMIENPUk5FUgcHAiRkNmU5N2MzZi00MDYzLTQzZjAtOWE3My0xNTdhZmNlM2UyOTYCB1RIRSBXT0s='},'autoCollapse':true,'enableAnimation':true,'allowSelectItem':true,'selectedItemIndexPath':'','groupsExpanding':[true,false,false,false,false,false,false,false,false]},{'ItemClick':function(s,e){SelectedItemChanged(e);}},null,{'groups':[['',,,,[['2b63bb56-eb6e-43ff-8c91-c57938ad7af7',,,,],['27e35faf-51f4-4890-86c4-e9205afb519b',,,,],['3f72f1f2-ff49-443c-b011-3c536a01b31e',,,,]]],['',,,,[['71f42897-4c57-4e78-a54c-2c3910b0069f',,,,],['d2cd137f-df46-44b0-9f46-89b30279f02d',,,,],['c5c87358-22bf-4066-bbcc-3d79cd592a36',,,,]]],['',,,,[['fd862e99-46b9-4b04-a821-494348802c18',,,,],['72c4d0d3-6c5f-4a31-be7c-8bf24e466645',,,,],['9204eed7-d87a-4864-b3a1-a21f204c814d',,,,],['9821a3d8-d52b-4673-ba85-a0676bc50384',,,,],['50f20cb1-2ccc-4aae-a74f-0aed15446da5',,,,],['ab1069ca-a8fe-445c-9b8f-fae64cb36991',,,,],['b653cb4c-ddce-4c31-9a35-5b8c892d8ef2',,,,],['8df0c9fb-6a01-4077-b4ab-c165026dbaf2',,,,]]],['',,,,[['82f4b766-a72d-42b1-8487-b4ce33793c70',,,,]]],['',,,,[['b509867b-04a8-49fb-93b5-563d99ecb868',,,,],['97cedc7f-915c-433f-b60e-eb2a2bdcfca8',,,,],['16fb6001-3ca2-4662-9689-138be93674f9',,,,],['1d455721-c2df-40a0-99bf-61e8e0664dc2',,,,]]],['',,,,[['e364c529-9475-4079-8c25-82d45fc45a71',,,,],['f3a07995-75ee-40e1-9d49-ff29eb858cb4',,,,],['22a71a04-1545-4846-914f-d6ed475da911',,,,],['a1711813-c227-4599-8c57-37476ec1098a',,,,],['c4136d26-1ab5-4f0e-8b3e-1d685ad24057',,,,],['fe1ed78f-6375-42d2-9c0e-c89189e5c4c7',,,,],['ed676861-d51d-4076-8672-d15f8d794fde',,,,],['619d3b8f-22fd-4b6d-b211-27d7be615ca3',,,,],['58687867-5369-4ae4-8905-980d4d0252b1',,,,]]],['',,,,[['81517ab4-624e-47be-99c1-982bf181bcb6',,,,],['d283ae11-b21e-4f07-afd8-e85f18904efa',,,,],['3f49ded8-bb71-454d-831f-fedf670d5b5c',,,,],['73d74d3a-4177-47fc-9857-0382f576933a',,,,],['a745dd9d-0bae-47b1-8bfc-929d9a929706',,,,],['4d71e4dd-eebc-4760-894b-281c8e11fa07',,,,],['9ad2a25b-1cd9-4e5d-b96e-d2f6a30e7eed',,,,],['9b96d5ba-22c4-4fad-af17-0c2e92f0a62d',,,,]]],['',,,,[['fc0b5f45-d458-4fff-8e21-4284918e21bb',,,,],['0818d9ce-bb69-4cf3-87e9-73559ae1825c',,,,],['b61ce7d0-c40f-44e2-92f9-5033214877b5',,,,]]],['',,,,[['fa0aae74-2368-455b-911c-5c1fe8217b3d',,,,],['506d0afa-9727-425b-97b3-808bb3579236',,,,],['b27f0bc9-9984-464a-8db6-68dc24bc7f78',,,,],['41848d0b-fb4f-407c-a8cc-2b3284d03d67',,,,],['43d561b0-f0a2-4db0-9c20-ee4d44065992',,,,],['aebd275e-4cb8-4b13-8dbb-855c1efa2535',,,,],['bf46200c-a0a9-4cff-81be-e57818a77b98',,,,],['d6e97c3f-4063-43f0-9a73-157afce3e296',,,,]]]]});
+
+//-->
+</script>
+
+            </td>
+            <td valign="top" class="reportCell" >
+                <div id="reportBody" role="document">
+
+
+
+    <div style="margin:8px;">
+
+
+
+                <div class="nutritionReport" style="width:100%;">
+                <table border="0">
+                                </table>
+                </div>
+
+
+        <script>
+            
+        </script>
+
+
+
+
+    </div>
+
+                </div>
+            </td>
+        </tr>
+    </table>
+
+<div id="popLabel_PW-1" class="dxpcLite_MaterialCompact dxpclW" style="height:410px;width:400px;z-index:10000;display:none;visibility:hidden;">
+	<div class="dxpc-mainDiv dx-acc-r dxpc-shadow">
+		<div class="dxpc-header drag dxpc-withBtn" style="user-select:none;-khtml-user-select:none;-ms-user-select:none;">
+			<table width='420px'><tr><td class='wordwrap' id='divPopupHeader'><td></tr></table>
+		</div><div class="dxpc-contentWrapper">
+			<div class="dxpc-content">
+				<div id='divNutritionLabel'></div>
+			</div>
+		</div>
+	</div>
+</div><script id="dxss_1761159499" type="text/javascript">
+<!--
+ASPx.AddHoverItems('popLabel',[[['dxpc-closeBtnHover'],[''],['HCB-1']]]);
+ASPx.createControl(MVCxClientPopupControl,'popLabel','',{'accessibilityCompliant':true,'disappearAfter':300,'popupAnimationType':'slide','closeOnEscape':true,'popupHorizontalAlign':'LeftSides','popupVerticalAlign':'Below','allowDragging':true,'width':400,'widthFromServer':true,'height':410,'minHeight':150,'minWidth':150,'maxHeight':1000,'maxWidth':420});
+
+//-->
+</script>
+
+
+<div id="popFilter_PW-1" class="dxpcLite_MaterialCompact dxpclW" style="height:200px;width:450px;z-index:10000;display:none;visibility:hidden;">
+	<div class="dxpc-mainDiv dx-acc-r dxpc-shadow">
+		<div class="dxpc-header drag dxpc-withBtn" style="user-select:none;-khtml-user-select:none;-ms-user-select:none;">
+			<div class="dxpc-closeBtn">
+				<a role="button" aria-label="Close" href="javascript:;"><span class="dx-acc dxWeb_pcCloseButton_MaterialCompact dx-acc-s"><img src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="Close" /></span></a>
+			</div><div class="dxpc-headerContent">
+				<span class="dxpc-headerText dx-vam">Filter Results</span>
+			</div><b class="dx-clear"></b>
+		</div><div class="dxpc-contentWrapper">
+			<div class="dxpc-content">
+				
+    <script>
+        function AllergensChanged(s, e) {
+            var vals = s.GetSelectedValues().toString();
+            if (vals.includes("None") == true)
+            {
+                s.UnselectAll();
+                vals = "";
+            }
+            $("#AllergenSelections").val(vals);
+            
+        }
+        function PreferencesChanged(s, e) {
+            var vals = s.GetSelectedValues().toString();
+            if (vals.includes("None") == true)
+            {
+                s.UnselectAll();
+                vals = "";
+            }
+            $("#TagSelections").val(vals);
+        }
+        function ClearFilters() {
+            chkTags.UnselectAll();
+            chkAllergens.UnselectAll();
+            $("#TagSelections").val("");
+            $("#AllergenSelections").val("");
+        }
+
+    </script>
+
+
+          <div class="dxflFormLayout_MaterialCompact" id="templateLayout" style="height:100%;width:100%;">
+	<table class="dxflGroup_MaterialCompact dxflGroupSys dxflAGSys" style="border-collapse:separate;">
+		<tr>
+			<td id="templateLayout_0" class="dxflVATSys dxflGroupCell_MaterialCompact"><div class="dxflGroupBox_MaterialCompact dxflHeadingLineGroupBoxSys dxflGroupBoxSys">
+				<span class="dxflGroupBoxCaption_MaterialCompact">Allergens</span><div class="dxflHLSys">
+
+				</div><table class="dxflGroup_MaterialCompact dxflGroupSys dxflAGSys" style="border-collapse:separate;">
+					<tr>
+						<td id="templateLayout_0_0" class="dxflGroupCell_MaterialCompact"><div class="dxflNestedControlCell_MaterialCompact dxflCLLSys dxflItemSys dxflCheckBoxListItemSys dxflItem_MaterialCompact">
+							<table class="dxflInternalEditorTable_MaterialCompact" style="border-collapse:separate;">
+								<tr>
+									<td style="width:100%;"><table class="dxeCheckBoxList_MaterialCompact dx-acc-r" id="chkAllergens" role="presentation" style="border-style:None;width:100%;border-collapse:separate;">
+	<tr>
+		<td class="dxe"><input id="chkAllergens_VI" type="hidden" name="chkAllergens" /><table role="presentation" style="width:100%;">
+			<tr>
+				<td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkAllergens_RB0">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Sesame, 1 of 12"><input id="chkAllergens_RB0_I" name="chkAllergens$RB0" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Sesame</span></td>
+					</tr>
+				</table></td><td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkAllergens_RB1">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Soy, 2 of 12"><input id="chkAllergens_RB1_I" name="chkAllergens$RB1" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Soy</span></td>
+					</tr>
+				</table></td>
+			</tr><tr>
+				<td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkAllergens_RB2">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Peanuts, 3 of 12"><input id="chkAllergens_RB2_I" name="chkAllergens$RB2" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Peanuts</span></td>
+					</tr>
+				</table></td><td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkAllergens_RB3">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Mustard, 4 of 12"><input id="chkAllergens_RB3_I" name="chkAllergens$RB3" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Mustard</span></td>
+					</tr>
+				</table></td>
+			</tr><tr>
+				<td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkAllergens_RB4">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Milk, 5 of 12"><input id="chkAllergens_RB4_I" name="chkAllergens$RB4" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Milk</span></td>
+					</tr>
+				</table></td><td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkAllergens_RB5">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Wheat, 6 of 12"><input id="chkAllergens_RB5_I" name="chkAllergens$RB5" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Wheat</span></td>
+					</tr>
+				</table></td>
+			</tr><tr>
+				<td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkAllergens_RB6">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Fish, 7 of 12"><input id="chkAllergens_RB6_I" name="chkAllergens$RB6" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Fish</span></td>
+					</tr>
+				</table></td><td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkAllergens_RB7">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Egg, 8 of 12"><input id="chkAllergens_RB7_I" name="chkAllergens$RB7" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Egg</span></td>
+					</tr>
+				</table></td>
+			</tr><tr>
+				<td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkAllergens_RB8">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Nuts, 9 of 12"><input id="chkAllergens_RB8_I" name="chkAllergens$RB8" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Nuts</span></td>
+					</tr>
+				</table></td><td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkAllergens_RB9">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Gluten, 10 of 12"><input id="chkAllergens_RB9_I" name="chkAllergens$RB9" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Gluten</span></td>
+					</tr>
+				</table></td>
+			</tr><tr>
+				<td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkAllergens_RB10">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Shellfish, 11 of 12"><input id="chkAllergens_RB10_I" name="chkAllergens$RB10" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Shellfish</span></td>
+					</tr>
+				</table></td><td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkAllergens_RB11">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Sulphites, 12 of 12"><input id="chkAllergens_RB11_I" name="chkAllergens$RB11" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Sulphites</span></td>
+					</tr>
+				</table></td>
+			</tr>
+		</table></td>
+	</tr>
+</table><script id="dxss_829973382" type="text/javascript">
+<!--
+ASPx.AddDisabledItems('chkAllergens',[[['dxeDisabled_MaterialCompact'],[''],['','RB0','RB1','RB2','RB3','RB4','RB5','RB6','RB7','RB8','RB9','RB10','RB11']]]);
+ASPx.createControl(ASPxClientCheckBoxList,'chkAllergens','',{'accessibilityCompliant':true,'scStates':2,'scPostfix':'MaterialCompact','imageProperties':{'4':['dxWeb_edtCheckBoxChecked_MaterialCompact','dxWeb_edtCheckBoxUnchecked_MaterialCompact'],'8':['dxWeb_edtCheckBoxCheckedDisabled_MaterialCompact','dxWeb_edtCheckBoxUncheckedDisabled_MaterialCompact']},'icbFocusedStyle':['dxICBFocused_MaterialCompact',''],'initSelectedIndices':[]},{'SelectedIndexChanged':function(s,e){AllergensChanged(s,e);}},null,{'decorationStyles':[{'key':'F','className':'dxeFocused_MaterialCompact','cssText':''}],'items':[['Sesame','Sesame',''],['Soy','Soy',''],['Peanuts','Peanuts',''],['Mustard','Mustard',''],['Milk','Milk',''],['Wheat','Wheat',''],['Fish','Fish',''],['Egg','Egg',''],['Nuts','Nuts',''],['Gluten','Gluten',''],['Shellfish','Shellfish',''],['Sulphites','Sulphites','']]});
+
+//-->
+</script></td>
+								</tr><tr>
+									<td class="dxflHALSys dxflVATSys dxflBHelpTextSys dxflHelpText_MaterialCompact"><span>Select to hide selections with the chosen allergens</span></td>
+								</tr>
+							</table>
+						</div></td>
+					</tr>
+				</table>
+			</div></td>
+		</tr><tr>
+			<td id="templateLayout_1" class="dxflVATSys dxflGroupCell_MaterialCompact"><div class="dxflGroupBox_MaterialCompact dxflHeadingLineGroupBoxSys dxflGroupBoxSys">
+				<span class="dxflGroupBoxCaption_MaterialCompact">Preferences</span><div class="dxflHLSys">
+
+				</div><table class="dxflGroup_MaterialCompact dxflGroupSys dxflAGSys" style="border-collapse:separate;">
+					<tr>
+						<td id="templateLayout_1_0" class="dxflGroupCell_MaterialCompact"><div class="dxflNestedControlCell_MaterialCompact dxflCLLSys dxflItemSys dxflCheckBoxListItemSys dxflItem_MaterialCompact">
+							<table class="dxflInternalEditorTable_MaterialCompact" style="border-collapse:separate;">
+								<tr>
+									<td style="width:100%;"><table class="dxeCheckBoxList_MaterialCompact dx-acc-r" id="chkTags" role="presentation" style="border-style:None;width:100%;border-collapse:separate;">
+	<tr>
+		<td class="dxe"><input id="chkTags_VI" type="hidden" name="chkTags" /><table role="presentation" style="width:100%;">
+			<tr>
+				<td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkTags_RB0">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Gluten Free, 1 of 4"><input id="chkTags_RB0_I" name="chkTags$RB0" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Gluten Free</span></td>
+					</tr>
+				</table></td>
+			</tr><tr>
+				<td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkTags_RB1">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Vegetarian, 2 of 4"><input id="chkTags_RB1_I" name="chkTags$RB1" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Vegetarian</span></td>
+					</tr>
+				</table></td>
+			</tr><tr>
+				<td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkTags_RB2">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Vegan, 3 of 4"><input id="chkTags_RB2_I" name="chkTags$RB2" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Vegan</span></td>
+					</tr>
+				</table></td>
+			</tr><tr>
+				<td><table class="dxeBase_MaterialCompact dx-acc-r dxeTAR" role="presentation" id="chkTags_RB3">
+					<tr>
+						<td class="dxichCellSys"><span class="dx-acc dxWeb_edtCheckBoxUnchecked_MaterialCompact dxICheckBox_MaterialCompact dxichSys dx-acc-s" role="checkbox" aria-checked="mixed" tabindex="0" aria-label="Halal, 4 of 4"><input id="chkTags_RB3_I" name="chkTags$RB3" value="I" type="hidden" /></span></td><td class="dxichTextCellSys"><span class="dx-wrap dxDefaultCursor">Halal</span></td>
+					</tr>
+				</table></td>
+			</tr>
+		</table></td>
+	</tr>
+</table><script id="dxss_1441622999" type="text/javascript">
+<!--
+ASPx.AddDisabledItems('chkTags',[[['dxeDisabled_MaterialCompact'],[''],['','RB0','RB1','RB2','RB3']]]);
+ASPx.createControl(ASPxClientCheckBoxList,'chkTags','',{'accessibilityCompliant':true,'scStates':2,'scPostfix':'MaterialCompact','imageProperties':{'4':['dxWeb_edtCheckBoxChecked_MaterialCompact','dxWeb_edtCheckBoxUnchecked_MaterialCompact'],'8':['dxWeb_edtCheckBoxCheckedDisabled_MaterialCompact','dxWeb_edtCheckBoxUncheckedDisabled_MaterialCompact']},'icbFocusedStyle':['dxICBFocused_MaterialCompact',''],'initSelectedIndices':[]},{'SelectedIndexChanged':function(s,e){PreferencesChanged(s,e);}},null,{'decorationStyles':[{'key':'F','className':'dxeFocused_MaterialCompact','cssText':''}],'items':[['Gluten Free','Gluten Free',''],['Vegetarian','Vegetarian',''],['Vegan','Vegan',''],['Halal','Halal','']]});
+
+//-->
+</script></td>
+								</tr><tr>
+									<td class="dxflHALSys dxflVATSys dxflBHelpTextSys dxflHelpText_MaterialCompact"><span>Select to only show options with chosen preferences</span></td>
+								</tr>
+							</table>
+						</div></td>
+					</tr>
+				</table>
+			</div></td>
+		</tr><tr>
+			<td id="templateLayout_2" class="dxflVATSys dxflGroupCell_MaterialCompact"><table class="dxflGroup_MaterialCompact dxflGroupSys dxflAGSys" style="border-collapse:separate;">
+				<tr>
+					<td id="templateLayout_2_0" class="dxflVABSys dxflGroupCell_MaterialCompact"><div class="dxflNestedControlCell_MaterialCompact dxflCLLSys dxflItemSys dxflCustomItemSys dxflItem_MaterialCompact">
+<table width='100%' role='Presentation'><tr><td role='Presentation'><div class="dxbButton_MaterialCompact dx-acc-r dxbButtonSys dxbTSys dxb-secondary" id="btnClear" style="width:80px;user-select:none;-khtml-user-select:none;-ms-user-select:none;">
+	<div class="dxb">
+		<input id="btnClear_I" class="dxAIFE" value="Clear All" type="button" name="btnClear" /><span id="btnClear_BTC" class="dx-vam">Clear All</span>
+	</div>
+</div><script id="dxss_845273021" type="text/javascript">
+<!--
+ASPx.AddHoverItems('btnClear',[[['dxbButtonHover_MaterialCompact'],[''],[''],['','TC']]]);
+ASPx.AddPressedItems('btnClear',[[['dxbButtonPressed_MaterialCompact'],[''],[''],['','TC']]]);
+ASPx.AddDisabledItems('btnClear',[[['dxbDisabled_MaterialCompact'],[''],[''],['','TC']]]);
+ASPx.AddSelectedItems('btnClear',[[['dxbf'],[''],['CD']]]);
+ASPx.createControl(MVCxClientButton,'btnClear','',{'accessibilityCompliant':true,'useSubmitBehavior':false,'causesValidation':false},{'Click':function(s,e){ClearFilters();}});
+
+//-->
+</script></td><td align='right' style='text-align:right;'><div class="dxbButton_MaterialCompact dx-acc-r dxbButtonSys dxbTSys" id="btnAllergensOK" style="width:80px;user-select:none;-khtml-user-select:none;-ms-user-select:none;">
+	<div class="dxb">
+		<input id="btnAllergensOK_I" class="dxAIFE" value="OK" type="button" name="btnAllergensOK" /><span id="btnAllergensOK_BTC" class="dx-vam">OK</span>
+	</div>
+</div><script id="dxss_1100825725" type="text/javascript">
+<!--
+ASPx.AddHoverItems('btnAllergensOK',[[['dxbButtonHover_MaterialCompact'],[''],[''],['','TC']]]);
+ASPx.AddPressedItems('btnAllergensOK',[[['dxbButtonPressed_MaterialCompact'],[''],[''],['','TC']]]);
+ASPx.AddDisabledItems('btnAllergensOK',[[['dxbDisabled_MaterialCompact'],[''],[''],['','TC']]]);
+ASPx.AddSelectedItems('btnAllergensOK',[[['dxbf'],[''],['CD']]]);
+ASPx.createControl(MVCxClientButton,'btnAllergensOK','',{'accessibilityCompliant':true,'useSubmitBehavior':false,'causesValidation':false},{'Click':function(s,e){popFilter.Hide();FilterResults();}});
+
+//-->
+</script><span style='width:60px;'>&nbsp&nbsp</span><div class="dxbButton_MaterialCompact dx-acc-r dxbButtonSys dxbTSys" id="btnAllergensCancel" style="width:80px;user-select:none;-khtml-user-select:none;-ms-user-select:none;">
+	<div class="dxb">
+		<input id="btnAllergensCancel_I" class="dxAIFE" value="Cancel" type="button" name="btnAllergensCancel" /><span id="btnAllergensCancel_BTC" class="dx-vam">Cancel</span>
+	</div>
+</div><script id="dxss_1362869707" type="text/javascript">
+<!--
+ASPx.AddHoverItems('btnAllergensCancel',[[['dxbButtonHover_MaterialCompact'],[''],[''],['','TC']]]);
+ASPx.AddPressedItems('btnAllergensCancel',[[['dxbButtonPressed_MaterialCompact'],[''],[''],['','TC']]]);
+ASPx.AddDisabledItems('btnAllergensCancel',[[['dxbDisabled_MaterialCompact'],[''],[''],['','TC']]]);
+ASPx.AddSelectedItems('btnAllergensCancel',[[['dxbf'],[''],['CD']]]);
+ASPx.createControl(MVCxClientButton,'btnAllergensCancel','',{'accessibilityCompliant':true,'useSubmitBehavior':false,'causesValidation':false},{'Click':function(s,e){popFilter.Hide();}});
+
+//-->
+</script></td></tr></table>
+					</div></td>
+				</tr>
+			</table></td>
+		</tr>
+	</table>
+</div><script id="dxss_1940050064" type="text/javascript">
+<!--
+ASPx.createControl(MVCxClientFormLayout,'templateLayout','',null,null,null,{'items':[['','0',,,,[['','0_0',,,,,]]],['','1',,,,[['','1_0',,,,,]]],['','2',,,,[['','2_0',,,,,]]]]});
+
+//-->
+</script>
+
+
+
+			</div>
+		</div>
+	</div>
+</div><script id="dxss_1540879762" type="text/javascript">
+<!--
+ASPx.AddHoverItems('popFilter',[[['dxpc-closeBtnHover'],[''],['HCB-1']]]);
+ASPx.createControl(MVCxClientPopupControl,'popFilter','',{'accessibilityCompliant':true,'disappearAfter':300,'popupAnimationType':'slide','closeOnEscape':true,'popupHorizontalAlign':'WindowCenter','popupVerticalAlign':'WindowCenter','popupVerticalOffset':-100,'allowDragging':true,'width':450,'widthFromServer':true,'height':200,'minHeight':150,'minWidth':150});
+
+//-->
+</script>
+
+
+</div>
+
+    <table class="dxlpLoadingPanel_MaterialCompact dxlpControl_MaterialCompact" id="LoadingPanel" style="position:absolute;left:0px;top:0px;z-index:30000;display:none;">
+	<tr>
+		<td class="dx" style="padding-right:0px;"><img class="dxlp-loadingImage dxlp-imgPosLeft" src="/Nutrition/DXR.axd?r=1_85-9S3tn" alt="" style="vertical-align:middle;" /></td><td class="dx" style="padding-left:0px;"><span id="LoadingPanel_TL">Loading&hellip;</span></td>
+	</tr>
+</table><div id="LoadingPanel_LD" class="dxlpLoadingDiv_MaterialCompact dxlpControl_MaterialCompact dx-ft" style="left:0px;top:0px;z-index:29999;display:none;position:absolute;">
+
+</div><script id="dxss_264442372" type="text/javascript">
+<!--
+ASPx.createControl(ASPxClientLoadingPanel,'LoadingPanel','',{'containerElementID':'reportBody'});
+
+//-->
+</script>
+
+<script>
+
+	
+
+</script>
+        </div>
+
+    </div>
+
+
+</body>
+</html>
