@@ -2,7 +2,7 @@
 name: Fetch Pizza Pizza nutrition
 on:
   push:
-    paths: [".github/workflows/fetch-pizzapizza.yml"]  # try 3
+    paths: [".github/workflows/fetch-pizzapizza.yml"]  # try 4
 permissions:
   contents: write
 jobs:
@@ -19,25 +19,16 @@ jobs:
           const fs = require('fs'), out = process.env.GITHUB_WORKSPACE + '/data/probe-pp/';
           (async () => {
             const b = await chromium.launch();
-            const ctx = await b.newContext({ locale: 'en-CA', viewport: { width: 1400, height: 1000 }, userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
+            const ctx = await b.newContext({ locale: 'en-CA', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
             const p = await ctx.newPage();
-            const r = await p.goto('https://www.pizzapizza.ca/about-us/nutrition/small-pizza/', { waitUntil: 'networkidle', timeout: 90000 }).catch(e => console.log('goto', e.message));
-            console.log('status', r && r.status());
-            await p.waitForTimeout(4000);
-            fs.writeFileSync(out + 'pizza.html', await p.content());
-            fs.writeFileSync(out + 'pizza.txt', await p.evaluate(() => document.body.innerText));
-            await p.screenshot({ path: out + 'pizza.png', fullPage: true });
-            // Every <select> and its options, then each option's resulting text (sizes, crusts...)
-            const sels = await p.$$eval('select', ss => ss.map((s, i) => ({ i, id: s.id, name: s.name, opts: [...s.options].map(o => [o.value, o.text]) })));
-            fs.writeFileSync(out + 'selects.json', JSON.stringify(sels, null, 1));
-            const links = await p.$$eval('a', as => as.map(a => a.href + ' | ' + a.innerText.trim()).filter(x => /nutrition/.test(x)));
-            fs.writeFileSync(out + 'pizza-links.txt', [...new Set(links)].join('\n'));
-            for (const s of sels) for (const [v, t] of s.opts) {
-              try {
-                await p.selectOption(`select >> nth=${s.i}`, v); await p.waitForTimeout(2500);
-                const safe = (s.i + '-' + t).replace(/[^a-z0-9]+/gi, '_').slice(0, 60);
-                fs.writeFileSync(out + 'sel_' + safe + '.txt', await p.evaluate(() => document.body.innerText));
-              } catch (e) { console.log('select fail', s.i, v, e.message); }
+            for (const slug of ['small-pizza','medium-pizza','large-pizza','x-large-pizza','xxl-pizza','walk-in-slice','stuffed-crust-pizza','alternative-crusts','gourmet-thins']) {
+              const r = await p.goto(`https://www.pizzapizza.ca/about-us/nutrition/${slug}/`, { waitUntil: 'networkidle', timeout: 90000 }).catch(e => console.log('goto', e.message));
+              await p.waitForTimeout(2500);
+              const page = await p.content();
+              const head = await p.evaluate(() => { const t = document.body.innerText; const i = t.search(/SERVING SIZE/i); return t.slice(Math.max(0, i - 60), i + 200); });
+              const table = page.slice(page.indexOf('<table'), page.indexOf('</table>') + 8);
+              fs.writeFileSync(out + slug + '.html', '<!-- ' + head.replace(/--/g, '-') + ' -->\n' + table);
+              console.log(slug, r && r.status(), table.length);
             }
             await b.close();
           })();
