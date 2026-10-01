@@ -1,0 +1,38 @@
+# One-time: download Pizza Pizza's nutrition page and the documents it links to into data/probe-pp/.
+name: Fetch Pizza Pizza nutrition
+on:
+  push:
+    paths: [".github/workflows/fetch-pizzapizza.yml"]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch
+        run: |
+          mkdir -p data/probe-pp && cd data/probe-pp
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36"
+          curl -sSL -A "$UA" -D page.headers -o page.html "https://www.pizzapizza.ca/about-us/nutrition/" || true
+          ls -la
+          grep -oiE '(href|src)="[^"]+"' page.html | sed -E 's/^[a-z]+="//I; s/"$//; s/&amp;/\&/g' | sort -u > links.txt || true
+          grep -iE '\.pdf|nutri|allergen|calori' links.txt > doclinks.txt || true
+          # also any URLs inside scripts/JSON that look like documents
+          grep -oiE 'https?:[^"'"'"' )]+\.pdf' page.html | sort -u >> doclinks.txt || true
+          sort -u doclinks.txt -o doclinks.txt; cat doclinks.txt
+          i=0
+          while read -r u; do
+            case "$u" in http*) url="$u" ;; //*) url="https:$u" ;; /*) url="https://www.pizzapizza.ca$u" ;; *) continue ;; esac
+            i=$((i+1)); [ $i -gt 25 ] && break
+            curl -sSL -A "$UA" -D "doc$i.headers" -o "doc$i.bin" "$url" || true
+            echo "doc$i $url $(head -c 4 doc$i.bin | od -An -c | tr -d ' ')" >> fetched.txt
+          done < doclinks.txt
+          cat fetched.txt || true
+          find . -size +20M -delete
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add data/probe-pp && git commit -m "Fetch: Pizza Pizza nutrition" || echo nothing
+          git pull --rebase -q origin main && git push origin HEAD:main
