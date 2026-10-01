@@ -74,13 +74,13 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 
 ## Locations for non-McMaster restaurants
 
-- La Piazza → Tim Hortons, Booster Juice
+- La Piazza → Tim Hortons, Booster Juice, Pizza Pizza (pizza only; see below)
 - DBAC (David Braley Athletic Centre) → Booster Juice
 - PGCLL → Second Cup, Chopped Leaf (full menu)
 - Eco Bean - MUMC → Chopped Leaf ("powered by Chopped Leaf": everything except soups and Chopped Water), plus its own McMaster Breakfast station
 - Bistro 2 Go → Second Cup
 - Centro → Paramount Lebanese Kitchen (wraps, build-your-own meal/salad/Yalla Special fries/poutine, Beef Kafta Dinner LTO; proteins are extras)
-- MUSC → Pizza Pizza (added Oct 1, 2026 at the user's request; MUSC sells pizza only). Classic pizzas from `data/sources/pizza-pizza-nutrition.tsv` (pulled from pizzapizza.ca via a GitHub Actions browser, since the site blocks plain downloads): "Name - <size>" with sizes Walk-in Slice (580-710 cal) and one slice of a Small/Medium/Large/X Large pie (`SIZE_RE` knows "Walk-in Slice"). Saying "a slice of pepperoni pizza" picks Walk-in Slice. Specialty lines (donair, ancient grain, stuffed crust, XXL, gluten-free) are left out.
+- Pizza Pizza at La Piazza (added Oct 1, 2026; pizza only). There is no MUSC location (the user moved Pizza Pizza from MUSC to La Piazza). Classic pizzas from `data/sources/pizza-pizza-nutrition.tsv` (pulled from pizzapizza.ca via a GitHub Actions browser, since the site blocks plain downloads): "Name - <size>" with sizes Walk-in Slice (580-710 cal) and one slice of a Small/Medium/Large/X Large pie (`SIZE_RE` knows "Walk-in Slice"). Saying "a slice of pepperoni pizza" picks Walk-in Slice. Specialty lines (donair, ancient grain, stuffed crust, XXL, gluten-free) are left out.
 
 ## Known data caveats
 
