@@ -2,7 +2,7 @@
 name: Fetch Pizza Pizza nutrition
 on:
   push:
-    paths: [".github/workflows/fetch-pizzapizza.yml"]
+    paths: [".github/workflows/fetch-pizzapizza.yml"]  # try 2
 permissions:
   contents: write
 jobs:
@@ -10,26 +10,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch
+      - name: Fetch with a real browser
         run: |
-          mkdir -p data/probe-pp && cd data/probe-pp
-          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36"
-          curl -sSL -A "$UA" -D page.headers -o page.html "https://www.pizzapizza.ca/about-us/nutrition/" || true
-          ls -la
-          grep -oiE '(href|src)="[^"]+"' page.html | sed -E 's/^[a-z]+="//I; s/"$//; s/&amp;/\&/g' | sort -u > links.txt || true
-          grep -iE '\.pdf|nutri|allergen|calori' links.txt > doclinks.txt || true
-          # also any URLs inside scripts/JSON that look like documents
-          grep -oiE 'https?:[^"'"'"' )]+\.pdf' page.html | sort -u >> doclinks.txt || true
-          sort -u doclinks.txt -o doclinks.txt; cat doclinks.txt
-          i=0
-          while read -r u; do
-            case "$u" in http*) url="$u" ;; //*) url="https:$u" ;; /*) url="https://www.pizzapizza.ca$u" ;; *) continue ;; esac
-            i=$((i+1)); [ $i -gt 25 ] && break
-            curl -sSL -A "$UA" -D "doc$i.headers" -o "doc$i.bin" "$url" || true
-            echo "doc$i $url $(head -c 4 doc$i.bin | od -An -c | tr -d ' ')" >> fetched.txt
-          done < doclinks.txt
-          cat fetched.txt || true
-          find . -size +20M -delete
+          mkdir -p data/probe-pp /tmp/pw && cd /tmp/pw
+          npm init -y -s >/dev/null && npm i -s playwright@1.47.2 >/dev/null && npx playwright install --with-deps chromium >/dev/null
+          cat > get.js <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs'), out = process.env.GITHUB_WORKSPACE + '/data/probe-pp/';
+          (async () => {
+            const b = await chromium.launch();
+            const ctx = await b.newContext({ locale: 'en-CA', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
+            const p = await ctx.newPage();
+            const seen = [];
+            p.on('response', r => { const u = r.url(); if (/pdf|nutri/i.test(u)) seen.push(r.status() + ' ' + u); });
+            const r = await p.goto('https://www.pizzapizza.ca/about-us/nutrition/', { waitUntil: 'networkidle', timeout: 90000 }).catch(e => console.log('goto', e.message));
+            console.log('status', r && r.status());
+            await p.waitForTimeout(5000);
+            fs.writeFileSync(out + 'page.html', await p.content());
+            fs.writeFileSync(out + 'page.txt', await p.evaluate(() => document.body.innerText));
+            await p.screenshot({ path: out + 'page.png', fullPage: true });
+            const links = await p.$$eval('a', as => as.map(a => a.href + ' | ' + a.innerText.trim()));
+            fs.writeFileSync(out + 'links.txt', links.join('\n') + '\n---\n' + seen.join('\n'));
+            let i = 0;
+            for (const l of links) {
+              const u = l.split(' | ')[0];
+              if (!/\.pdf(\?|$)/i.test(u) || i >= 15) continue;
+              const res = await ctx.request.get(u).catch(() => null);
+              if (res && res.ok()) { fs.writeFileSync(out + 'doc' + (++i) + '.pdf', await res.body()); console.log('saved', u); }
+              else console.log('failed', u, res && res.status());
+            }
+            await b.close();
+          })();
+          JS
+          node get.js
+          ls -la "$GITHUB_WORKSPACE/data/probe-pp"
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
