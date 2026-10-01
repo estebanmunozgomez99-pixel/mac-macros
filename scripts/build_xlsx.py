@@ -97,7 +97,8 @@ lines=[('Maroon menu data',True),
 ('Second Cup (PGCLL and Bistro 2 Go): Second Cup Beverage Menu Nutritional Values. Two blocks have no label in the PDF and are listed as Espresso and Americano by their position on the menu.',False),
 ('Chopped Leaf (PGCLL): Chopped Leaf Nutritional Chart. Proteins and dressings are add-ons in the app.',False),
 ('Paramount Lebanese Kitchen (Centro): calories from the menu boards (Sept 28, 2026). Paramount publishes no protein, carb or fat numbers, so those are ESTIMATES, as are the salad calories. Build-your-own dishes = posted base dish + posted protein.',False),
-('Booster Juice (La Piazza and DBAC): Booster Juice Nutrition Guide, Version 24.1 (in-store sheet, photographed Sept 29, 2026). Wraps are on tomato tortillas; whole wheat adds 20 Cal.',False)]
+('Booster Juice (La Piazza and DBAC): Booster Juice Nutrition Guide, Version 24.1 (in-store sheet, photographed Sept 29, 2026). Wraps are on tomato tortillas; whole wheat adds 20 Cal.',False),
+('Pizza Pizza (MUSC): pizzapizza.ca nutrition tables (facts as of Nov 1, 2023), pulled Oct 1, 2026. Classic pizzas only: walk-in slice and one slice of a Small/Medium/Large/X-Large. Sat fat printed without its decimal on the site was corrected.',False)]
 for i,(t_,b) in enumerate(lines,1):
     a[f'A{i}']=t_; a[f'A{i}'].font=F(bold=b,size=13 if i==1 else 10); a[f'A{i}'].alignment=Alignment(wrap_text=True,vertical='top')
 a.column_dimensions['A'].width=110

@@ -1,0 +1,78 @@
+# Pizza Pizza nutrition (pizzapizza.ca/about-us/nutrition, "Nutrition facts as of November 1st, 2023"), pulled Oct 1, 2026.
+# Classic pizzas only (what MUSC sells): walk-in slice + one slice of a Small/Medium/Large/X-Large pie. Rows the site leaves blank are skipped.
+# Fixes: the site prints Sat. Fat without its decimal point ("35" = 3.5 g) whenever it would exceed total fat; those are divided by 10.
+# Calcium/iron are converted from %DV with Health Canada daily values (1300 mg, 18 mg).
+size	item	serving	calories	protein	carbs	fibre	sugars	fat	sat_fat	trans_fat	cholesterol_mg	sodium_mg	calcium_mg	iron_mg
+Walk-in Slice	Bacon Double Cheeseburger Pizza	1 walk-in slice	700	34	80	3	10	26	12	0.5	65	1710	520	7.2
+Walk-in Slice	Classic Cheese Pizza	1 walk-in slice	580	29	78	3	10	17	8	0.5	50	1380	520	7.2
+Walk-in Slice	Canadian Eh! Pizza	1 walk-in slice	710	36	81	4	11	27	12	0.5	85	1870	520	8.1
+Walk-in Slice	Classic Super Pizza	1 walk-in slice	660	33	81	4	11	23	10	0.5	75	1660	520	8.1
+Walk-in Slice	Garden Veggie Pizza	1 walk-in slice	560	30	77	11	11	16	8	0.5	50	950	520	5.4
+Walk-in Slice	Pepperoni Pizza	1 walk-in slice	670	33	78	4	10	25	11	0.5	70	1680	520	7.2
+Walk-in Slice	Spicy BBQ Chicken Pizza	1 walk-in slice	680	35	94	5	21	18	8	0.5	70	1890	585	7.2
+Walk-in Slice	Tropical Hawaiian Pizza	1 walk-in slice	690	33	82	4	14	26	11	0.5	70	1720	520	7.2
+Small	Pepperoni Pizza	1 slice (1/6 of a 10" small)	210	10	24	1	3	8	3.5	0.3	20	520	156	1.8
+Small	Meat Supreme Pizza	1 slice (1/6 of a 10" small)	250	13	24	1	3	11	4.5	0.2	35	760	195	2.7
+Small	Tropical Hawaiian Pizza	1 slice (1/6 of a 10" small)	220	11	25	1	5	9	4	0.2	25	570	195	2.7
+Small	Canadian Eh! Pizza	1 slice (1/6 of a 10" small)	220	12	24	1	4	9	4	0.2	30	610	195	2.7
+Small	Buffalo Chicken Pizza	1 slice (1/6 of a 10" small)	220	11	24	1	3	9	3.5	0.2	25	640	195	1.8
+Small	Spicy BBQ Chicken Pizza	1 slice (1/6 of a 10" small)	210	11	28	1	7	6	3	0.2	25	600	195	2.7
+Small	Classic Super Pizza	1 slice (1/6 of a 10" small)	200	10	24	1	4	7	3.5	0.2	25	520	195	2.7
+Small	Bacon Double Cheeseburger Pizza	1 slice (1/6 of a 10" small)	230	11	24	1	3	9	4	0.2	25	580	195	2.7
+Small	Chicken Bruschetta Pizza	1 slice (1/6 of a 10" small)	210	12	25	1	4	7	3	0.2	25	570	195	2.7
+Small	Sausage Mushroom Melt Pizza	1 slice (1/6 of a 10" small)	250	11	23	1	3	13	3.5	0.3	25	550	195	1.8
+Small	Classic Cheese Pizza	1 slice (1/6 of a 10" small)	180	9	24	1	3	5	2.5	0.2	10	410	156	1.44
+Small	Garden Veggie Pizza	1 slice (1/6 of a 10" small)	170	10	23	3	4	5	2.5	0.2	15	310	195	1.8
+Small	Mediterranean Vegetarian Pizza	1 slice (1/6 of a 10" small)	210	10	25	2	4	7	3.5	0.2	20	570	195	2.7
+Small	Creamy Garlic Pizza	1 slice (1/6 of a 10" small)	240	9	24	1	2	13	4	0.2	15	320	260	1.8
+Small	Pesto Amore Pizza	1 slice (1/6 of a 10" small)	210	11	24	4	3	8	3.5	0.2	20	340	195	1.8
+Small	Plant-Based Pepperoni Pizza	1 slice (1/6 of a 10" small)	200	9	25	1	3	7	3	0.2	10	480	156	1.8
+Medium	Pepperoni Pizza	1 slice (1/8 of a 12" medium)	210	10	25	1	3	8	3.5	0.3	20	520	156	1.8
+Medium	Meat Supreme Pizza	1 slice (1/8 of a 12" medium)	260	14	26	1	4	11	4.5	0.2	35	800	195	2.7
+Medium	Tropical Hawaiian Pizza	1 slice (1/8 of a 12" medium)	230	11	26	1	5	9	4	0.2	25	580	195	2.7
+Medium	Canadian Eh! Pizza	1 slice (1/8 of a 12" medium)	230	12	26	1	4	9	4	0.2	30	630	195	2.7
+Medium	Buffalo Chicken Pizza	1 slice (1/8 of a 12" medium)	230	11	25	1	3	9	3.5	0.2	25	640	195	1.8
+Medium	Spicy BBQ Chicken Pizza	1 slice (1/8 of a 12" medium)	220	11	30	1	7	6	2.5	0.2	25	600	195	2.7
+Medium	Classic Super Pizza	1 slice (1/8 of a 12" medium)	210	11	26	1	4	8	3.5	0.2	25	540	195	2.7
+Medium	Bacon Double Cheeseburger Pizza	1 slice (1/8 of a 12" medium)	230	11	25	1	3	9	4	0.2	25	590	130	2.7
+Medium	Chicken Bruschetta Pizza	1 slice (1/8 of a 12" medium)	210	12	27	1	4	6	3	0.1	25	590	195	2.7
+Medium	Sausage Mushroom Melt Pizza	1 slice (1/8 of a 12" medium)	250	11	24	1	3	12	3.5	0.2	20	570	195	2.7
+Medium	Classic Cheese Pizza	1 slice (1/8 of a 12" medium)	180	9	25	1	3	5	2.5	0.2	10	420	156	1.44
+Medium	Garden Veggie Pizza	1 slice (1/8 of a 12" medium)	180	10	25	4	4	5	2.5	0.1	15	310	195	1.8
+Medium	Mediterranean Vegetarian Pizza	1 slice (1/8 of a 12" medium)	220	10	27	2	4	8	3.5	0.2	20	620	195	2.7
+Medium	Creamy Garlic Pizza	1 slice (1/8 of a 12" medium)	240	9	25	1	2	12	3.5	0.2	15	330	195	1.8
+Medium	Pesto Amore Pizza	1 slice (1/8 of a 12" medium)	210	11	25	4	3	8	3.5	0.2	20	340	195	1.8
+Medium	Plant-Based Pepperoni Pizza	1 slice (1/8 of a 12" medium)	200	9	26	2	3	7	2.5	0.2	10	480	156	1.8
+Large	Pepperoni Pizza	1 slice (1/10 of a 14" large)	250	12	29	1	3	9	4.5	0.3	20	590	195	1.98
+Large	Meat Supreme Pizza	1 slice (1/10 of a 14" large)	290	16	29	1	4	12	5	0.2	40	890	195	2.7
+Large	Tropical Hawaiian Pizza	1 slice (1/10 of a 14" large)	260	13	30	1	5	10	4.5	0.2	30	650	195	2.7
+Large	Canadian Eh! Pizza	1 slice (1/10 of a 14" large)	270	14	29	1	4	10	4.5	0.2	35	690	195	2.7
+Large	Buffalo Chicken Pizza	1 slice (1/10 of a 14" large)	260	13	29	2	4	10	4	0.2	25	730	195	2.7
+Large	Spicy BBQ Chicken Pizza	1 slice (1/10 of a 14" large)	250	13	33	2	7	7	3.5	0.2	25	680	195	2.7
+Large	Classic Super Pizza	1 slice (1/10 of a 14" large)	250	13	29	1	4	9	4	0.2	30	610	195	2.7
+Large	Bacon Double Cheeseburger Pizza	1 slice (1/10 of a 14" large)	260	13	29	1	3	11	4.5	0.2	25	650	195	2.7
+Large	Chicken Bruschetta Pizza	1 slice (1/10 of a 14" large)	250	14	30	2	4	8	4	0.2	30	680	260	2.7
+Large	Sausage Mushroom Melt Pizza	1 slice (1/10 of a 14" large)	290	13	28	1	3	14	4	0.3	25	660	195	2.7
+Large	Classic Cheese Pizza	1 slice (1/10 of a 14" large)	220	10	29	1	3	7	3	0.2	15	480	195	1.8
+Large	Garden Veggie Pizza	1 slice (1/10 of a 14" large)	210	12	28	4	4	6	3.5	0.2	20	350	195	1.8
+Large	Mediterranean Vegetarian Pizza	1 slice (1/10 of a 14" large)	260	13	31	2	5	10	5	0.2	25	730	260	3.6
+Large	Creamy Garlic Pizza	1 slice (1/10 of a 14" large)	290	11	29	2	2	14	4.5	0.3	20	380	260	2.7
+Large	Pesto Amore Pizza	1 slice (1/10 of a 14" large)	250	13	29	4	4	10	4	0.2	25	410	260	1.8
+Large	Plant-Based Pepperoni Pizza	1 slice (1/10 of a 14" large)	230	11	30	2	3	8	3.5	0.2	15	550	195	1.98
+X Large	Pepperoni Pizza	1 slice (1/12 of a 16" X-large)	260	12	32	2	4	9	4	0.3	20	620	169	2.34
+X Large	Ultimate Pepperoni Pizza	1 slice (1/12 of a 16" X-large)	280	14	33	2	5	11	4.5	0.2	30	780	195	2.7
+X Large	Meat Supreme Pizza	1 slice (1/12 of a 16" X-large)	310	16	33	2	4	13	5	0.2	40	950	195	3.6
+X Large	Tropical Hawaiian Pizza	1 slice (1/12 of a 16" X-large)	280	13	34	2	6	11	4.5	0.2	30	710	195	2.7
+X Large	Canadian Eh! Pizza	1 slice (1/12 of a 16" X-large)	280	14	33	2	4	11	4.5	0.2	35	750	195	3.6
+X Large	Buffalo Chicken Pizza	1 slice (1/12 of a 16" X-large)	280	13	32	2	4	10	4	0.2	25	750	195	2.7
+X Large	Spicy BBQ Chicken Pizza	1 slice (1/12 of a 16" X-large)	270	14	37	2	8	7	3	0.2	25	720	195	2.7
+X Large	Classic Super Pizza	1 slice (1/12 of a 16" X-large)	260	13	33	2	5	9	4	0.2	30	650	195	3.6
+X Large	Bacon Double Cheeseburger Pizza	1 slice (1/12 of a 16" X-large)	290	14	33	1	4	11	4.5	0.2	25	710	195	3.6
+X Large	Chicken Bruschetta Pizza	1 slice (1/12 of a 16" X-large)	280	16	34	2	5	9	4	0.2	30	750	260	2.7
+X Large	Sausage Mushroom Melt Pizza	1 slice (1/12 of a 16" X-large)	300	13	31	1	3	14	4	0.3	25	690	195	2.7
+X Large	Classic Cheese Pizza	1 slice (1/12 of a 16" X-large)	230	11	32	2	4	7	3	0.2	15	520	169	1.98
+X Large	Garden Veggie Pizza	1 slice (1/12 of a 16" X-large)	220	12	32	5	4	6	3	0.2	20	370	195	2.7
+X Large	Mediterranean Vegetarian Pizza	1 slice (1/12 of a 16" X-large)	280	13	35	2	5	10	5	0.2	25	810	260	3.6
+X Large	Creamy Garlic Pizza	1 slice (1/12 of a 16" X-large)	300	12	32	2	3	14	4.5	0.3	15	420	260	2.7
+X Large	Pesto Amore Pizza	1 slice (1/12 of a 16" X-large)	260	13	32	5	4	10	4	0.2	25	430	260	2.7
+X Large	Plant-Based Pepperoni Pizza	1 slice (1/12 of a 16" X-large)	250	12	33	2	4	8	3	0.2	15	580	169	2.34

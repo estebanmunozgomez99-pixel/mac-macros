@@ -109,6 +109,12 @@ for line in open('data/sources/booster-juice-nutrition-guide-v24.1.tsv',encoding
     kind=0 if cat=='Grilled Fresh' else 2
     for loc in ('La Piazza','DBAC'):
         add(loc,'Booster Juice',cat,name,serving,cal,fat,sat,chol,sod,carb,fib,sug,prot,kind,BJ_SRC,ca,fe)
+# ---- Pizza Pizza (MUSC): pizza only. Walk-in slice + a slice of each pie size; the size groups into one row in the app.
+PP_SRC='Pizza Pizza nutrition (pizzapizza.ca/about-us/nutrition, facts as of Nov 1, 2023), pulled Oct 1, 2026'
+for line in open('data/sources/pizza-pizza-nutrition.tsv',encoding='utf-8'):
+    if line.startswith(('#','size\t')) or not line.strip(): continue
+    size,name,serving,cal,prot,carb,fib,sug,fat,sat,trans,chol,sod,ca,fe=line.rstrip('\n').split('\t')
+    add('MUSC','Pizza Pizza','Pizza',f'{name} - {size}',serving,cal,fat,sat,chol,sod,carb,fib,sug,prot,0,PP_SRC,ca,fe)
 json.dump(out,open('data/build/franchise.json','w'),ensure_ascii=False,indent=0)
 from collections import Counter
 print(len(out), Counter((o['location'],o['station'],o['kind']) for o in out))

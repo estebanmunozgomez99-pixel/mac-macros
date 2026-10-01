@@ -80,7 +80,7 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 - Eco Bean - MUMC → Chopped Leaf ("powered by Chopped Leaf": everything except soups and Chopped Water), plus its own McMaster Breakfast station
 - Bistro 2 Go → Second Cup
 - Centro → Paramount Lebanese Kitchen (wraps, build-your-own meal/salad/Yalla Special fries/poutine, Beef Kafta Dinner LTO; proteins are extras)
-- There is no "MUSC" location; the user said MUSC isn't a place in the app.
+- MUSC → Pizza Pizza (added Oct 1, 2026 at the user's request; MUSC sells pizza only). Classic pizzas from `data/sources/pizza-pizza-nutrition.tsv` (pulled from pizzapizza.ca via a GitHub Actions browser, since the site blocks plain downloads): "Name - <size>" with sizes Walk-in Slice (580-710 cal) and one slice of a Small/Medium/Large/X Large pie (`SIZE_RE` knows "Walk-in Slice"). Saying "a slice of pepperoni pizza" picks Walk-in Slice. Specialty lines (donair, ancient grain, stuffed crust, XXL, gluten-free) are left out.
 
 ## Known data caveats
 
@@ -88,6 +88,7 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 - Two unlabeled blocks in the Second Cup PDF are named Espresso and Americano from their position on the menu.
 - Paramount Lebanese Kitchen publishes calories only. Macros are estimates (user approved), salad calories too. Build-your-own = posted base dish + posted protein calories. Recheck if Paramount releases a nutrition guide.
 - Booster Juice data is Booster Juice's own in-store Nutrition Guide v24.1, typed from the user's photos into `data/sources/booster-juice-nutrition-guide-v24.1.tsv` (photos: `booster-juice-guide-v24.1-*.jpg`). It includes calcium and iron (mg), which go into the franchise micro array. `Booster-Juice-Menu-2023.pdf` (calories only) is kept for reference.
+- Pizza Pizza's site prints Sat. Fat as an integer column, so 3.5 shows as "35"; values above total fat are divided by 10. Its calcium/iron are %DV, converted to mg.
 - Starbucks PDFs the user found were the Ireland/Northern Ireland menu, so Starbucks was not added.
 
 ## To-do
