@@ -1,4 +1,4 @@
-# One-time: open starbucks.ca/menu in a real browser and save the menu data it loads into data/probe-sb/.
+# One-time (run 3): open starbucks.ca/menu in a real browser and save the menu data it loads into data/probe-sb/.
 name: Fetch Starbucks menu
 on:
   push:
@@ -22,7 +22,9 @@ jobs:
             const ctx = await b.newContext({ locale: 'en-CA', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
             const p = await ctx.newPage();
             await p.goto('https://www.starbucks.ca/menu', { waitUntil: 'networkidle', timeout: 90000 }).catch(e => console.log('goto', e.message));
-            const menu = await (await ctx.request.get('https://www.starbucks.ca/apiproxy/v1/ordering/menu')).json();
+            const mr = await ctx.request.get('https://www.starbucks.ca/apiproxy/v1/ordering/menu');
+            console.log('menu status', mr.status());
+            const menu = JSON.parse(await mr.text());
             fs.writeFileSync(out + 'menu.json', JSON.stringify(menu));
             // Learn the product endpoint from a real product page
             const api = [];
@@ -51,8 +53,8 @@ jobs:
             await b.close();
           })();
           JS
-          node get.js
-          cd "$GITHUB_WORKSPACE/data/probe-sb" && gzip -9 products.json menu.json && ls -la
+          node get.js > "$GITHUB_WORKSPACE/data/probe-sb/run.log" 2>&1 || echo "node failed: $?" >> "$GITHUB_WORKSPACE/data/probe-sb/run.log"
+          cd "$GITHUB_WORKSPACE/data/probe-sb" && gzip -9 -f products.json menu.json || true; ls -la
           node get.js
       - name: Commit
         run: |
