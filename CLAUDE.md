@@ -74,7 +74,7 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 
 ## Locations for non-McMaster restaurants
 
-- La Piazza → Tim Hortons, Booster Juice, Pizza Pizza (pizza only; see below)
+- La Piazza → Tim Hortons, Booster Juice, Pizza Pizza (pizza only; see below). Shown in the app as **"La Piazza (MUSC)"** (`LOC_NAMES` in `appdata3.py`; `OLD_LOC_NAMES` in the app keeps old ids working; voice: "la piazza", "piazza", "musc"). Scripts and sources still say "La Piazza".
 - DBAC (David Braley Athletic Centre) → Booster Juice
 - PGCLL → Second Cup, Chopped Leaf (full menu)
 - Eco Bean - MUMC → Chopped Leaf ("powered by Chopped Leaf": everything except soups and Chopped Water), plus its own McMaster Breakfast station

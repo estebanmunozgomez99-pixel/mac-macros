@@ -87,7 +87,10 @@ for r in FR:
     seen.add(k); rows.append([stations.index(key),r['item'],r['serving'],*vals,r['kind'],cat_index(r['station'],r['category']),micro([r['satfat'],r['chol'],r['sodium'],r['fibre'],r['sugars'],None,r.get('calcium'),r.get('iron')])])
 # version = build time (UTC); the app uses a downloaded menu.json only if its version is newer than its own copy
 import datetime
-out={'version':datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),'locations':locs,'stations':[[locs.index(l),s] for l,s in stations],'categories':cats,'items':rows}
+# Display names for locations (the sources keep their own names). Keep app/index.html OLD_LOC_NAMES in sync so
+# saved favourites/recents (whose ids contain the location) still resolve.
+LOC_NAMES={'La Piazza':'La Piazza (MUSC)'}
+out={'version':datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),'locations':[LOC_NAMES.get(l,l) for l in locs],'stations':[[locs.index(l),s] for l,s in stations],'categories':cats,'items':rows}
 open('data/build/data.json','w').write(json.dumps(out,ensure_ascii=False,separators=(',',':')))
 from collections import Counter
 print(Counter(r[7] for r in rows))
