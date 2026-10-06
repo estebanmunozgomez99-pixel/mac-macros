@@ -1,0 +1,594 @@
+# Starbucks Canada menu (starbucks.ca/apiproxy/v1/ordering/<product>/<form>), pulled Oct 6, 2026 via a GitHub Actions browser.
+# One row per product and size, default recipe (drinks with their standard milk). "At Home" products left out. caffeine in mg.
+section	category	name	form	size	serving	calories	fat	sat_fat	trans_fat	cholesterol_mg	sodium_mg	carbs	fibre	sugars	protein	caffeine_mg
+Coffee & Espresso	Cold Brew	Chocolate Cream Cold Brew	Iced	Grande	473 ml	250	14	9	0.5	40	30	26	1	25	3	190
+Coffee & Espresso	Cold Brew	Chocolate Cream Cold Brew	Iced	Tall	354 ml	190	12	7	0.4	35	25	19	1	18	2	150
+Coffee & Espresso	Cold Brew	Chocolate Cream Cold Brew	Iced	Trenta	887 ml	290	14	9	0.5	45	40	36	1	35	3	320
+Coffee & Espresso	Cold Brew	Chocolate Cream Cold Brew	Iced	Venti	709 ml	270	14	9	0.5	45	35	32	1	30	3	280
+Coffee & Espresso	Cold Brew	Cold Brew	Iced	Grande	473 ml	3	0	0	0	0	15	0	0	0	0.2	205
+Coffee & Espresso	Cold Brew	Cold Brew	Iced	Tall	354 ml	3	0	0	0	0	10	0	0	0	0.1	155
+Coffee & Espresso	Cold Brew	Cold Brew	Iced	Trenta	887 ml	5	0	0	0	0	25	0	0	0	0.3	360
+Coffee & Espresso	Cold Brew	Cold Brew	Iced	Venti	709 ml	5	0	0	0	0	20	0	0	0	0.3	310
+Coffee & Espresso	Cold Brew	Cold Brew with Nondairy Vanilla Cold Foam	Iced	Grande	473 ml	160	8	0.5	0	0	35	19	0	18	3	185
+Coffee & Espresso	Cold Brew	Cold Brew with Nondairy Vanilla Cold Foam	Iced	Tall	354 ml	100	6	0.4	0	0	25	11	0	10	2	145
+Coffee & Espresso	Cold Brew	Cold Brew with Nondairy Vanilla Cold Foam	Iced	Trenta	887 ml	220	9	0.5	0	0	45	30	0	29	3	315
+Coffee & Espresso	Cold Brew	Cold Brew with Nondairy Vanilla Cold Foam	Iced	Venti	709 ml	190	9	0.5	0	0	40	24	0	23	3	275
+Coffee & Espresso	Cold Brew	Nondairy Chocolate Cold Brew	Iced	Grande	473 ml	190	9	1	0	0	35	24	1	22	3	190
+Coffee & Espresso	Cold Brew	Nondairy Chocolate Cold Brew	Iced	Tall	354 ml	150	8	1	0	0	30	18	1	16	3	150
+Coffee & Espresso	Cold Brew	Nondairy Chocolate Cold Brew	Iced	Trenta	887 ml	250	10	1	0	0	50	36	1	33	4	325
+Coffee & Espresso	Cold Brew	Nondairy Chocolate Cold Brew	Iced	Venti	709 ml	230	10	1	0	0	45	31	1	29	4	280
+Coffee & Espresso	Cold Brew	Nondairy Salted Caramel Cold Brew	Iced	Grande	473 ml	150	6	0.4	0	0	230	19	0	19	2	185
+Coffee & Espresso	Cold Brew	Nondairy Salted Caramel Cold Brew	Iced	Tall	354 ml	130	7	0.4	0	0	240	15	0	14	2	145
+Coffee & Espresso	Cold Brew	Nondairy Salted Caramel Cold Brew	Iced	Trenta	887 ml	230	9	0.5	0	0	340	33	0	32	3	315
+Coffee & Espresso	Cold Brew	Nondairy Salted Caramel Cold Brew	Iced	Venti	709 ml	180	7	0.5	0	0	280	26	0	25	2	275
+Coffee & Espresso	Cold Brew	Nondairy Vanilla Cold Brew	Iced	Grande	473 ml	100	4	0.3	0	0	25	14	0	13	1	185
+Coffee & Espresso	Cold Brew	Nondairy Vanilla Cold Brew	Iced	Tall	354 ml	80	4	0.3	0	0	20	9	0	9	1	145
+Coffee & Espresso	Cold Brew	Nondairy Vanilla Cold Brew	Iced	Trenta	887 ml	190	8	0.5	0	0	45	28	0	27	3	315
+Coffee & Espresso	Cold Brew	Nondairy Vanilla Cold Brew	Iced	Venti	709 ml	170	8	0.5	0	0	40	23	0	22	3	275
+Coffee & Espresso	Cold Brew	Orange Cream Cold Brew	Iced	Grande	473 ml	240	14	9	0.5	45	80	28	0	27	2	185
+Coffee & Espresso	Cold Brew	Orange Cream Cold Brew	Iced	Tall	354 ml	200	12	8	0.4	40	70	22	0	20	2	145
+Coffee & Espresso	Cold Brew	Orange Cream Cold Brew	Iced	Trenta	887 ml	320	16	10	0.5	50	100	41	0	40	2	315
+Coffee & Espresso	Cold Brew	Orange Cream Cold Brew	Iced	Venti	709 ml	280	15	10	0.5	45	95	35	0	34	2	275
+Coffee & Espresso	Cold Brew	Salted Caramel Cream Cold Brew	Iced	Grande	473 ml	240	14	9	0.5	45	300	26	0	26	2	185
+Coffee & Espresso	Cold Brew	Salted Caramel Cream Cold Brew	Iced	Tall	354 ml	190	12	8	0.4	40	300	19	0	19	2	145
+Coffee & Espresso	Cold Brew	Salted Caramel Cream Cold Brew	Iced	Trenta	887 ml	300	15	10	0.5	50	390	37	0	37	2	320
+Coffee & Espresso	Cold Brew	Salted Caramel Cream Cold Brew	Iced	Venti	709 ml	270	15	10	0.5	50	380	32	0	32	2	275
+Coffee & Espresso	Cold Brew	Vanilla Sweet Cream Cold Brew	Iced	Grande	473 ml	110	5	3.5	0.2	15	20	14	0	14	1	185
+Coffee & Espresso	Cold Brew	Vanilla Sweet Cream Cold Brew	Iced	Tall	354 ml	90	5	3.5	0.2	15	20	9	0	9	1	145
+Coffee & Espresso	Cold Brew	Vanilla Sweet Cream Cold Brew	Iced	Trenta	887 ml	220	11	7	0.4	35	40	28	0	28	2	315
+Coffee & Espresso	Cold Brew	Vanilla Sweet Cream Cold Brew	Iced	Venti	709 ml	200	11	7	0.4	35	35	23	0	23	2	275
+Coffee & Espresso	Iced Americano	Iced Caffè Americano	Iced	Grande	473 ml	15	0	0	0	0	15	2	0	0	1	225
+Coffee & Espresso	Iced Americano	Iced Caffè Americano	Iced	Tall	354 ml	10	0	0	0	0	10	1	0	0	1	150
+Coffee & Espresso	Iced Americano	Iced Caffè Americano	Iced	Venti	709 ml	15	0	0	0	0	20	3	0	0	1	300
+Coffee & Espresso	Iced Coffee	Starbucks® Iced Coffee Blend	Iced	Grande	473 ml	3	0.1	0	0	0	10	0	0	0	0	185
+Coffee & Espresso	Iced Coffee	Starbucks® Iced Coffee Blend	Iced	Tall	354 ml	2	0	0	0	0	10	0	0	0	0	135
+Coffee & Espresso	Iced Coffee	Starbucks® Iced Coffee Blend	Iced	Trenta	887 ml	5	0.1	0	0	0	20	0	0	0	1	320
+Coffee & Espresso	Iced Coffee	Starbucks® Iced Coffee Blend	Iced	Venti	709 ml	4	0.1	0	0	0	15	0	0	0	0	265
+Coffee & Espresso	Iced Espresso	Iced Espresso	Iced	Doppio	44 ml	10	0	0	0	0	0	2	0	0	1	150
+Coffee & Espresso	Iced Espresso	Iced Espresso	Iced	Quad	88 ml	20	0	0	0	0	0	4	0	0	2	300
+Coffee & Espresso	Iced Espresso	Iced Espresso	Iced	Solo	22 ml	5	0	0	0	0	0	1	0	0	0	75
+Coffee & Espresso	Iced Espresso	Iced Espresso	Iced	Triple	68 ml	15	0	0	0	0	0	3	0	0	2	225
+Coffee & Espresso	Iced Flat White	Iced Flat White	Iced	Grande	473 ml	150	8	4.5	0.2	25	110	13	0	11	8	195
+Coffee & Espresso	Iced Flat White	Iced Flat White	Iced	Tall	354 ml	110	6	3.5	0.2	20	80	10	0	8	6	130
+Coffee & Espresso	Iced Flat White	Iced Flat White	Iced	Venti	709 ml	220	11	6	0.3	35	160	19	0	16	12	260
+Coffee & Espresso	Iced Latte	Iced Banana Bread Latte	Iced	Grande	473 ml	360	15	9	0.5	50	180	49	0	47	9	170
+Coffee & Espresso	Iced Latte	Iced Banana Bread Latte	Iced	Tall	354 ml	290	12	8	0.5	40	150	38	0	37	7	85
+Coffee & Espresso	Iced Latte	Iced Banana Bread Latte	Iced	Venti	709 ml	470	18	11	0.5	60	230	66	0	63	12	255
+Coffee & Espresso	Iced Latte	Iced Caffè Latte	Iced	Grande	473 ml	130	4.5	2.5	0.1	20	115	13	0	11	8	150
+Coffee & Espresso	Iced Latte	Iced Caffè Latte	Iced	Tall	354 ml	100	3.5	2	0.1	15	90	10	0	9	6	75
+Coffee & Espresso	Iced Latte	Iced Caffè Latte	Iced	Venti	709 ml	180	6	3	0.2	25	160	18	0	15	12	225
+Coffee & Espresso	Iced Latte	Iced Cinnamon Dolce Latte	Iced	Grande	473 ml	300	13	8	0.5	45	115	38	0	35	8	150
+Coffee & Espresso	Iced Latte	Iced Cinnamon Dolce Latte	Iced	Tall	354 ml	240	12	7	0.4	40	90	29	0	27	6	75
+Coffee & Espresso	Iced Latte	Iced Cinnamon Dolce Latte	Iced	Venti	709 ml	420	18	11	0.5	60	160	55	0	51	12	225
+Coffee & Espresso	Iced Latte	Iced Lavender Latte	Iced	Grande	473 ml	180	4.5	3	0.2	20	230	27	0	25	8	150
+Coffee & Espresso	Iced Latte	Iced Lavender Latte	Iced	Tall	354 ml	130	3.5	2	0.1	15	170	19	0	18	6	75
+Coffee & Espresso	Iced Latte	Iced Lavender Latte	Iced	Venti	709 ml	250	6	4	0.3	25	320	37	0	35	11	225
+Coffee & Espresso	Iced Latte	Iced Oat Latte	Iced	Grande	473 ml	150	7	0.5	0	0	110	19	2	6	3	150
+Coffee & Espresso	Iced Latte	Iced Oat Latte	Iced	Tall	354 ml	120	5	0.4	0	0	85	14	2	5	3	75
+Coffee & Espresso	Iced Latte	Iced Oat Latte	Iced	Venti	709 ml	220	10	0.5	0	0	150	27	3	8	5	225
+Coffee & Espresso	Iced Latte	Iced Starbucks Blonde® Vanilla Latte	Iced	Grande	473 ml	190	4	2	0.1	15	100	30	0	28	7	170
+Coffee & Espresso	Iced Latte	Iced Starbucks Blonde® Vanilla Latte	Iced	Tall	354 ml	140	3	1.5	0.1	15	80	23	0	22	6	85
+Coffee & Espresso	Iced Latte	Iced Starbucks Blonde® Vanilla Latte	Iced	Venti	709 ml	270	5	3	0.2	20	140	45	0	41	10	255
+Coffee & Espresso	Iced Macchiato	Iced Caramel Macchiato	Iced	Grande	473 ml	250	7	4.5	0.2	25	150	37	0	34	10	150
+Coffee & Espresso	Iced Macchiato	Iced Caramel Macchiato	Iced	Tall	354 ml	180	5	3.5	0.2	20	110	26	0	24	7	75
+Coffee & Espresso	Iced Macchiato	Iced Caramel Macchiato	Iced	Venti	709 ml	350	9	6	0.3	35	200	53	0	49	13	225
+Coffee & Espresso	Iced Mocha	Iced Caffè Mocha	Iced	Grande	473 ml	350	17	11	0.5	50	100	38	4	30	10	175
+Coffee & Espresso	Iced Mocha	Iced Caffè Mocha	Iced	Tall	354 ml	260	13	8	0.4	35	80	29	3	23	8	95
+Coffee & Espresso	Iced Mocha	Iced Caffè Mocha	Iced	Venti	709 ml	450	20	13	0.5	55	130	55	6	43	14	265
+Coffee & Espresso	Iced Mocha	Iced White Chocolate Mocha	Iced	Grande	473 ml	390	20	13	0.5	55	190	44	0	42	11	150
+Coffee & Espresso	Iced Mocha	Iced White Chocolate Mocha	Iced	Tall	354 ml	290	14	10	0.4	40	140	33	0	32	8	75
+Coffee & Espresso	Iced Mocha	Iced White Chocolate Mocha	Iced	Venti	709 ml	520	23	16	0.5	60	260	64	0	61	15	225
+Coffee & Espresso	Iced Shaken Espresso	Iced Brown Sugar Oat Shaken Espresso	Iced	Grande	473 ml	140	3.5	0.3	0	0	150	25	1	16	2	255
+Coffee & Espresso	Iced Shaken Espresso	Iced Brown Sugar Oat Shaken Espresso	Iced	Tall	354 ml	100	3	0.2	0	0	95	16	1	9	2	170
+Coffee & Espresso	Iced Shaken Espresso	Iced Brown Sugar Oat Shaken Espresso	Iced	Venti	709 ml	200	5	0.4	0	0	220	36	2	23	3	340
+Coffee & Espresso	Iced Shaken Espresso	Iced Hazelnut Oat Shaken Espresso	Iced	Grande	473 ml	140	3.5	0.3	0	0	65	25	1	16	2	255
+Coffee & Espresso	Iced Shaken Espresso	Iced Hazelnut Oat Shaken Espresso	Iced	Tall	354 ml	100	3	0.2	0	0	50	16	1	9	2	170
+Coffee & Espresso	Iced Shaken Espresso	Iced Hazelnut Oat Shaken Espresso	Iced	Venti	709 ml	200	5	0.4	0	0	90	36	1	24	3	340
+Coffee & Espresso	Iced Shaken Espresso	Iced Shaken Espresso	Iced	Grande	473 ml	100	2	1	0.1	5	50	17	0	14	4	225
+Coffee & Espresso	Iced Shaken Espresso	Iced Shaken Espresso	Iced	Tall	354 ml	70	1.5	1	0.1	5	45	11	0	9	3	150
+Coffee & Espresso	Iced Shaken Espresso	Iced Shaken Espresso	Iced	Venti	709 ml	160	3	2	0.1	15	85	25	0	22	6	300
+Coffee & Espresso	Nitro Cold Brew	Nitro Cold Brew	Iced	Grande	473 ml	5	0	0	0	0	10	0	0	0	0.3	345
+Coffee & Espresso	Nitro Cold Brew	Nitro Cold Brew	Iced	Tall	354 ml	4	0	0	0	0	10	0	0	0	0.2	245
+Coffee & Espresso	Nitro Cold Brew	Vanilla Sweet Cream Nitro Cold Brew	Iced	Grande	473 ml	70	5	3.5	0.2	15	20	4	0	4	1	265
+Coffee & Espresso	Nitro Cold Brew	Vanilla Sweet Cream Nitro Cold Brew	Iced	Tall	354 ml	70	5	3.5	0.2	15	15	4	0	4	1	200
+Coffee & Espresso	Americano	Americano Misto	Hot	Grande	473 ml	120	4	2.5	0.2	15	105	12	0	10	8	225
+Coffee & Espresso	Americano	Americano Misto	Hot	Short	236 ml	60	2	1.5	0.1	10	55	6	0	5	4	75
+Coffee & Espresso	Americano	Americano Misto	Hot	Tall	354 ml	90	3	2	0.1	15	80	9	0	8	6	150
+Coffee & Espresso	Americano	Americano Misto	Hot	Venti	591 ml	150	5	3.5	0.2	20	130	16	0	13	10	300
+Coffee & Espresso	Americano	Brown Sugar Oat Americano	Hot	Grande	473 ml	160	4.5	0.3	0	0	160	27	2	16	3	255
+Coffee & Espresso	Americano	Brown Sugar Oat Americano	Hot	Short	236 ml	70	2	0.1	0	0	75	12	1	8	1	85
+Coffee & Espresso	Americano	Brown Sugar Oat Americano	Hot	Tall	354 ml	100	3	0.2	0	0	95	16	1	9	2	170
+Coffee & Espresso	Americano	Brown Sugar Oat Americano	Hot	Venti	591 ml	220	6	0.4	0	0	220	38	2	24	4	340
+Coffee & Espresso	Americano	Caffè Americano	Hot	Grande	473 ml	15	0	0	0	0	10	2	0	0	1	225
+Coffee & Espresso	Americano	Caffè Americano	Hot	Short	236 ml	4	0	0	0	0	5	1	0	0	0.3	75
+Coffee & Espresso	Americano	Caffè Americano	Hot	Tall	354 ml	10	0	0	0	0	10	1	0	0	1	150
+Coffee & Espresso	Americano	Caffè Americano	Hot	Venti	591 ml	15	0	0	0	0	15	3	0	0	1	300
+Coffee & Espresso	Brewed Coffee	Caffè Misto	Hot	Grande	473 ml	110	4	2	0.1	15	100	10	0	10	7	150
+Coffee & Espresso	Brewed Coffee	Caffè Misto	Hot	Short	236 ml	50	2	1	0.1	10	50	5	0	5	4	75
+Coffee & Espresso	Brewed Coffee	Caffè Misto	Hot	Tall	354 ml	80	3	1.5	0.1	15	80	8	0	8	5	115
+Coffee & Espresso	Brewed Coffee	Caffè Misto	Hot	Venti	591 ml	130	5	2.5	0.2	20	130	13	0	13	9	195
+Coffee & Espresso	Brewed Coffee	Decaf Pike Place® Roast	Hot	Grande	473 ml	5	0.1	0	0	0	10	0	0	0	1	25
+Coffee & Espresso	Brewed Coffee	Decaf Pike Place® Roast	Hot	Short	236 ml	3	0.1	0	0	0	5	0	0	0	0.3	15
+Coffee & Espresso	Brewed Coffee	Decaf Pike Place® Roast	Hot	Tall	354 ml	4	0.1	0	0	0	10	0	0	0	0.5	20
+Coffee & Espresso	Brewed Coffee	Decaf Pike Place® Roast	Hot	Venti	591 ml	5	0.1	0	0	0	10	0	0	0	1	30
+Coffee & Espresso	Brewed Coffee	Featured Blonde Roast - True North Blend™	Hot	Grande	473 ml	5	0.1	0	0	0	10	0	0	0	1	315
+Coffee & Espresso	Brewed Coffee	Featured Blonde Roast - True North Blend™	Hot	Short	236 ml	3	0.1	0	0	0	5	0	0	0	0.3	155
+Coffee & Espresso	Brewed Coffee	Featured Blonde Roast - True North Blend™	Hot	Tall	354 ml	4	0.1	0	0	0	10	0	0	0	0.5	235
+Coffee & Espresso	Brewed Coffee	Featured Blonde Roast - True North Blend™	Hot	Venti	591 ml	5	0.1	0	0	0	10	0	0	0	1	390
+Coffee & Espresso	Brewed Coffee	Featured Medium Roast - Pike Place® Roast	Hot	Grande	473 ml	5	0.1	0	0	0	10	0	0	0	1	315
+Coffee & Espresso	Brewed Coffee	Featured Medium Roast - Pike Place® Roast	Hot	Short	236 ml	3	0.1	0	0	0	5	0	0	0	0.3	155
+Coffee & Espresso	Brewed Coffee	Featured Medium Roast - Pike Place® Roast	Hot	Tall	354 ml	4	0.1	0	0	0	10	0	0	0	0.5	235
+Coffee & Espresso	Brewed Coffee	Featured Medium Roast - Pike Place® Roast	Hot	Venti	591 ml	5	0.1	0	0	0	10	0	0	0	1	390
+Coffee & Espresso	Brewed Coffee	Featured Starbucks® Dark Roast Coffee	Hot	Grande	473 ml	5	0.1	0	0	0	10	0	0	0	1	315
+Coffee & Espresso	Brewed Coffee	Featured Starbucks® Dark Roast Coffee	Hot	Short	236 ml	3	0.1	0	0	0	5	0	0	0	0.3	155
+Coffee & Espresso	Brewed Coffee	Featured Starbucks® Dark Roast Coffee	Hot	Tall	354 ml	4	0.1	0	0	0	10	0	0	0	0.5	235
+Coffee & Espresso	Brewed Coffee	Featured Starbucks® Dark Roast Coffee	Hot	Venti	591 ml	5	0.1	0	0	0	10	0	0	0	1	390
+Coffee & Espresso	Cappuccino	Cappuccino	Hot	Grande	473 ml	140	5	3	0.2	20	120	14	0	12	9	150
+Coffee & Espresso	Cappuccino	Cappuccino	Hot	Short	236 ml	70	2.5	1.5	0.1	10	60	7	0	6	4	75
+Coffee & Espresso	Cappuccino	Cappuccino	Hot	Tall	354 ml	100	4	2.5	0.2	15	90	10	0	9	7	75
+Coffee & Espresso	Cappuccino	Cappuccino	Hot	Venti	591 ml	200	8	5	0.3	30	180	20	0	19	13	150
+Coffee & Espresso	Coffee Traveller	Coffee Traveller – Dark Roast	Hot	Traveler	236 ml	3	0.1	0	0	0	5	0	0	0	0.3	130
+Coffee & Espresso	Coffee Traveller	Coffee Traveller – Decaf Pike Place® Roast	Hot	Traveler	236 ml	3	0.1	0	0	0	5	0	0	0	0.3	15
+Coffee & Espresso	Coffee Traveller	Coffee Traveller – Pike Place® Roast	Hot	Traveler	236 ml	3	0.1	0	0	0	5	0	0	0	0.3	155
+Coffee & Espresso	Coffee Traveller	Coffee Traveller –Starbucks Blonde® Roast	Hot	Traveler	236 ml	3	0.1	0	0	0	5	0	0	0	0.3	180
+Coffee & Espresso	Cortado	Brown Sugar Oat Cortado	Hot	Short	236 ml	120	3	0.2	0	0	130	22	1	15	2	230
+Coffee & Espresso	Cortado	Cortado	Hot	Short	236 ml	90	4.5	2.5	0.1	15	60	8	0	6	5	230
+Coffee & Espresso	Cortado	Pecan Cortado	Hot	Short	236 ml	130	4	2.5	0	10	110	19	0	17	5	230
+Coffee & Espresso	Espresso Shot	Espresso	Hot	Doppio	44 ml	10	0	0	0	0	0	2	0	0	1	150
+Coffee & Espresso	Espresso Shot	Espresso	Hot	Quad	88 ml	20	0	0	0	0	0	4	0	0	2	300
+Coffee & Espresso	Espresso Shot	Espresso	Hot	Solo	22 ml	5	0	0	0	0	0	1	0	0	0	75
+Coffee & Espresso	Espresso Shot	Espresso	Hot	Triple	66 ml	15	0	0	0	0	0	3	0	0	2	225
+Coffee & Espresso	Espresso Shot	Espresso Con Panna	Hot	Doppio	44 ml	35	2.5	1.5	0.1	10	2	2	0	0	1	150
+Coffee & Espresso	Espresso Shot	Espresso Con Panna	Hot	Quad	88 ml	45	2.5	1.5	0.1	10	3	3	0	0	1	300
+Coffee & Espresso	Espresso Shot	Espresso Con Panna	Hot	Solo	22 ml	30	2.5	1.5	0.1	10	2	1	0	0	0.5	75
+Coffee & Espresso	Espresso Shot	Espresso Con Panna	Hot	Triple	66 ml	40	2.5	1.5	0.1	10	3	3	0	0	1	225
+Coffee & Espresso	Flat White	Flat White	Hot	Grande	473 ml	220	11	7	0.3	35	150	18	0	17	12	195
+Coffee & Espresso	Flat White	Flat White	Hot	Short	236 ml	110	5	3	0.2	15	70	9	0	8	6	130
+Coffee & Espresso	Flat White	Flat White	Hot	Tall	354 ml	170	9	5	0.3	25	115	14	0	13	9	130
+Coffee & Espresso	Flat White	Flat White	Hot	Venti	591 ml	290	15	9	0.4	45	200	24	0	22	15	195
+Coffee & Espresso	Latte	Banana Bread Latte	Hot	Grande	473 ml	300	6	4	0.3	25	240	49	0	47	11	170
+Coffee & Espresso	Latte	Banana Bread Latte	Hot	Short	236 ml	160	2.5	1.5	0.1	10	150	30	0	29	5	85
+Coffee & Espresso	Latte	Banana Bread Latte	Hot	Tall	354 ml	230	4.5	3	0.2	20	190	39	0	38	8	85
+Coffee & Espresso	Latte	Banana Bread Latte	Hot	Venti	591 ml	360	8	5	0.3	35	280	58	0	56	14	170
+Coffee & Espresso	Latte	Caffè Latte	Hot	Grande	473 ml	190	7	4.5	0.3	30	170	19	0	17	12	150
+Coffee & Espresso	Latte	Caffè Latte	Hot	Short	236 ml	100	3.5	2.5	0.2	15	85	10	0	9	6	75
+Coffee & Espresso	Latte	Caffè Latte	Hot	Tall	354 ml	150	6	3.5	0.2	25	135	15	0	14	10	75
+Coffee & Espresso	Latte	Caffè Latte	Hot	Venti	591 ml	250	9	6	0.4	35	220	24	0	22	16	150
+Coffee & Espresso	Latte	Cinnamon Dolce Latte	Hot	Grande	473 ml	340	14	9	0.5	50	160	43	0	40	12	150
+Coffee & Espresso	Latte	Cinnamon Dolce Latte	Hot	Short	236 ml	190	9	5	0.3	30	85	22	0	21	6	75
+Coffee & Espresso	Latte	Cinnamon Dolce Latte	Hot	Tall	354 ml	270	12	7	0.4	40	130	33	0	31	9	75
+Coffee & Espresso	Latte	Cinnamon Dolce Latte	Hot	Venti	591 ml	420	16	10	0.5	60	210	54	0	51	15	150
+Coffee & Espresso	Latte	Lavender Latte	Hot	Grande	473 ml	240	7	4.5	0.3	30	280	33	0	32	12	150
+Coffee & Espresso	Latte	Lavender Latte	Hot	Short	236 ml	100	3	2	0.1	10	110	13	0	12	5	75
+Coffee & Espresso	Latte	Lavender Latte	Hot	Tall	354 ml	170	5	3	0.2	20	200	23	0	22	8	75
+Coffee & Espresso	Latte	Lavender Latte	Hot	Venti	591 ml	310	9	6	0.4	35	370	43	0	41	15	150
+Coffee & Espresso	Latte	Oat Latte	Hot	Grande	473 ml	190	8	0.5	0	0	125	23	2	7	4	150
+Coffee & Espresso	Latte	Oat Latte	Hot	Short	236 ml	90	4	0.3	0	0	60	11	1	3	2	75
+Coffee & Espresso	Latte	Oat Latte	Hot	Tall	354 ml	130	6	0.4	0	0	90	16	2	5	3	75
+Coffee & Espresso	Latte	Oat Latte	Hot	Venti	591 ml	240	11	1	0	0	160	30	3	9	5	150
+Coffee & Espresso	Latte	Starbucks Blonde® Vanilla Latte	Hot	Grande	473 ml	250	6	3.5	0.2	25	150	37	0	35	12	170
+Coffee & Espresso	Latte	Starbucks Blonde® Vanilla Latte	Hot	Short	236 ml	130	3.5	1.5	0.1	15	80	18	0	17	6	85
+Coffee & Espresso	Latte	Starbucks Blonde® Vanilla Latte	Hot	Tall	354 ml	200	5	2.5	0.2	20	125	28	0	27	9	85
+Coffee & Espresso	Latte	Starbucks Blonde® Vanilla Latte	Hot	Venti	591 ml	320	9	4.5	0.3	35	200	46	0	44	15	170
+Coffee & Espresso	Macchiato	Caramel Macchiato	Hot	Grande	473 ml	250	7	4.5	0.2	25	150	35	0	33	10	150
+Coffee & Espresso	Macchiato	Caramel Macchiato	Hot	Short	236 ml	120	4	2.5	0.1	15	80	16	0	15	5	75
+Coffee & Espresso	Macchiato	Caramel Macchiato	Hot	Tall	354 ml	190	6	3.5	0.2	20	120	26	0	25	8	75
+Coffee & Espresso	Macchiato	Caramel Macchiato	Hot	Venti	591 ml	310	9	6	0.3	35	190	44	0	42	13	150
+Coffee & Espresso	Macchiato	Espresso Macchiato	Hot	Doppio	44 ml	15	0.1	0	0	0	2	2	0	0	1	150
+Coffee & Espresso	Macchiato	Espresso Macchiato	Hot	Quad	88 ml	25	0.1	0	0	0	2	4	0	0	2	300
+Coffee & Espresso	Macchiato	Espresso Macchiato	Hot	Solo	22 ml	10	0.1	0	0	0	2	1	0	0	0.5	75
+Coffee & Espresso	Macchiato	Espresso Macchiato	Hot	Triple	66 ml	20	0.1	0	0	0	2	3	0	0	1	225
+Coffee & Espresso	Mocha	Caffè Mocha	Hot	Grande	473 ml	370	15	10	0.5	45	150	43	4	35	14	175
+Coffee & Espresso	Mocha	Caffè Mocha	Hot	Short	236 ml	200	9	6	0.3	30	75	22	2	18	7	90
+Coffee & Espresso	Mocha	Caffè Mocha	Hot	Tall	354 ml	290	13	8	0.4	40	120	33	3	27	11	95
+Coffee & Espresso	Mocha	Caffè Mocha	Hot	Venti	591 ml	450	18	11	0.5	55	190	54	5	45	18	185
+Coffee & Espresso	Mocha	White Chocolate Mocha	Hot	Grande	473 ml	390	17	11	0.5	50	220	47	0	46	13	150
+Coffee & Espresso	Mocha	White Chocolate Mocha	Hot	Short	236 ml	200	10	6	0.3	25	100	23	0	22	6	75
+Coffee & Espresso	Mocha	White Chocolate Mocha	Hot	Tall	354 ml	290	13	9	0.4	35	160	35	0	34	10	75
+Coffee & Espresso	Mocha	White Chocolate Mocha	Hot	Venti	591 ml	480	20	13	0.5	55	280	59	0	58	17	150
+Food	Bagels	Mini Dill & Rye Bagels	Single	1 Serving	118 g	350	13	6	0.4	30	890	44	2	2	10	
+Food	Bagels	Mini Everything Bagels	Single	1 Serving	114 g	320	12	7	0.4	35	630	39	1	3	9	
+Food	Croissants & Danishes	Butter Croissant	Single	1 Piece	62 g	260	15	10	1	40	320	27	1	5	5	
+Food	Croissants & Danishes	Cheese Danish	Single	1 Piece	80 g	310	17	10	0.5	50	360	34	1	12	6	
+Food	Croissants & Danishes	Chocolate Croissant	Single	1 Piece	80 g	340	20	12	0.5	50	280	38	2	13	5	
+Food	Croissants & Danishes	Cinnamon Pull-Apart	Single	1 Serving	82 g	300	13	8	0.4	35	330	38	0	10	6	
+Food	Croissants & Danishes	Ham & Swiss Croissant	Single	1 Serving	102 g	290	15	9	0.5	60	580	27	1	4	13	
+Food	Loaves & Cakes	Banana Loaf	Single	1 Piece	115 g	360	17	2.5	0.3	70	320	49	2	28	5	
+Food	Loaves & Cakes	Cinnamon Coffee Cake	Single	1 Piece	109 g	460	19	10	0.1	80	330	66	2	42	6	
+Food	Loaves & Cakes	Iced Lemon Loaf	Single	1 Piece	115 g	430	20	6	0.3	75	290	58	1	37	6	
+Food	Mini Pies	Mini Apple Crumble Pie	Single	1 Serving	81 g	290	13	7	0.3	15	210	40	2	17	3	
+Food	Mini Pies	Mini Pecan Pie	Single	1 Serving	58 g	250	15	6	0.1	30	240	25	1	14	3	
+Food	Muffins & Scones	Blueberry Muffin with Yogurt & Honey	Single	1 Piece	105 g	360	16	4	0.3	40	240	49	1	28	5	
+Food	Pancakes & Waffles	4 Maple Mini Pancakes	Single	1 Serving	34 g	120	6	0.5	0	10	120	15	0	7	2	
+Food	Pancakes & Waffles	8 Maple Mini Pancakes	Single	1 Piece	68 g	250	13	1	0.1	20	240	30	1	13	3	
+Food	Pancakes & Waffles	Belgian Liège Waffle	Single	1 Piece	55 g	220	12	7	0	40	190	26	1	12	3	
+Food	Breakfast Sandwiches	Avocado Spread	Single	1 Serving	57 g	90	8	1	0	0	0	5	4	0	1	
+Food	Breakfast Sandwiches	Bacon, Gouda & Egg Sandwich	Single	1 Piece	120 g	360	18	6	0.1	155	710	35	1	2	18	
+Food	Breakfast Sandwiches	Bacon-Style Turkey, Cheddar & Egg White Sandwich	Single	1 Serving	142 g	260	9	3.5	0.3	25	600	30	2	2	17	
+Food	Breakfast Sandwiches	Double-Smoked Bacon, Cheddar & Egg Sandwich	Single	1 Piece	148 g	500	27	13	4	225	960	43	0	8	21	
+Food	Breakfast Sandwiches	Egg, Pesto & Mozzarella Sandwich	Single	1 Serving	146 g	370	16	6	0.2	175	850	36	1	1	21	
+Food	Breakfast Sandwiches	Everything Croissant & Roasted Ham Sandwich	Single	1 Serving	163 g	470	22	10	0	225	1090	46	3	8	22	
+Food	Breakfast Sandwiches	Sausage, Cheddar & Egg Sandwich	Single	1 Serving	157 g	480	29	10	0.2	165	890	34	1	2	18	
+Food	Breakfast Sandwiches	Three Cheese & Egg Sandwich	Single	1 Piece	108 g	330	16	6	0.1	150	560	34	1	1	15	
+Food	Breakfast Wraps	Bacon, Sausage & Egg Wrap	Single	1 Piece	214 g	640	33	13	0.4	340	1090	58	0	2	28	
+Food	Breakfast Wraps	Spinach, Feta and Cage Free Egg White Wrap	Single	1 Piece	159 g	290	8	3.5	0.2	20	840	34	1	5	20	
+Food	Egg Bites & Bakes	Bacon & Gruyère Egg Bites	Single	1 Serving	130 g	320	24	13	0.3	280	660	6	1	1	20	
+Food	Egg Bites & Bakes	Egg White & Roasted Red Pepper Egg Bites	Single	1 Serving	130 g	170	8	5	0.2	25	470	11	0	3	12	
+Food	Egg Bites & Bakes	Potato, Cheddar & Chive Bakes	Single	1 Serving	117 g	210	13	7	0.4	135	410	11	0	2	12	
+Food	Oatmeal	Rolled Steel-Cut Oatmeal	Single	1 Piece	42 g	160	2.5	0.5	0	0	125	28	4	0	5	
+Food	Lunch Sandwiches	Chicken & Bacon on Brioche	Single	1 Serving	201 g	620	27	7	0.2	95	1400	65	4	12	28	
+Food	Lunch Sandwiches	Crispy Grilled Cheese on Sourdough	Single	1 Piece	132 g	450	20	10	0.5	50	950	47	4	1	20	
+Food	Lunch Sandwiches	Ham & Swiss on Baguette	Single	1 Piece	176 g	510	25	10	0.3	80	1230	43	2	1	25	
+Food	Lunch Sandwiches	Tomato & Mozzarella on Focaccia	Single	1 Piece	153 g	380	13	5	0.3	25	770	48	3	2	17	
+Food	Lunch Sandwiches	Turkey, Provolone & Pesto on Ciabatta	Single	1 Piece	201 g	520	18	6	0	70	1200	53	4	3	33	
+Food	Pockets	Jalapeño Chicken Pocket	Single	1 Serving	84 g	200	7	4	0.2	30	460	23	1	3	11	
+Food	Pockets	Spicy Falafel Pocket	Single	1 Piece	94 g	220	7	1	0	0	430	34	4	4	8	
+Food	Snack Boxes	Artisan Charcuterie Snack Box	Single	1 Piece	65 g	260	16	7	0	40	580	13	0	1	14	
+Food	Cheese	Marble Cheese Stick	Single	1 Piece	21 g	70	6	4	0.2	15	140	0	0	0	5	
+Food	Protein & Snack Bars	Mid-Day Squares™ Cookie Dough	Single	1 Piece	33 g	170	13	6	0	0	60	11	4	5	6	
+Food	Protein & Snack Bars	Mid-Day Squares™ Peanut Butta	Single	1 Piece	33 g	170	13	6	0	0	60	11	4	4	6	
+Food	Salty Snacks	Khloud™ Sweet & Salty Kettle Corn Protein Popcorn	Single	1 Serving	42 g	220	13	5	0	0	200	16	2	7	10	
+Food	Salty Snacks	Khloud™ White Cheddar Protein Popcorn	Single	1 Serving	30 g	160	10	1.5	0	5	160	10	2	2	7	
+Food	Salty Snacks	Perfectly Salted Kettle Potato Chips	Single	1 Piece	57 g	280	14	1.5	0	0	240	34	2	0	5	
+Food	Salty Snacks	Squirrel™ - Classic Almonds	Single	1 Piece	42 g	260	23	2	0	0	170	8	5	2	9	
+Food	Sweet Snacks	Crispy Apple Chips	Single	1 Piece	11 g	45	0	0	0	0	0	11	1	7	0	
+Food	Sweet Snacks	Gluten-Free Marshmallow Dream Bar	Single	1 Piece	28 g	230	5	3.5	0.2	15	220	44	0	24	1	
+Food	Sweet Snacks	Justin’s® Dark Chocolate Peanut Butter Cups	Single	1 Serving	40 g	210	14	7	0	0	120	21	1	17	4	
+Food	Sweet Snacks	Madeleines	Single	1 Piece	51 g	220	11	7	0.4	65	125	28	0	17	3	
+Food	Sweet Snacks	Squirrel Brand® – Crème Brûlée Almonds®	Single	1 Piece	42 g	240	16	1	0	0	165	16	3	10	8	
+Food	Cake Pops	Birthday Cake Pop	Single	1 Piece	38 g	170	9	5	0	10	110	23	0	18	1	
+Food	Cake Pops	Chocolate Cake Pop	Single	1 Piece	38 g	160	8	4.5	0.1	15	80	23	1	18	2	
+Food	Cake Pops	Cookies & Cream Cake Pop	Single	1 Serving	42 g	150	7	4	0.1	10	70	20	0	15	1	
+Food	Cake Pops	Hedgehog Cake Pop	Single	1 Serving	41 g	160	8	4.5	0	10	105	21	1	15	2	
+Food	Cake Pops	Unicorn Cake Pop	Single	1 Serving	42 g	170	9	5	0	10	120	22	0	17	2	
+Food	Cookies & Bars	Chocolate Chunk Cookie	Single	1 Serving	70 g	320	16	10	0.3	35	260	42	2	25	4	
+Food	Cookies & Bars	Double Chocolate Brownie	Single	1 Serving	104 g	480	28	9	0.4	75	220	55	3	37	7	
+Food	Cookies & Bars	Fox Cookie	Single	1 Serving	64 g	320	18	11	0.4	25	115	36	0	18	3	
+Food	Cookies & Bars	Ginger Molasses Cookie	Single	1 Piece	70 g	350	10	6	0.2	50	250	59	1	35	5	
+Food	Cookies & Bars	Oat Bar	Single	1 Piece	68 g	310	17	10	0.5	40	190	37	4	10	5	
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Caramel Frappuccino® Blended Beverage	Iced	Grande	473 ml	380	16	10	0.5	50	230	55	0	54	4	90
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Caramel Frappuccino® Blended Beverage	Iced	Tall	354 ml	260	11	7	0.4	35	160	38	0	37	3	60
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Caramel Frappuccino® Blended Beverage	Iced	Venti	709 ml	470	17	11	0.5	55	310	73	0	72	6	120
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Caramel Ribbon Crunch Frappuccino® Blended Beverage	Iced	Grande	473 ml	470	22	14	0.5	65	280	65	0	60	5	85
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Caramel Ribbon Crunch Frappuccino® Blended Beverage	Iced	Tall	354 ml	330	15	10	0.5	50	200	45	0	42	4	60
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Caramel Ribbon Crunch Frappuccino® Blended Beverage	Iced	Venti	709 ml	570	24	15	1	75	380	84	0	78	7	115
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Coffee Frappuccino® Blended Beverage	Iced	Grande	473 ml	230	3	2	0.1	10	230	46	0	45	3	95
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Coffee Frappuccino® Blended Beverage	Iced	Tall	354 ml	160	2.5	1.5	0.1	10	160	31	0	31	3	65
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Coffee Frappuccino® Blended Beverage	Iced	Venti	709 ml	310	5	2.5	0.1	15	300	60	0	59	5	125
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Mocha Cookie Crumble Frappuccino® Blended Beverage	Iced	Grande	473 ml	480	24	15	0.5	60	270	62	2	55	6	95
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Mocha Cookie Crumble Frappuccino® Blended Beverage	Iced	Tall	354 ml	350	17	11	0.5	45	200	45	2	40	4	65
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Mocha Cookie Crumble Frappuccino® Blended Beverage	Iced	Venti	709 ml	590	27	17	0.5	65	360	82	3	75	8	130
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Mocha Frappuccino® Blended Beverage	Iced	Grande	473 ml	370	15	10	0.5	45	220	54	1	51	5	100
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Mocha Frappuccino® Blended Beverage	Iced	Tall	354 ml	250	10	6	0.3	30	160	36	1	35	4	70
+Frappuccino® Blended Beverage	Coffee Frappuccino®	Mocha Frappuccino® Blended Beverage	Iced	Venti	709 ml	470	17	11	0.5	50	300	71	2	67	7	130
+Frappuccino® Blended Beverage	Crème Frappuccino®	Lavender Crème Frappuccino® Blended Beverage	Iced	Grande	473 ml	370	16	10	0.5	50	330	52	0	52	5	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Lavender Crème Frappuccino® Blended Beverage	Iced	Tall	354 ml	260	12	7	0.4	35	230	35	0	35	4	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Lavender Crème Frappuccino® Blended Beverage	Iced	Venti	709 ml	460	18	11	0.5	55	440	68	0	67	7	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Orange Cream Frappuccino® Blended Beverage	Iced	Grande	473 ml	320	16	10	0.4	50	280	41	0	39	5	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Orange Cream Frappuccino® Blended Beverage	Iced	Tall	354 ml	190	11	7	0.3	35	150	21	0	20	3	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Orange Cream Frappuccino® Blended Beverage	Iced	Venti	709 ml	450	23	14	0.5	70	390	57	0	54	7	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Pumpkin Spice Crème Frappuccino® Blended Beverage	Iced	Grande	473 ml	360	16	10	0.5	50	270	47	0	47	6	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Pumpkin Spice Crème Frappuccino® Blended Beverage	Iced	Tall	354 ml	250	12	7	0.4	35	190	31	0	31	5	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Pumpkin Spice Crème Frappuccino® Blended Beverage	Iced	Venti	709 ml	450	19	11	0.5	60	370	62	0	61	9	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Strawberry Crème Frappuccino® Blended Beverage	Iced	Grande	473 ml	370	16	10	0.5	50	240	51	0	51	5	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Strawberry Crème Frappuccino® Blended Beverage	Iced	Tall	354 ml	250	11	7	0.4	35	160	33	0	32	4	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Strawberry Crème Frappuccino® Blended Beverage	Iced	Venti	709 ml	460	17	11	0.5	55	320	66	1	65	7	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Vanilla Bean Crème Frappuccino® Blended Beverage	Iced	Grande	473 ml	380	16	10	0.5	50	250	53	0	52	5	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Vanilla Bean Crème Frappuccino® Blended Beverage	Iced	Tall	354 ml	260	12	7	0.4	35	170	35	0	35	4	0
+Frappuccino® Blended Beverage	Crème Frappuccino®	Vanilla Bean Crème Frappuccino® Blended Beverage	Iced	Venti	709 ml	470	18	11	0.5	55	330	68	0	68	7	0
+Other Sips	Juice	Be Well Cold Pressed Juice	Packaged	333 ml	333 ml	120	0.2	0	0	0	0	27	0	24	1	0
+Other Sips	Juice	Well Greens Cold Pressed Juice	Packaged	333 ml	333 ml	120	0.2	0	0	0	0	27	0	23	2	0
+Other Sips	Juice	Well OJ Cold Pressed Juice	Packaged	333 ml	333 ml	150	0.5	0	0	0	0	35	1	28	2	0
+Other Sips	Juice	Well Refreshed Cold Pressed Juice	Packaged	333 ml	333 ml	140	0	0	0	0	24	36	0	36	0	0
+Other Sips	Protein and Milk	Milk2Go 1% Chocolate Milk	Packaged	200 ml	200 ml	120	2	1.5	0	10	125	20	0	19	7	0
+Other Sips	Soda & Kombucha	Cove Raspberry Soda	Packaged	355 ml	355 ml	10	0	0	0	0	85	12	0	0	2	0
+Other Sips	Soda & Kombucha	RISE Kombucha Fresh Ginger	Packaged	414 ml	414 ml	50	0	0	0	0	0	14	0	13	0	0
+Other Sips	Soda & Kombucha	RISE Kombucha Peach & Mango	Packaged	414 ml	414 ml	50	0	0	0	0	0	14	0	13	0	0
+Other Sips	Water and Sparkling	Montellier Sparkling Water	Packaged	335 ml	355 ml	0	0	0	0	0	5	0	0	0	0	0
+Other Sips	Water and Sparkling	Sapsucker The Lime One Sparkling Water	Packaged	335 ml	355 ml	35	0	0	0	0	0	8	0	7	0	0
+Other Sips	Water and Sparkling	Sapsucker The Peach One Sparkling Water	Packaged	335 ml	355 ml	35	0	0	0	0	0	8	0	7	0	0
+Other Sips	Hot Chocolate	Hot Chocolate	Hot	Grande	473 ml	370	16	10	0.5	50	160	43	4	37	14	25
+Other Sips	Hot Chocolate	Hot Chocolate	Hot	Kids	236 ml	190	9	6	0.3	25	65	21	2	18	6	15
+Other Sips	Hot Chocolate	Hot Chocolate	Hot	Short	236 ml	190	9	6	0.3	25	65	21	2	18	6	15
+Other Sips	Hot Chocolate	Hot Chocolate	Hot	Tall	354 ml	280	12	8	0.4	35	105	32	3	27	10	20
+Other Sips	Hot Chocolate	Hot Chocolate	Hot	Venti	591 ml	450	18	12	0.5	55	200	54	5	46	17	35
+Other Sips	Lemonade	Lemonade	Iced	Grande	473 ml	120	0.1	0	0	0	10	28	0	27	0.2	0
+Other Sips	Lemonade	Lemonade	Iced	Kids	354 ml	80	0.1	0	0	0	10	21	0	19	0.2	0
+Other Sips	Lemonade	Lemonade	Iced	Tall	354 ml	80	0.1	0	0	0	10	21	0	19	0.2	0
+Other Sips	Lemonade	Lemonade	Iced	Trenta	887 ml	200	0.2	0	0	0	20	48	0	45	0.4	0
+Other Sips	Lemonade	Lemonade	Iced	Venti	709 ml	160	0.2	0	0	0	15	40	0	38	0.3	0
+Other Sips	Milk & Steamers	Cold Milk	Iced	Grande	473 ml	260	10	5	0.3	40	250	25	0	25	17	0
+Other Sips	Milk & Steamers	Cold Milk	Iced	Tall	354 ml	200	8	4	0.2	30	190	19	0	19	13	0
+Other Sips	Milk & Steamers	Cold Milk	Iced	Venti	709 ml	370	15	7	0.4	60	350	36	0	36	24	0
+Other Sips	Milk & Steamers	Steamed Milk	Hot	Grande	473 ml	200	8	4	0.2	30	190	19	0	19	13	0
+Other Sips	Milk & Steamers	Steamed Milk	Hot	Kids	236 ml	100	4	2	0.1	15	95	10	0	10	7	0
+Other Sips	Milk & Steamers	Steamed Milk	Hot	Short	236 ml	100	4	2	0.1	15	95	10	0	10	7	0
+Other Sips	Milk & Steamers	Steamed Milk	Hot	Tall	354 ml	160	6	3	0.2	25	150	15	0	15	10	0
+Other Sips	Milk & Steamers	Steamed Milk	Hot	Venti	591 ml	260	10	5	0.3	40	240	25	0	25	17	0
+Other Sips	Milk & Steamers	Vanilla Steamer	Hot	Grande	473 ml	270	7	4	0.2	30	180	37	0	37	12	0
+Other Sips	Milk & Steamers	Vanilla Steamer	Hot	Kids	236 ml	130	4	2	0.1	15	90	19	0	19	6	0
+Other Sips	Milk & Steamers	Vanilla Steamer	Hot	Short	236 ml	130	4	2	0.1	15	90	19	0	19	6	0
+Other Sips	Milk & Steamers	Vanilla Steamer	Hot	Tall	354 ml	200	6	3	0.2	25	135	28	0	28	10	0
+Other Sips	Milk & Steamers	Vanilla Steamer	Hot	Venti	591 ml	340	10	5	0.3	40	230	47	0	47	16	0
+Protein	High Protein Lattes	Caramel Protein Latte	Hot	Grande	473 ml	310	6	4	0.3	25	170	38	0	37	27	150
+Protein	High Protein Lattes	Caramel Protein Latte	Hot	Short	236 ml	160	3	2	0.1	10	75	18	0	17	14	75
+Protein	High Protein Lattes	Caramel Protein Latte	Hot	Tall	354 ml	240	4.5	3	0.2	20	125	28	0	27	23	75
+Protein	High Protein Lattes	Caramel Protein Latte	Hot	Venti	591 ml	380	8	5	0.4	30	210	48	0	46	29	150
+Protein	High Protein Lattes	Caramel Protein Matcha	Hot	Grande	473 ml	310	7	4.5	0.3	25	180	34	1	32	28	65
+Protein	High Protein Lattes	Caramel Protein Matcha	Hot	Short	236 ml	140	3	2	0.1	10	80	13	0	12	14	20
+Protein	High Protein Lattes	Caramel Protein Matcha	Hot	Tall	354 ml	220	4.5	3	0.2	20	125	23	1	22	22	40
+Protein	High Protein Lattes	Caramel Protein Matcha	Hot	Venti	591 ml	390	9	6	0.4	35	230	45	1	43	32	85
+Protein	High Protein Lattes	Iced Caramel Protein Latte	Iced	Grande	473 ml	280	4	2.5	0.2	15	125	33	0	31	29	150
+Protein	High Protein Lattes	Iced Caramel Protein Latte	Iced	Tall	354 ml	220	3.5	2	0.1	15	100	25	0	24	22	75
+Protein	High Protein Lattes	Iced Caramel Protein Latte	Iced	Venti	709 ml	410	6	3.5	0.3	20	180	48	0	45	40	225
+Protein	High Protein Lattes	Iced Caramel Protein Matcha	Iced	Grande	473 ml	270	4.5	2.5	0.2	15	135	26	1	24	31	65
+Protein	High Protein Lattes	Iced Caramel Protein Matcha	Iced	Tall	354 ml	160	3	1.5	0.1	10	80	15	1	14	18	35
+Protein	High Protein Lattes	Iced Caramel Protein Matcha	Iced	Venti	709 ml	420	7	4.5	0.3	30	220	40	2	38	50	95
+Protein	High Protein Lattes	Iced Protein Matcha	Iced	Grande	473 ml	260	4.5	2.5	0.2	15	135	25	1	23	31	65
+Protein	High Protein Lattes	Iced Protein Matcha	Iced	Tall	354 ml	150	3	1.5	0.1	10	80	14	1	13	18	35
+Protein	High Protein Lattes	Iced Protein Matcha	Iced	Venti	709 ml	420	7	4.5	0.3	30	220	38	2	36	50	95
+Protein	High Protein Lattes	Iced Vanilla Protein Latte	Iced	Grande	473 ml	270	4	2.5	0	15	125	31	0	29	29	150
+Protein	High Protein Lattes	Iced Vanilla Protein Latte	Iced	Tall	354 ml	210	3.5	2	0	15	100	23	0	22	22	75
+Protein	High Protein Lattes	Iced Vanilla Protein Latte	Iced	Venti	709 ml	390	6	3.5	0	20	180	45	0	42	40	225
+Protein	High Protein Lattes	Protein Matcha	Hot	Grande	473 ml	300	7	4	0	25	170	32	1	30	28	75
+Protein	High Protein Lattes	Protein Matcha	Hot	Short	236 ml	130	3	2	0	10	75	12	0	12	14	25
+Protein	High Protein Lattes	Protein Matcha	Hot	Tall	354 ml	220	4.5	3	0	20	120	22	1	20	22	50
+Protein	High Protein Lattes	Protein Matcha	Hot	Venti	709 ml	370	9	5	0	35	220	42	1	40	31	100
+Protein	High Protein Lattes	Vanilla Protein Latte	Hot	Grande	473 ml	310	6	4	0	25	160	36	0	34	27	150
+Protein	High Protein Lattes	Vanilla Protein Latte	Hot	Short	236 ml	150	3	1.5	0	10	75	17	0	16	14	75
+Protein	High Protein Lattes	Vanilla Protein Latte	Hot	Tall	354 ml	240	4.5	3	0	20	125	26	0	25	23	75
+Protein	High Protein Lattes	Vanilla Protein Latte	Hot	Venti	591 ml	360	8	5	0	30	200	45	0	43	29	150
+Protein	No Added Sugar Options	Iced Sugar-Free Caramel Protein Latte	Iced	Grande	473 ml	200	4	2.5	0.2	15	130	12	0	9	29	150
+Protein	No Added Sugar Options	Iced Sugar-Free Caramel Protein Latte	Iced	Tall	354 ml	160	3.5	2	0.1	15	105	9	0	7	22	75
+Protein	No Added Sugar Options	Iced Sugar-Free Caramel Protein Latte	Iced	Venti	709 ml	280	6	3.5	0.3	20	180	16	0	13	40	225
+Protein	No Added Sugar Options	Iced Sugar-Free Caramel Protein Matcha	Iced	Grande	473 ml	210	4.5	2.5	0.2	15	140	12	1	10	31	60
+Protein	No Added Sugar Options	Iced Sugar-Free Caramel Protein Matcha	Iced	Tall	354 ml	130	3	1.5	0.1	10	85	7	1	6	18	35
+Protein	No Added Sugar Options	Iced Sugar-Free Caramel Protein Matcha	Iced	Venti	709 ml	340	7	4.5	0.3	30	220	19	2	17	50	95
+Protein	No Added Sugar Options	Iced Sugar-Free Vanilla Protein Latte	Iced	Grande	473 ml	200	4	2.5	0	15	125	12	0	9	29	150
+Protein	No Added Sugar Options	Iced Sugar-Free Vanilla Protein Latte	Iced	Tall	354 ml	150	3.5	2	0	15	100	9	0	7	22	75
+Protein	No Added Sugar Options	Iced Sugar-Free Vanilla Protein Latte	Iced	Venti	709 ml	280	6	3.5	0	20	180	17	0	13	40	225
+Protein	No Added Sugar Options	Iced Sugar-Free Vanilla Protein Matcha	Iced	Grande	473 ml	210	4.5	2.5	0.2	15	135	12	1	10	31	65
+Protein	No Added Sugar Options	Iced Sugar-Free Vanilla Protein Matcha	Iced	Tall	354 ml	130	3	1.5	0.1	10	80	7	1	6	18	35
+Protein	No Added Sugar Options	Iced Sugar-Free Vanilla Protein Matcha	Iced	Venti	709 ml	340	7	4.5	0.3	30	220	20	2	17	50	95
+Protein	No Added Sugar Options	Sugar-Free Caramel Protein Latte	Hot	Grande	473 ml	230	6	4	0.3	25	170	17	0	15	27	150
+Protein	No Added Sugar Options	Sugar-Free Caramel Protein Latte	Hot	Short	236 ml	120	3	2	0.1	10	80	8	0	7	14	75
+Protein	No Added Sugar Options	Sugar-Free Caramel Protein Latte	Hot	Tall	354 ml	180	4.5	3	0.2	20	130	12	0	11	23	75
+Protein	No Added Sugar Options	Sugar-Free Caramel Protein Latte	Hot	Venti	591 ml	270	8	5	0.4	30	220	21	0	19	29	150
+Protein	No Added Sugar Options	Sugar-Free Caramel Protein Matcha	Hot	Grande	473 ml	250	7	4.5	0.3	25	180	18	1	16	28	60
+Protein	No Added Sugar Options	Sugar-Free Caramel Protein Matcha	Hot	Short	236 ml	110	3	2	0.1	10	80	7	0	7	14	20
+Protein	No Added Sugar Options	Sugar-Free Caramel Protein Matcha	Hot	Tall	354 ml	170	4.5	3	0.2	20	125	12	1	11	22	40
+Protein	No Added Sugar Options	Sugar-Free Caramel Protein Matcha	Hot	Venti	591 ml	300	9	6	0.4	35	230	23	1	21	32	85
+Protein	No Added Sugar Options	Sugar-Free Vanilla Protein Latte	Hot	Grande	473 ml	230	6	4	0	25	160	17	0	15	27	150
+Protein	No Added Sugar Options	Sugar-Free Vanilla Protein Latte	Hot	Short	236 ml	110	3	1.5	0	10	75	8	0	7	14	75
+Protein	No Added Sugar Options	Sugar-Free Vanilla Protein Latte	Hot	Tall	354 ml	180	4.5	3	0	20	125	12	0	11	23	75
+Protein	No Added Sugar Options	Sugar-Free Vanilla Protein Latte	Hot	Venti	709 ml	270	8	5	0	30	200	21	0	19	29	150
+Protein	No Added Sugar Options	Sugar-Free Vanilla Protein Matcha	Hot	Grande	473 ml	240	7	4	0	25	170	18	1	16	28	75
+Protein	No Added Sugar Options	Sugar-Free Vanilla Protein Matcha	Hot	Short	236 ml	110	3	2	0	10	75	7	0	7	14	25
+Protein	No Added Sugar Options	Sugar-Free Vanilla Protein Matcha	Hot	Tall	354 ml	180	4.5	3	0	20	120	12	1	11	22	50
+Protein	No Added Sugar Options	Sugar-Free Vanilla Protein Matcha	Hot	Venti	709 ml	300	9	5	0	35	220	23	1	20	31	95
+Protein	Protein Cold Foam Drinks	Chocolate Protein Cream Cold Brew	Iced	Grande	473 ml	330	15	10	0.5	45	55	28	1	26	19	213
+Protein	Protein Cold Foam Drinks	Chocolate Protein Cream Cold Brew	Iced	Tall	354 ml	240	12	7	0	35	45	19	1	18	15	160
+Protein	Protein Cold Foam Drinks	Chocolate Protein Cream Cold Brew	Iced	Trenta	887 ml	370	16	10	0.5	45	65	38	1	36	19	365
+Protein	Protein Cold Foam Drinks	Chocolate Protein Cream Cold Brew	Iced	Venti	709 ml	350	16	10	0.5	45	60	33	1	31	19	315
+Protein	Protein Cold Foam Drinks	Iced Banana Protein Cream Matcha	Iced	Grande	473 ml	400	17	11	0.5	55	135	40	1	38	23	55
+Protein	Protein Cold Foam Drinks	Iced Banana Protein Cream Matcha	Iced	Tall	354 ml	350	16	10	0.5	50	100	31	1	30	21	30
+Protein	Protein Cold Foam Drinks	Iced Banana Protein Cream Matcha	Iced	Venti	709 ml	510	21	13	1	70	190	53	1	51	29	75
+Protein	Protein Cold Foam Drinks	Iced Brown Sugar Cream Protein Matcha	Iced	Grande	473 ml	430	18	11	0.5	60	210	44	1	42	24	55
+Protein	Protein Cold Foam Drinks	Iced Brown Sugar Cream Protein Matcha	Iced	Tall	354 ml	360	16	10	0.5	50	170	34	1	33	20	30
+Protein	Protein Cold Foam Drinks	Iced Brown Sugar Cream Protein Matcha	Iced	Venti	709 ml	500	20	12	0.5	65	260	54	1	52	27	75
+Protein	Protein Cold Foam Drinks	Iced Vanilla Protein Cream Latte	Iced	Grande	473 ml	390	21	13	1	70	160	27	0	25	26	150
+Protein	Protein Cold Foam Drinks	Iced Vanilla Protein Cream Latte	Iced	Tall	354 ml	300	16	10	0.5	55	125	20	0	19	20	75
+Protein	Protein Cold Foam Drinks	Iced Vanilla Protein Cream Latte	Iced	Venti	709 ml	460	23	15	1	80	210	33	0	30	30	225
+Protein	Protein Cold Foam Drinks	Iced Vanilla Protein Cream Shaken Espresso	Iced	Grande	473 ml	400	19	11	0.5	50	190	38	2	29	19	255
+Protein	Protein Cold Foam Drinks	Iced Vanilla Protein Cream Shaken Espresso	Iced	Tall	354 ml	300	15	8	0.4	40	125	26	1	19	15	170
+Protein	Protein Cold Foam Drinks	Iced Vanilla Protein Cream Shaken Espresso	Iced	Venti	709 ml	480	22	11	0.5	50	260	50	2	37	21	340
+Refreshment	Coconut Beverage Refreshers	Dragon Drink®	Iced	Grande	473 ml	140	3	2.5	0	0	85	27	1	24	1	50
+Refreshment	Coconut Beverage Refreshers	Dragon Drink®	Iced	Tall	354 ml	110	2.5	2	0	0	60	21	0	19	1	25
+Refreshment	Coconut Beverage Refreshers	Dragon Drink®	Iced	Trenta	887 ml	270	6	5	0	0	170	54	1	48	1	100
+Refreshment	Coconut Beverage Refreshers	Dragon Drink®	Iced	Venti	709 ml	200	4	3.5	0	0	130	39	1	35	1	75
+Refreshment	Coconut Beverage Refreshers	Lime Coconut Drink	Iced	Grande	473 ml	120	2.5	2.5	0	0	85	25	1	23	0.3	50
+Refreshment	Coconut Beverage Refreshers	Lime Coconut Drink	Iced	Tall	354 ml	90	2	2	0	0	60	19	1	17	0.3	25
+Refreshment	Coconut Beverage Refreshers	Lime Coconut Drink	Iced	Trenta	887 ml	240	5	5	0	0	170	50	1	45	1	100
+Refreshment	Coconut Beverage Refreshers	Lime Coconut Drink	Iced	Venti	709 ml	180	4	3.5	0	0	130	36	1	34	0.5	75
+Refreshment	Coconut Beverage Refreshers	Mango Dream	Iced	Grande	473 ml	160	2.5	2.5	0	0	90	35	1	32	0.4	50
+Refreshment	Coconut Beverage Refreshers	Mango Dream	Iced	Tall	354 ml	120	2	2	0	0	60	26	1	23	0.4	25
+Refreshment	Coconut Beverage Refreshers	Mango Dream	Iced	Trenta	887 ml	330	5	5	0	0	180	71	2	65	1	100
+Refreshment	Coconut Beverage Refreshers	Mango Dream	Iced	Venti	709 ml	240	4	3.5	0	0	135	51	1	48	1	75
+Refreshment	Coconut Beverage Refreshers	Pink Cannon Ball Drink	Iced	Grande	473 ml	150	3	2.5	0	0	90	31	1	26	1	50
+Refreshment	Coconut Beverage Refreshers	Pink Cannon Ball Drink	Iced	Tall	354 ml	120	2.5	2	0	0	60	25	1	21	1	25
+Refreshment	Coconut Beverage Refreshers	Pink Cannon Ball Drink	Iced	Trenta	887 ml	310	6	5	0	0	170	62	3	53	2	100
+Refreshment	Coconut Beverage Refreshers	Pink Cannon Ball Drink	Iced	Venti	709 ml	210	4.5	3.5	0	0	130	43	1	37	1	75
+Refreshment	Coconut Beverage Refreshers	Pink Drink	Iced	Grande	473 ml	140	2.5	2.5	0	0	85	28	1	25	0.4	50
+Refreshment	Coconut Beverage Refreshers	Pink Drink	Iced	Tall	354 ml	110	2	2	0	0	60	22	1	19	0.4	25
+Refreshment	Coconut Beverage Refreshers	Pink Drink	Iced	Trenta	887 ml	270	5	5	0	0	170	55	2	49	1	100
+Refreshment	Coconut Beverage Refreshers	Pink Drink	Iced	Venti	709 ml	200	4	3.5	0	0	130	40	1	36	1	75
+Refreshment	Lemonade Refreshers	Cannon Ball Drink	Iced	Grande	473 ml	160	0.5	0.1	0	0	40	38	1	34	1	50
+Refreshment	Lemonade Refreshers	Cannon Ball Drink	Iced	Tall	354 ml	130	0.5	0.1	0	0	25	30	1	26	1	25
+Refreshment	Lemonade Refreshers	Cannon Ball Drink	Iced	Trenta	887 ml	320	1	0.2	0	0	75	76	3	67	1	100
+Refreshment	Lemonade Refreshers	Cannon Ball Drink	Iced	Venti	709 ml	220	0.5	0.1	0	0	55	54	1	48	1	75
+Refreshment	Lemonade Refreshers	Cool Lime Lemonade Refresher	Iced	Grande	473 ml	130	0.1	0	0	0	35	32	1	30	0.2	50
+Refreshment	Lemonade Refreshers	Cool Lime Lemonade Refresher	Iced	Tall	354 ml	100	0.1	0	0	0	20	24	1	22	0.2	25
+Refreshment	Lemonade Refreshers	Cool Lime Lemonade Refresher	Iced	Trenta	887 ml	260	0.2	0	0	0	75	64	1	59	0.4	100
+Refreshment	Lemonade Refreshers	Cool Lime Lemonade Refresher	Iced	Venti	709 ml	190	0.1	0	0	0	55	47	1	44	0.3	75
+Refreshment	Lemonade Refreshers	Mango Dragonfruit Lemonade Refresher	Iced	Grande	473 ml	140	0.5	0.1	0	0	35	34	1	31	0.5	50
+Refreshment	Lemonade Refreshers	Mango Dragonfruit Lemonade Refresher	Iced	Tall	354 ml	110	0.4	0.1	0	0	20	27	0	24	0.4	25
+Refreshment	Lemonade Refreshers	Mango Dragonfruit Lemonade Refresher	Iced	Trenta	887 ml	290	1	0.2	0	0	70	69	1	62	1	100
+Refreshment	Lemonade Refreshers	Mango Dragonfruit Lemonade Refresher	Iced	Venti	709 ml	200	0.5	0.1	0	0	55	50	1	45	1	75
+Refreshment	Lemonade Refreshers	Mango Strawberry Lemonade Refresher	Iced	Grande	473 ml	170	0.2	0	0	0	40	42	1	39	0.3	50
+Refreshment	Lemonade Refreshers	Mango Strawberry Lemonade Refresher	Iced	Tall	354 ml	130	0.2	0	0	0	25	31	1	28	0.3	25
+Refreshment	Lemonade Refreshers	Mango Strawberry Lemonade Refresher	Iced	Trenta	887 ml	340	0.4	0	0	0	80	85	2	79	1	100
+Refreshment	Lemonade Refreshers	Mango Strawberry Lemonade Refresher	Iced	Venti	709 ml	250	0.3	0	0	0	60	62	1	58	0.4	75
+Refreshment	Lemonade Refreshers	Strawberry Açaí Lemonade Refresher	Iced	Grande	473 ml	140	0.2	0	0	0	35	35	1	32	0.3	50
+Refreshment	Lemonade Refreshers	Strawberry Açaí Lemonade Refresher	Iced	Tall	354 ml	110	0.2	0	0	0	20	27	1	24	0.3	25
+Refreshment	Lemonade Refreshers	Strawberry Açaí Lemonade Refresher	Iced	Trenta	887 ml	290	0.4	0	0	0	75	70	2	64	1	100
+Refreshment	Lemonade Refreshers	Strawberry Açaí Lemonade Refresher	Iced	Venti	709 ml	210	0.3	0	0	0	55	51	1	47	0.4	75
+Refreshment	Refreshers	Mango Dragonfruit Refresher	Iced	Grande	473 ml	90	0.4	0.1	0	0	40	22	0	20	0.4	50
+Refreshment	Refreshers	Mango Dragonfruit Refresher	Iced	Tall	354 ml	80	0.4	0.1	0	0	20	18	0	16	0.4	25
+Refreshment	Refreshers	Mango Dragonfruit Refresher	Iced	Trenta	887 ml	190	1	0.2	0	0	75	45	1	40	1	100
+Refreshment	Refreshers	Mango Dragonfruit Refresher	Iced	Venti	709 ml	130	0.5	0.1	0	0	55	32	0	28	0.4	75
+Refreshment	Refreshers	Mango Strawberry Refresher	Iced	Grande	473 ml	120	0.2	0	0	0	40	31	1	28	0.2	50
+Refreshment	Refreshers	Mango Strawberry Refresher	Iced	Tall	354 ml	90	0.1	0	0	0	25	22	1	20	0.2	25
+Refreshment	Refreshers	Mango Strawberry Refresher	Iced	Trenta	887 ml	240	0.3	0	0	0	85	61	2	56	0.4	100
+Refreshment	Refreshers	Mango Strawberry Refresher	Iced	Venti	709 ml	180	0.2	0	0	0	65	44	1	41	0.2	75
+Refreshment	Refreshers	Strawberry Açaí Refresher	Iced	Grande	473 ml	90	0.1	0	0	0	40	23	1	21	0.2	50
+Refreshment	Refreshers	Strawberry Açaí Refresher	Iced	Tall	354 ml	70	0.1	0	0	0	25	18	1	16	0.2	25
+Refreshment	Refreshers	Strawberry Açaí Refresher	Iced	Trenta	887 ml	190	0.3	0	0	0	75	46	2	41	0.4	100
+Refreshment	Refreshers	Strawberry Açaí Refresher	Iced	Venti	709 ml	130	0.2	0	0	0	55	33	1	30	0.2	75
+Tea	Classic Chai	Chai Latte	Hot	Grande	473 ml	200	4.5	2.5	0.2	15	110	33	0	31	7	55
+Tea	Classic Chai	Chai Latte	Hot	Short	236 ml	80	2	1	0.1	5	45	14	0	13	3	25
+Tea	Classic Chai	Chai Latte	Hot	Tall	354 ml	130	3	2	0.1	10	75	21	0	20	5	35
+Tea	Classic Chai	Chai Latte	Hot	Venti	591 ml	270	6	4	0.3	25	160	44	0	42	10	75
+Tea	Classic Chai	Iced Chai Latte	Iced	Grande	473 ml	180	3.5	2	0.2	15	100	32	0	31	6	60
+Tea	Classic Chai	Iced Chai Latte	Iced	Tall	354 ml	130	2.5	1.5	0.1	10	75	24	0	23	4	45
+Tea	Classic Chai	Iced Chai Latte	Iced	Venti	709 ml	270	5	3	0.2	20	140	47	0	45	8	90
+Tea	Specialty Chai	Iced Lavender Cream Chai	Iced	Grande	473 ml	380	16	10	0.5	55	170	50	0	48	8	60
+Tea	Specialty Chai	Iced Lavender Cream Chai	Iced	Tall	354 ml	320	15	10	0.5	50	140	41	0	40	6	45
+Tea	Specialty Chai	Iced Lavender Cream Chai	Iced	Venti	709 ml	510	21	13	0.5	70	230	69	0	66	10	90
+Tea	Specialty Chai	Iced Mango Cream Chai	Iced	Grande	473 ml	310	12	7	0.4	40	110	43	0	41	7	60
+Tea	Specialty Chai	Iced Mango Cream Chai	Iced	Tall	354 ml	230	9	5	0.3	30	80	32	0	31	5	45
+Tea	Specialty Chai	Iced Mango Cream Chai	Iced	Venti	709 ml	410	14	9	0.5	50	150	60	0	57	10	90
+Tea	Specialty Chai	Iced Orange Cream Chai	Iced	Grande	473 ml	390	17	11	0.5	55	160	51	0	48	8	60
+Tea	Specialty Chai	Iced Orange Cream Chai	Iced	Tall	354 ml	320	15	9	0.5	50	130	41	0	38	6	45
+Tea	Specialty Chai	Iced Orange Cream Chai	Iced	Venti	709 ml	490	20	13	0.5	65	210	68	0	64	10	90
+Tea	Brewed Tea	Chamomile Mint Blossom Tea	Hot	Grande	473 ml	4	0	0	0	0	5	1	0	0	0	25
+Tea	Brewed Tea	Chamomile Mint Blossom Tea	Hot	Short	236 ml	0	0	0	0	0	2	0	0	0	0	16
+Tea	Brewed Tea	Chamomile Mint Blossom Tea	Hot	Tall	354 ml	4	0	0	0	0	3	1	0	0	0	16
+Tea	Brewed Tea	Chamomile Mint Blossom Tea	Hot	Venti	591 ml	4	0	0	0	0	5	1	0	0	0	25
+Tea	Brewed Tea	Earl Grey Tea	Hot	Grande	473 ml	0	0	0	0	0	0	0	0	0	0	40
+Tea	Brewed Tea	Earl Grey Tea	Hot	Short	236 ml	0	0	0	0	0	0	0	0	0	0	40
+Tea	Brewed Tea	Earl Grey Tea	Hot	Tall	354 ml	0	0	0	0	0	0	0	0	0	0	40
+Tea	Brewed Tea	Earl Grey Tea	Hot	Venti	591 ml	0	0	0	0	0	0	0	0	0	0	40
+Tea	Brewed Tea	Emperor’s Clouds & Mist® Tea	Hot	Grande	473 ml	0	0	0	0	0	0	0	0	0	0	16
+Tea	Brewed Tea	Emperor’s Clouds & Mist® Tea	Hot	Short	236 ml	0	0	0	0	0	0	0	0	0	0	1
+Tea	Brewed Tea	Emperor’s Clouds & Mist® Tea	Hot	Tall	354 ml	0	0	0	0	0	0	0	0	0	0	16
+Tea	Brewed Tea	Emperor’s Clouds & Mist® Tea	Hot	Venti	591 ml	0	0	0	0	0	0	0	0	0	0	75
+Tea	Brewed Tea	Honey Citrus Mint Tea	Hot	Grande	473 ml	130	0.1	0	0	0	5	33	0	30	0.2	16
+Tea	Brewed Tea	Honey Citrus Mint Tea	Hot	Short	236 ml	70	0.1	0	0	0	4	16	0	15	0.1	16
+Tea	Brewed Tea	Honey Citrus Mint Tea	Hot	Tall	354 ml	90	0.1	0	0	0	5	22	0	20	0.1	16
+Tea	Brewed Tea	Honey Citrus Mint Tea	Hot	Venti	591 ml	150	0.2	0	0	0	10	38	0	35	0.2	16
+Tea	Brewed Tea	Mint Majesty® Tea	Hot	Grande	473 ml	0	0	0	0	0	0	0	0	0	0	0
+Tea	Brewed Tea	Mint Majesty® Tea	Hot	Short	236 ml	0	0	0	0	0	0	0	0	0	0	0
+Tea	Brewed Tea	Mint Majesty® Tea	Hot	Tall	354 ml	0	0	0	0	0	0	0	0	0	0	0
+Tea	Brewed Tea	Mint Majesty® Tea	Hot	Venti	591 ml	0	0	0	0	0	0	0	0	0	0	0
+Tea	Brewed Tea	Royal English Breakfast Tea	Hot	Grande	473 ml	0	0	0	0	0	0	0	0	0	0	40
+Tea	Brewed Tea	Royal English Breakfast Tea	Hot	Short	236 ml	0	0	0	0	0	0	0	0	0	0	40
+Tea	Brewed Tea	Royal English Breakfast Tea	Hot	Tall	354 ml	0	0	0	0	0	0	0	0	0	0	40
+Tea	Brewed Tea	Royal English Breakfast Tea	Hot	Venti	591 ml	0	0	0	0	0	0	0	0	0	0	40
+Tea	Tea Latte	London Fog Latte	Hot	Grande	473 ml	180	4	2.5	0.2	15	105	29	0	29	7	40
+Tea	Tea Latte	London Fog Latte	Hot	Short	236 ml	90	2	1.5	0.1	10	55	15	0	15	4	40
+Tea	Tea Latte	London Fog Latte	Hot	Tall	354 ml	140	3	2	0.1	15	80	22	0	22	5	40
+Tea	Tea Latte	London Fog Latte	Hot	Venti	591 ml	230	5	3.5	0.2	20	135	37	0	37	9	40
+Tea	Iced Tea	Iced Black Tea	Iced	Grande	473 ml	0	0	0	0	0	10	0	0	0	0	25
+Tea	Iced Tea	Iced Black Tea	Iced	Tall	354 ml	0	0	0	0	0	5	0	0	0	0	20
+Tea	Iced Tea	Iced Black Tea	Iced	Trenta	887 ml	0	0	0	0	0	20	0	0	0	0	55
+Tea	Iced Tea	Iced Black Tea	Iced	Venti	709 ml	0	0	0	0	0	15	0	0	0	0	40
+Tea	Iced Tea	Iced Black Tea Lemonade	Iced	Grande	473 ml	50	0.1	0	0	0	10	12	0	11	0.1	25
+Tea	Iced Tea	Iced Black Tea Lemonade	Iced	Tall	354 ml	35	0	0	0	0	5	9	0	8	0.1	20
+Tea	Iced Tea	Iced Black Tea Lemonade	Iced	Trenta	887 ml	100	0.1	0	0	0	15	24	0	22	0.2	55
+Tea	Iced Tea	Iced Black Tea Lemonade	Iced	Venti	709 ml	70	0.1	0	0	0	15	18	0	17	0.1	40
+Tea	Iced Tea	Iced Green Tea	Iced	Grande	473 ml	0	0	0	0	0	10	0	0	0	0	25
+Tea	Iced Tea	Iced Green Tea	Iced	Tall	354 ml	0	0	0	0	0	5	0	0	0	0	20
+Tea	Iced Tea	Iced Green Tea	Iced	Trenta	887 ml	0	0	0	0	0	20	0	0	0	0	55
+Tea	Iced Tea	Iced Green Tea	Iced	Venti	709 ml	0	0	0	0	0	15	0	0	0	0	40
+Tea	Iced Tea	Iced Green Tea Lemonade	Iced	Grande	473 ml	50	0.1	0	0	0	10	12	0	11	0.1	25
+Tea	Iced Tea	Iced Green Tea Lemonade	Iced	Tall	354 ml	35	0	0	0	0	5	9	0	8	0.1	20
+Tea	Iced Tea	Iced Green Tea Lemonade	Iced	Trenta	887 ml	100	0.1	0	0	0	15	24	0	22	0.2	55
+Tea	Iced Tea	Iced Green Tea Lemonade	Iced	Venti	709 ml	70	0.1	0	0	0	15	18	0	17	0.1	40
+Tea	Iced Tea	Iced Passion Tango® Tea Lemonade	Iced	Grande	473 ml	50	0.1	0	0	0	10	13	0	11	0.1	0
+Tea	Iced Tea	Iced Passion Tango® Tea Lemonade	Iced	Tall	354 ml	40	0	0	0	0	5	9	0	8	0.1	0
+Tea	Iced Tea	Iced Passion Tango® Tea Lemonade	Iced	Trenta	887 ml	110	0.1	0	0	0	15	25	0	22	0.2	0
+Tea	Iced Tea	Iced Passion Tango® Tea Lemonade	Iced	Venti	709 ml	80	0.1	0	0	0	15	19	0	17	0.2	0
+Tea	Iced Tea	Iced Passion Tango™ Tea	Iced	Grande	473 ml	4	0	0	0	0	10	1	0	0	0	0
+Tea	Iced Tea	Iced Passion Tango™ Tea	Iced	Tall	354 ml	3	0	0	0	0	5	0	0	0	0	0
+Tea	Iced Tea	Iced Passion Tango™ Tea	Iced	Trenta	887 ml	10	0	0	0	0	20	1	0	0	0.1	0
+Tea	Iced Tea	Iced Passion Tango™ Tea	Iced	Venti	709 ml	5	0	0	0	0	15	1	0	0	0	0
+Tea	Iced Tea	Iced Peach Green Tea	Iced	Grande	473 ml	60	0	0	0	0	20	15	0	12	0.1	25
+Tea	Iced Tea	Iced Peach Green Tea	Iced	Tall	354 ml	45	0	0	0	0	15	11	0	9	0.1	20
+Tea	Iced Tea	Iced Peach Green Tea	Iced	Trenta	887 ml	120	0	0	0	0	35	30	0	25	0.2	55
+Tea	Iced Tea	Iced Peach Green Tea	Iced	Venti	709 ml	90	0	0	0	0	30	22	0	19	0.2	40
+Tea	Iced Tea	Iced Peach Green Tea Lemonade	Iced	Grande	473 ml	80	0	0	0	0	20	21	0	18	0.2	25
+Tea	Iced Tea	Iced Peach Green Tea Lemonade	Iced	Tall	354 ml	60	0	0	0	0	15	16	0	14	0.1	20
+Tea	Iced Tea	Iced Peach Green Tea Lemonade	Iced	Trenta	887 ml	170	0.1	0	0	0	35	42	0	36	0.3	55
+Tea	Iced Tea	Iced Peach Green Tea Lemonade	Iced	Venti	709 ml	130	0.1	0	0	0	30	31	0	27	0.2	40
+Tea	Iced Tea Latte	Iced London Fog Latte	Iced	Grande	473 ml	140	2.5	1.5	0.1	10	70	25	0	25	4	40
+Tea	Iced Tea Latte	Iced London Fog Latte	Iced	Tall	354 ml	100	2	1	0.1	5	50	19	0	19	3	40
+Tea	Iced Tea Latte	Iced London Fog Latte	Iced	Venti	709 ml	210	3.5	2.5	0.2	15	100	37	0	37	6	40
+Tea	Classic Matcha	Iced Matcha Latte	Iced	Grande	473 ml	190	5	3	0.2	20	120	27	1	25	9	65
+Tea	Classic Matcha	Iced Matcha Latte	Iced	Tall	354 ml	120	3.5	2	0.1	15	80	17	1	16	6	40
+Tea	Classic Matcha	Iced Matcha Latte	Iced	Venti	709 ml	230	6	4	0.3	25	150	34	1	33	11	85
+Tea	Classic Matcha	Matcha Crème Frappuccino® Blended Beverage	Iced	Grande	473 ml	320	13	8	0.3	40	230	46	1	45	5	60
+Tea	Classic Matcha	Matcha Crème Frappuccino® Blended Beverage	Iced	Tall	354 ml	210	8	5	0.2	25	160	31	1	31	4	40
+Tea	Classic Matcha	Matcha Crème Frappuccino® Blended Beverage	Iced	Venti	709 ml	440	18	11	0.4	55	320	62	1	61	8	80
+Tea	Classic Matcha	Matcha Latte	Hot	Grande	473 ml	220	6	4	0.3	25	140	31	1	29	11	65
+Tea	Classic Matcha	Matcha Latte	Hot	Short	236 ml	100	3	2	0.1	10	70	13	0	12	5	20
+Tea	Classic Matcha	Matcha Latte	Hot	Tall	354 ml	160	5	3	0.2	20	115	22	1	21	8	45
+Tea	Classic Matcha	Matcha Latte	Hot	Venti	591 ml	290	8	5	0.3	30	190	41	1	39	14	85
+Tea	Specialty Matcha	Iced Lavender Cream Matcha	Iced	Grande	473 ml	350	17	11	0.5	60	180	40	1	38	9	55
+Tea	Specialty Matcha	Iced Lavender Cream Matcha	Iced	Tall	354 ml	260	14	9	0.5	45	125	28	0	28	6	30
+Tea	Specialty Matcha	Iced Lavender Cream Matcha	Iced	Venti	709 ml	440	21	13	1	70	220	51	1	49	12	75
+Tea	Specialty Matcha	Iced Mango Cream Matcha	Iced	Grande	473 ml	270	12	8	0.4	40	110	32	1	31	8	50
+Tea	Specialty Matcha	Iced Mango Cream Matcha	Iced	Tall	354 ml	170	8	5	0.3	30	65	20	0	19	5	30
+Tea	Specialty Matcha	Iced Mango Cream Matcha	Iced	Venti	709 ml	350	15	10	0.5	50	150	43	1	41	11	75
+Tea	Specialty Matcha	Iced Orange Cream Matcha	Iced	Grande	473 ml	350	17	11	0.5	60	160	40	1	37	9	55
+Tea	Specialty Matcha	Iced Orange Cream Matcha	Iced	Tall	354 ml	260	15	9	0.5	50	120	29	1	27	6	30
+Tea	Specialty Matcha	Iced Orange Cream Matcha	Iced	Venti	709 ml	440	21	13	1	70	220	52	1	49	13	75
+Tea	Specialty Matcha	Lavender Matcha	Hot	Grande	473 ml	270	6	4	0.3	25	250	44	1	42	11	65
+Tea	Specialty Matcha	Lavender Matcha	Hot	Short	236 ml	120	3	2	0.1	10	105	17	0	17	5	20
+Tea	Specialty Matcha	Lavender Matcha	Hot	Tall	354 ml	200	5	3	0.2	20	180	31	1	30	8	45
+Tea	Specialty Matcha	Lavender Matcha	Hot	Venti	591 ml	360	8	5	0.3	30	330	58	1	56	14	85
+The Latest	Pumpkin Picks	Iced Pumpkin Cream Chai	Iced	Grande	473 ml	400	16	10	0.5	55	150	57	0	55	9	60
+The Latest	Pumpkin Picks	Iced Pumpkin Cream Chai	Iced	Tall	354 ml	310	12	8	0.4	40	110	43	0	41	7	45
+The Latest	Pumpkin Picks	Iced Pumpkin Cream Chai	Iced	Venti	709 ml	490	18	11	0.5	60	190	73	0	70	11	90
+The Latest	Pumpkin Picks	Iced Pumpkin Cream Matcha	Iced	Grande	473 ml	350	17	11	0.5	55	150	41	1	39	10	55
+The Latest	Pumpkin Picks	Iced Pumpkin Cream Matcha	Iced	Tall	354 ml	240	12	8	0.4	40	100	28	1	27	6	30
+The Latest	Pumpkin Picks	Iced Pumpkin Cream Matcha	Iced	Venti	709 ml	430	19	12	0.5	65	210	50	1	48	14	75
+The Latest	Pumpkin Picks	Iced Pumpkin Cream Shaken Espresso	Iced	Grande	473 ml	310	14	8	0.4	40	160	43	1	38	4	255
+The Latest	Pumpkin Picks	Iced Pumpkin Cream Shaken Espresso	Iced	Tall	354 ml	220	10	6	0.3	30	100	29	0	26	3	170
+The Latest	Pumpkin Picks	Iced Pumpkin Cream Shaken Espresso	Iced	Venti	709 ml	370	15	9	0.5	40	230	54	1	46	5	340
+The Latest	Pumpkin Picks	Iced Pumpkin Spice Latte	Iced	Grande	473 ml	370	16	10	0.5	55	190	47	0	45	11	150
+The Latest	Pumpkin Picks	Iced Pumpkin Spice Latte	Iced	Tall	354 ml	270	12	7	0.4	40	150	35	0	34	8	75
+The Latest	Pumpkin Picks	Iced Pumpkin Spice Latte	Iced	Venti	709 ml	480	18	11	0.5	60	270	68	0	65	15	225
+The Latest	Pumpkin Picks	Mini Pumpkin Pie	Single	1 Serving	71 g	210	10	5	0.1	20	220	27	1	13	4	
+The Latest	Pumpkin Picks	Pumpkin Cream Cheese Muffin	Single	1 Serving	113 g	350	14	4	0.3	55	430	53	1	34	5	
+The Latest	Pumpkin Picks	Pumpkin Cream Cold Brew	Iced	Grande	473 ml	250	12	8	0.4	40	55	31	0	31	3	185
+The Latest	Pumpkin Picks	Pumpkin Cream Cold Brew	Iced	Tall	354 ml	140	7	4.5	0.3	25	35	18	0	17	2	145
+The Latest	Pumpkin Picks	Pumpkin Cream Cold Brew	Iced	Trenta	887 ml	360	17	11	0.5	55	80	48	0	48	4	315
+The Latest	Pumpkin Picks	Pumpkin Cream Cold Brew	Iced	Venti	709 ml	310	15	10	0.5	50	70	40	0	40	3	275
+The Latest	Pumpkin Picks	Pumpkin Spice Chai Latte	Hot	Grande	473 ml	260	4.5	2.5	0.2	20	180	45	0	43	10	55
+The Latest	Pumpkin Picks	Pumpkin Spice Chai Latte	Hot	Short	236 ml	60	1	0.5	0	5	40	11	0	10	2	15
+The Latest	Pumpkin Picks	Pumpkin Spice Chai Latte	Hot	Tall	354 ml	170	3	2	0.1	10	120	29	0	28	6	35
+The Latest	Pumpkin Picks	Pumpkin Spice Chai Latte	Hot	Venti	591 ml	350	6	4	0.3	25	250	60	0	58	13	75
+The Latest	Pumpkin Picks	Pumpkin Spice Frappuccino® Blended Beverage	Iced	Grande	473 ml	420	15	9	0.5	50	280	66	0	65	6	100
+The Latest	Pumpkin Picks	Pumpkin Spice Frappuccino® Blended Beverage	Iced	Tall	354 ml	290	11	7	0.4	35	200	45	0	44	4	70
+The Latest	Pumpkin Picks	Pumpkin Spice Frappuccino® Blended Beverage	Iced	Venti	709 ml	510	17	10	0.5	55	370	82	0	80	7	135
+The Latest	Pumpkin Picks	Pumpkin Spice Latte	Hot	Grande	473 ml	390	14	9	0.5	50	230	52	0	50	14	150
+The Latest	Pumpkin Picks	Pumpkin Spice Latte	Hot	Short	236 ml	210	9	5	0.3	30	120	26	0	25	7	75
+The Latest	Pumpkin Picks	Pumpkin Spice Latte	Hot	Tall	354 ml	300	12	7	0.4	40	180	39	0	38	11	75
+The Latest	Pumpkin Picks	Pumpkin Spice Latte	Hot	Venti	591 ml	470	16	10	0.5	60	300	65	0	63	18	150
+The Latest	Trending	Aerocano	Iced	Grande	473 ml	15	0	0	0	0	10	2	0	0	1	225
+The Latest	Trending	Aerocano	Iced	Tall	354 ml	10	0	0	0	0	10	1	0	0	1	150
+The Latest	Trending	Aerocano	Iced	Venti	709 ml	15	0	0	0	0	15	3	0	0	1	300
+The Latest	Trending	Caramel Aerocano	Iced	Grande	473 ml	80	0	0	0	0	10	18	0	16	1	225
+The Latest	Trending	Caramel Aerocano	Iced	Tall	354 ml	50	0	0	0	0	10	12	0	11	1	150
+The Latest	Trending	Caramel Aerocano	Iced	Venti	709 ml	100	0	0	0	0	15	25	0	22	1	300
+The Latest	Trending	Cool Lime Refresher	Iced	Grande	473 ml	80	0	0	0	0	40	20	0	18	0.1	50
+The Latest	Trending	Cool Lime Refresher	Iced	Tall	354 ml	60	0	0	0	0	25	15	0	14	0.1	25
+The Latest	Trending	Cool Lime Refresher	Iced	Trenta	887 ml	160	0.1	0	0	0	75	40	1	37	0.3	100
+The Latest	Trending	Cool Lime Refresher	Iced	Venti	709 ml	120	0	0	0	0	55	29	0	28	0.1	75
+The Latest	Trending	Iced Banana Bread Chai	Iced	Grande	473 ml	350	14	9	0.5	50	170	50	0	48	8	60
+The Latest	Trending	Iced Banana Bread Chai	Iced	Tall	354 ml	280	12	7	0.4	40	135	39	0	37	6	45
+The Latest	Trending	Iced Banana Bread Chai	Iced	Venti	709 ml	460	17	11	0.5	55	220	66	0	64	10	90
+The Latest	Trending	Iced Banana Bread Matcha	Iced	Grande	473 ml	330	15	10	0.5	50	180	40	1	39	8	55
+The Latest	Trending	Iced Banana Bread Matcha	Iced	Tall	354 ml	280	14	9	0.5	45	140	32	0	31	6	30
+The Latest	Trending	Iced Banana Bread Matcha	Iced	Venti	709 ml	430	19	12	0.5	65	240	53	1	51	12	75
+The Latest	Trending	Iced Chaider	Iced	Grande	473 ml	90	0	0	0	0	20	21	0	20	0.2	30
+The Latest	Trending	Iced Chaider	Iced	Tall	354 ml	60	0	0	0	0	15	16	0	15	0.1	15
+The Latest	Trending	Iced Chaider	Iced	Trenta	887 ml	180	0	0	0	0	35	43	0	40	0.3	60
+The Latest	Trending	Iced Chaider	Iced	Venti	709 ml	130	0	0	0	0	30	32	0	30	0.2	45
+The Latest	Trending	Iced Pecan Crunch Latte	Iced	Grande	473 ml	380	19	12	0.5	60	230	45	0	43	10	170
+The Latest	Trending	Iced Pecan Crunch Latte	Iced	Tall	354 ml	300	15	10	0.5	50	180	35	0	34	7	85
+The Latest	Trending	Iced Pecan Crunch Latte	Iced	Venti	709 ml	480	21	13	1	70	310	61	0	58	13	255
+The Latest	Trending	Pecan Crunch Latte	Hot	Grande	473 ml	260	6	4	0.3	25	250	39	0	37	11	170
+The Latest	Trending	Pecan Crunch Latte	Hot	Short	236 ml	120	3	2	0.1	10	120	19	0	18	5	85
+The Latest	Trending	Pecan Crunch Latte	Hot	Tall	354 ml	190	4.5	3	0.2	20	190	28	0	27	8	85
+The Latest	Trending	Pecan Crunch Latte	Hot	Venti	591 ml	330	8	5	0.4	35	320	49	0	46	14	170

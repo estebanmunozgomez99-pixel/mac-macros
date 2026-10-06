@@ -1,7 +1,0 @@
-goto page.goto: Timeout 90000ms exceeded.
-Call log:
-  - navigating to "https://www.starbucks.ca/menu", waiting until "networkidle"
-
-menu status 200
-template https://www.starbucks.ca/apiproxy/v1/ordering/2123/hot products 276
-fetched 229 ok 229

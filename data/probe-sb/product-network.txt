@@ -1,4 +1,0 @@
-400 https://www.starbucks.ca/apiproxy/v1/ordering/menu/holiday-toppings?enabled=false
-200 https://www.starbucks.ca/apiproxy/v1/ordering/menu
-404 https://www.starbucks.ca/apiproxy/v1/ordering/2123/hot
-400 https://www.starbucks.ca/apiproxy/v1/ordering/menu/holiday-toppings?enabled=false
