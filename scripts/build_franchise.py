@@ -115,6 +115,26 @@ for line in open('data/sources/pizza-pizza-nutrition.tsv',encoding='utf-8'):
     if line.startswith(('#','size\t')) or not line.strip(): continue
     size,name,serving,cal,prot,carb,fib,sug,fat,sat,trans,chol,sod,ca,fe=line.rstrip('\n').split('\t')
     add('La Piazza','Pizza Pizza','Pizza',f'{name} - {size}',serving,cal,fat,sat,chol,sod,carb,fib,sug,prot,0,PP_SRC,ca,fe)
+# ---- Starbucks (La Piazza): drinks and food from starbucks.ca's menu data (default recipes)
+SB_SRC='Starbucks Canada menu nutrition (starbucks.ca), pulled Oct 6, 2026; standard recipes'
+SB_SIZES={'Kids','Short','Tall','Grande','Venti','Trenta','Solo','Doppio','Triple','Quad','Traveler'}
+SB_FOOD={'Breakfast Sandwiches':'Breakfast','Breakfast Wraps':'Breakfast','Egg Bites & Bakes':'Breakfast','Oatmeal':'Breakfast',
+         'Croissants & Danishes':'Bakery','Mini Pies':'Bakery','Pancakes & Waffles':'Bakery','Loaves & Cakes':'Bakery',
+         'Muffins & Scones':'Bakery','Bagels':'Bakery','Cake Pops':'Treats','Cookies & Bars':'Treats',
+         'Lunch Sandwiches':'Lunch','Pockets':'Lunch','Snack Boxes':'Snacks','Protein & Snack Bars':'Snacks',
+         'Salty Snacks':'Snacks','Sweet Snacks':'Snacks','Cheese':'Snacks'}
+SB_DRINK={'Coffee & Espresso':'Coffee & Espresso','Tea':'Tea & Matcha','Refreshment':'Refreshers',
+          'Frappuccino® Blended Beverage':'Frappuccino','Other Sips':'Hot Chocolate & More',
+          'Protein':'Protein Drinks','The Latest':'New & Seasonal'}
+for line in open('data/sources/starbucks-canada-menu.tsv',encoding='utf-8'):
+    if line.startswith(('#','section\t')) or not line.strip(): continue
+    sec,cat,name,form,size,serving,cal,fat,sat,trans,chol,sod,carb,fib,sug,prot,caf=line.rstrip('\n').split('\t')
+    food=sec=='Food'
+    item=f'{name} - {size}' if size in SB_SIZES else name
+    kind=0 if SB_FOOD.get(cat) in ('Breakfast','Lunch') else 2
+    add('La Piazza','Starbucks',SB_FOOD.get(cat,'Snacks') if food else SB_DRINK[sec],item,
+        serving if size in SB_SIZES or not serving else (serving if size.endswith('ml') else size.lower()),
+        cal,fat,sat,chol,sod,carb,fib,sug,prot,kind,SB_SRC)
 json.dump(out,open('data/build/franchise.json','w'),ensure_ascii=False,indent=0)
 from collections import Counter
 print(len(out), Counter((o['location'],o['station'],o['kind']) for o in out))

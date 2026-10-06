@@ -74,7 +74,7 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 
 ## Locations for non-McMaster restaurants
 
-- La Piazza → Tim Hortons, Booster Juice, Pizza Pizza (pizza only; see below). Shown in the app as **"La Piazza (MUSC)"** (`LOC_NAMES` in `appdata3.py`; `OLD_LOC_NAMES` in the app keeps old ids working; voice: "la piazza", "piazza", "musc"). Scripts and sources still say "La Piazza".
+- La Piazza → Tim Hortons, Booster Juice, Pizza Pizza (pizza only; see below), Starbucks (drinks + food). Shown in the app as **"La Piazza (MUSC)"** (`LOC_NAMES` in `appdata3.py`; `OLD_LOC_NAMES` in the app keeps old ids working; voice: "la piazza", "piazza", "musc"). Scripts and sources still say "La Piazza".
 - DBAC (David Braley Athletic Centre) → Booster Juice
 - PGCLL → Second Cup, Chopped Leaf (full menu)
 - Eco Bean - MUMC → Chopped Leaf ("powered by Chopped Leaf": everything except soups and Chopped Water), plus its own McMaster Breakfast station
@@ -88,14 +88,13 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 - Two unlabeled blocks in the Second Cup PDF are named Espresso and Americano from their position on the menu.
 - Paramount Lebanese Kitchen publishes calories only. Macros are estimates (user approved), salad calories too. Build-your-own = posted base dish + posted protein calories. Recheck if Paramount releases a nutrition guide.
 - Booster Juice data is Booster Juice's own in-store Nutrition Guide v24.1, typed from the user's photos into `data/sources/booster-juice-nutrition-guide-v24.1.tsv` (photos: `booster-juice-guide-v24.1-*.jpg`). It includes calcium and iron (mg), which go into the franchise micro array. `Booster-Juice-Menu-2023.pdf` (calories only) is kept for reference.
+- **Starbucks (La Piazza, added Oct 6, 2026):** `data/sources/starbucks-canada-menu.tsv`, 591 product-sizes from starbucks.ca's own menu API (`/apiproxy/v1/ordering/menu`, then `/apiproxy/v1/ordering/<productNumber>/<form>` per product; fetched with a Playwright browser in a one-time GitHub Action since this container can't reach the site). Default recipes only (standard milk), so no milk buttons; caffeine is kept in the TSV but not used. Sizes Kids/Short/Tall/Grande/Venti/Trenta, espresso Solo/Doppio/Triple/Quad and Traveler are in `SIZE_RE`; single-serving foods and bottled drinks keep plain names. Categories are merged in `build_franchise.py` (`SB_FOOD`, `SB_DRINK`). Seasonal items stay until the data is pulled again.
 - Pizza Pizza's site prints Sat. Fat as an integer column, so 3.5 shows as "35"; values above total fat are divided by 10. Its calcium/iron are %DV, converted to mg.
-- Starbucks PDFs the user found were the Ireland/Northern Ireland menu, so Starbucks was not added.
 
 ## To-do
 
 - Before the App Store: McMaster Hospitality permission for their data (user is asking) then wrap with Capacitor (bundle `app/`), Apple developer account, TestFlight beta.
 
-- Starbucks: needs the Canadian nutrition guide (starbucks.ca).
 - Teriyaki Experience (student centre): not started.
 - Later: native iOS/Android version (React Native/Expo was the suggested route) for sharing with all first years.
 
