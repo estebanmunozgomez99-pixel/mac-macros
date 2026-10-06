@@ -21,28 +21,39 @@ jobs:
             const b = await chromium.launch();
             const ctx = await b.newContext({ locale: 'en-CA', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
             const p = await ctx.newPage();
-            const log = []; let n = 0;
-            p.on('response', async r => {
-              const u = r.url(), ct = r.headers()['content-type'] || '';
-              log.push(r.status() + ' ' + ct.split(';')[0] + ' ' + u);
-              if (ct.includes('json') && n < 40) { try { fs.writeFileSync(out + 'json' + (++n) + '.json', JSON.stringify({ url: u, body: await r.json() })); } catch (e) {} }
-            });
-            const r = await p.goto('https://www.starbucks.ca/menu', { waitUntil: 'networkidle', timeout: 90000 }).catch(e => console.log('goto', e.message));
-            console.log('status', r && r.status());
-            await p.waitForTimeout(6000);
-            fs.writeFileSync(out + 'menu.txt', await p.evaluate(() => document.body.innerText));
-            const links = await p.$$eval('a', as => [...new Set(as.map(a => a.href))]);
-            fs.writeFileSync(out + 'links.txt', links.join('\n'));
-            // Open one product page to see where its nutrition comes from
-            const prod = links.find(l => /\/menu\/product\//.test(l));
-            if (prod) { await p.goto(prod, { waitUntil: 'networkidle', timeout: 90000 }).catch(() => {}); await p.waitForTimeout(5000);
-              fs.writeFileSync(out + 'product.txt', prod + '\n\n' + await p.evaluate(() => document.body.innerText)); }
-            fs.writeFileSync(out + 'network.txt', log.join('\n'));
+            await p.goto('https://www.starbucks.ca/menu', { waitUntil: 'networkidle', timeout: 90000 }).catch(e => console.log('goto', e.message));
+            const menu = await (await ctx.request.get('https://www.starbucks.ca/apiproxy/v1/ordering/menu')).json();
+            fs.writeFileSync(out + 'menu.json', JSON.stringify(menu));
+            // Learn the product endpoint from a real product page
+            const api = [];
+            p.on('response', r => { if (/apiproxy/.test(r.url())) api.push(r.status() + ' ' + r.url()); });
+            await p.goto('https://www.starbucks.ca/menu/product/2123/hot', { waitUntil: 'networkidle', timeout: 90000 }).catch(() => {});
+            await p.waitForTimeout(4000);
+            fs.writeFileSync(out + 'product-network.txt', api.join('\n'));
+            fs.writeFileSync(out + 'product.txt', await p.evaluate(() => document.body.innerText));
+            // Every product (skip At Home), via the endpoint pattern the product page used
+            const prods = [];
+            (function walk(ms, path) { for (const m of ms) { const pth = path + '/' + m.name;
+              if (!pth.startsWith('/At Home')) for (const x of m.products) prods.push({ path: pth, n: x.productNumber, f: x.formCode, name: x.name });
+              walk(m.children || [], pth); } })(menu.menus, '');
+            const seen = new Set(), all = {};
+            const tmpl = (api.find(u => /ordering\/2123\/hot/i.test(u)) || ' https://www.starbucks.ca/apiproxy/v1/ordering/2123/hot').split(' ')[1];
+            console.log('template', tmpl, 'products', prods.length);
+            for (const x of prods) {
+              const k = x.n + '/' + x.f; if (seen.has(k)) continue; seen.add(k);
+              const u = tmpl.replace(/2123\/hot/i, encodeURIComponent(x.n) + '/' + encodeURIComponent(x.f.toLowerCase()));
+              try { const r = await ctx.request.get(u); all[k] = { path: x.path, status: r.status(), body: r.ok() ? await r.json() : null }; }
+              catch (e) { all[k] = { path: x.path, error: e.message }; }
+              await p.waitForTimeout(400);
+            }
+            fs.writeFileSync(out + 'products.json', JSON.stringify(all));
+            console.log('fetched', Object.keys(all).length, 'ok', Object.values(all).filter(v => v.body).length);
             await b.close();
           })();
           JS
           node get.js
-          ls -la "$GITHUB_WORKSPACE/data/probe-sb"
+          cd "$GITHUB_WORKSPACE/data/probe-sb" && gzip -9 products.json menu.json && ls -la
+          node get.js
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
