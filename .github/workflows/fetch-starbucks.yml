@@ -1,4 +1,4 @@
-# One-time (run 3): open starbucks.ca/menu in a real browser and save the menu data it loads into data/probe-sb/.
+# One-time (run 4): open starbucks.ca/menu in a real browser and save the menu data it loads into data/probe-sb/.
 name: Fetch Starbucks menu
 on:
   push:
@@ -55,7 +55,6 @@ jobs:
           JS
           node get.js > "$GITHUB_WORKSPACE/data/probe-sb/run.log" 2>&1 || echo "node failed: $?" >> "$GITHUB_WORKSPACE/data/probe-sb/run.log"
           cd "$GITHUB_WORKSPACE/data/probe-sb" && gzip -9 -f products.json menu.json || true; ls -la
-          node get.js
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
