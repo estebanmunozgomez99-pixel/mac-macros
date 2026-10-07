@@ -956,6 +956,11 @@ GROUPS.forEach(g => {
   g.search = [...new Set(vs.map(v => v.search))].join(" ");
 });
 const GROUP_LIST = [...GROUPS.values()];
+// Breakfast dishes: McMaster's own Breakfast/Brunch category where the station has one, else breakfast-looking names
+const BREAKFAST_CAT = /breakfast|brunch/i;
+const BREAKFAST_NAME = /\bbreakfast\b|\beggs?\b(?!\s*(salad|roll))|\begger\b|omelet|pancake|french toast|hash ?browns?\b|benedict|rise (and|&|n) shine/i;
+const HAS_BREAKFAST_CAT = new Set(GROUP_LIST.filter(g => BREAKFAST_CAT.test(g.category)).map(g => stationKey(g.location, g.station)));
+GROUP_LIST.forEach(g => { g.breakfast = HAS_BREAKFAST_CAT.has(stationKey(g.location, g.station)) ? BREAKFAST_CAT.test(g.category) : BREAKFAST_NAME.test(g.name); });
 
 /* Food types for the High protein tab, which mixes every restaurant: first rule that matches wins */
 const DRINK_CATS = /^(Espresso Bar|Brew Bar|Cold Bar|Hot Drinks|Iced Coffee|Cold Drinks|Beverage|Smoothies|Juices|Booster Mix'rs|Drinks)$/;
@@ -1058,6 +1063,7 @@ let viewKey = dateKey(new Date());
 let activeLoc = "All";
 let activeStation = "All";
 let activeCat = "All";
+let catSplit = false;  // the current station's tabs are the Breakfast / All Day split
 let activeType = "All";  // food-type tab on the High protein tab
 // A station gets category tabs when it shows at least this many items and has more than one category
 const CAT_TABS_MIN = 40;
@@ -1417,6 +1423,16 @@ function renderCategories() {
   const inStation = activeStation === "All" ? [] : GROUP_LIST.filter(g => g.location === activeLoc && g.station === activeStation &&
     g.variants.some(f => isServed(f, viewKey) && (activeTab !== "protein" || isHighProtein(f))));
   const cats = [...new Set(inStation.map(g => g.category))];
+  // Smaller stations with breakfast and other dishes: just Everything / Breakfast / All Day
+  const nB = inStation.filter(g => g.breakfast).length;
+  catSplit = inStation.length < CAT_TABS_MIN && nB >= 2 && inStation.length - nB >= 2 && !BREAKFAST_CAT.test(activeStation);  // not on a breakfast station itself
+  if (catSplit) {
+    if (!["All", "Breakfast", "All Day"].includes(activeCat)) activeCat = "All";
+    row.hidden = false;
+    row.innerHTML = ["All", "Breakfast", "All Day"].map(c =>
+      `<button class="loc" aria-pressed="${c === activeCat}" data-cat="${c}">${c === "All" ? "Everything" : c}</button>`).join("");
+    return;
+  }
   if (inStation.length < CAT_TABS_MIN || cats.length < 2) { row.hidden = true; row.innerHTML = ""; activeCat = "All"; return; }
   if (!cats.includes(activeCat)) activeCat = "All";
   row.hidden = false;
@@ -1453,7 +1469,7 @@ function renderFoods() {
   if (activeTab === "protein") matches.sort((a, b) => ratio(b.rep) - ratio(a.rep));
   renderCategories();
   const keep = activeTab === "protein" ? (activeType === "All" ? null : m => m.g.type === activeType)
-    : (activeCat === "All" ? null : m => m.g.category === activeCat);
+    : (activeCat === "All" ? null : catSplit ? m => m.g.breakfast === (activeCat === "Breakfast") : m => m.g.category === activeCat);
   if (keep) matches.splice(0, matches.length, ...matches.filter(keep));
   rowPicks.clear();
   const row = (g, rowId, rep) => { rowPicks.set(rowId, rep); return foodRow(g, rowId, rep); };
