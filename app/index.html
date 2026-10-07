@@ -575,6 +575,13 @@ img { max-width: 100%; }
 .rot-note { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
   background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--gold);
   border-radius: 12px; padding: 10px 12px; margin: 4px 0 8px; font-size: 0.9rem; }
+.closed-note { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--muted);
+  border-radius: 12px; padding: 10px 12px; margin: 4px 0 8px; font-size: 0.9rem; }
+.closed-note.soon { border-left-color: var(--gold); }
+.closed-note small { display: block; color: var(--muted); margin-top: 2px; }
+.loc.is-closed { color: var(--muted); }
+.closed-tag { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; margin-left: 6px;
+  padding: 1px 6px; border-radius: 999px; background: var(--surface-2); color: var(--muted); }
 .rot-note button { border: none; background: transparent; color: var(--maroon); font-weight: 800; padding: 4px 0; }
 :root[data-theme="dark"] .rot-note button { color: var(--gold); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .rot-note button { color: var(--gold); } }
@@ -1223,16 +1230,80 @@ function renderDay() {
 function renderAll() { renderDay(); renderSummary(); renderLog(); }
 
 /* ---------- Add food sheet ---------- */
+/* ---------- Opening hours ----------
+   From McMaster Hospitality's "What's Open Now" page (MacEats), saved nightly into app/hours.json by
+   scripts/fetch_hours.py. Keys are a location ("Centro") or "Location|Station" (a station's own hours win).
+   Each day is [[open, close], ...] in minutes after midnight, "closed" or "24h". Only used when looking at today. */
+const HOURS_URL = MENU_URL.replace(/menu\.json$/, "hours.json"), HOURS_CACHE = "macmacros:hours";
+let HOURS = null;
+try { HOURS = JSON.parse(localStorage.getItem(HOURS_CACHE)); } catch (e) { HOURS = null; }
+let hoursChecked = 0;
+async function refreshHours() {
+  hoursChecked = Date.now();
+  try {
+    const r = await fetch(HOURS_URL, { cache: "no-cache" });
+    const h = await r.json();
+    if (!h || !h.hours) return;
+    HOURS = h;
+    try { localStorage.setItem(HOURS_CACHE, JSON.stringify(h)); } catch (e) {}
+    if ($("#addSheet").classList.contains("open")) { renderLocations(); renderFoods(); }
+  } catch (e) { /* offline: keep the saved hours */ }
+}
+const fmtClock = m => { m = ((m % 1440) + 1440) % 1440; const h = Math.floor(m / 60), mm = m % 60;
+  return `${h % 12 || 12}${mm ? ":" + String(mm).padStart(2, "0") : ""} ${h < 12 ? "am" : "pm"}`; };
+const hoursFor = (loc, st) => HOURS && HOURS.hours && ((st && HOURS.hours[loc + "|" + st]) || HOURS.hours[loc]) || null;
+// { open, closes (minutes today), opensText } for a place right now, or null when there are no hours for today
+function placeStatus(loc, st) {
+  const h = hoursFor(loc, st);
+  if (!h) return null;
+  const now = new Date(), today = dateKey(now), mins = now.getHours() * 60 + now.getMinutes();
+  const y = h[shiftKey(today, -1)];  // last night's hours that run past midnight
+  if (Array.isArray(y)) for (const [, b] of y) if (b > 1440 && mins < b - 1440) return { open: true, closes: b - 1440 };
+  const d = h[today];
+  if (d === undefined) return null;
+  if (d === "24h") return { open: true, allDay: true };
+  if (Array.isArray(d)) for (const [a, b] of d) if (mins >= a && mins < b) return { open: true, closes: b };
+  for (let i = 0; i < 14; i++) {
+    const k = shiftKey(today, i), v = h[k];
+    if (v === undefined) break;
+    const start = v === "24h" ? 0 : Array.isArray(v) ? (v.find(([a]) => i > 0 || a > mins) || [])[0] : undefined;
+    if (start === undefined) continue;
+    const when = i === 0 ? "" : i === 1 ? "tomorrow " : i < 7 ? WEEKDAYS[(keyToDate(k).getDay() + 6) % 7] + " " : keyToDate(k).toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " ";
+    return { open: false, opensText: `opens ${when}at ${fmtClock(start)}` };
+  }
+  return { open: false, opensText: "" };
+}
+// A location with no hours of its own (PGCLL) counts as closed only when every station with hours is closed
+function locStatus(loc) {
+  if (HOURS && HOURS.hours && HOURS.hours[loc]) return placeStatus(loc);
+  const sts = [...new Set(MAINS.filter(f => f.location === loc).map(f => f.station))].map(st => placeStatus(loc, st)).filter(Boolean);
+  if (!sts.length) return null;
+  return sts.some(x => x.open) ? { open: true } : { open: false, opensText: "" };
+}
+const isClosedNow = (loc, st) => viewKey === dateKey(new Date()) && (s => s && !s.open)(st ? placeStatus(loc, st) : locStatus(loc));
+// Note above the food list when the picked place is closed (or closing within the hour). Today only.
+function hoursNote() {
+  if (activeLoc === "All" || viewKey !== dateKey(new Date())) return "";
+  const st = activeStation !== "All" ? activeStation : null;
+  const s = st ? placeStatus(activeLoc, st) : locStatus(activeLoc);
+  if (!s) return "";
+  const name = esc(st || activeLoc), now = new Date(), mins = now.getHours() * 60 + now.getMinutes();
+  if (!s.open) return `<div class="closed-note"><b>${name}</b> is closed right now${s.opensText ? ` · ${s.opensText}` : ""}.
+    <small>You can still log food you ate earlier.</small></div>`;
+  if (s.closes !== undefined && s.closes - mins <= 60) return `<div class="closed-note soon"><b>${name}</b> closes soon, at ${fmtClock(s.closes)}.</div>`;
+  return "";
+}
+
 function renderLocations() {
   const locs = ["All", ...LOCATIONS];
   $("#locRow").innerHTML = locs.map(l =>
-    `<button class="loc" aria-pressed="${l === activeLoc}" data-loc="${esc(l)}">${esc(l === "All" ? "All locations" : l)}</button>`).join("");
+    `<button class="loc${l !== "All" && isClosedNow(l) ? " is-closed" : ""}" aria-pressed="${l === activeLoc}" data-loc="${esc(l)}">${esc(l === "All" ? "All locations" : l)}${l !== "All" && isClosedNow(l) ? `<span class="closed-tag">Closed</span>` : ""}</button>`).join("");
   const sr = $("#stationRow");
   if (activeLoc === "All") { sr.hidden = true; sr.innerHTML = ""; return; }
   const stations = ["All", ...new Set(MAINS.filter(f => f.location === activeLoc).map(f => f.station))];
   sr.hidden = false;
   sr.innerHTML = stations.map(st =>
-    `<button class="loc" aria-pressed="${st === activeStation}" data-station="${esc(st)}">${esc(st === "All" ? "All stations" : st)}</button>`).join("");
+    `<button class="loc${st !== "All" && isClosedNow(activeLoc, st) ? " is-closed" : ""}" aria-pressed="${st === activeStation}" data-station="${esc(st)}">${esc(st === "All" ? "All stations" : st)}${st !== "All" && isClosedNow(activeLoc, st) ? `<span class="closed-tag">Closed</span>` : ""}</button>`).join("");
 }
 
 const SERVING_WORDS = { Portion: "1 portion", Each: "1 item", Sandwich: "1 sandwich", Slice: "1 slice", Plate: "1 plate", Kilogram: "1 kg", "100g": "100 g" };
@@ -1390,6 +1461,7 @@ function renderFoods() {
       : `Showing what's on for <b>${WEEKDAYS[day]}</b> (week ${week + 1} of 4).`}</span>
       <button data-fullrot>${showFullRotation ? "Only this day" : "Show all weeks"}</button></div>`;
   }
+  html += hoursNote();
   if (activeTab === "protein") html += `<p class="hp-note">At least 20 g of protein per 300 calories (and 5 g or more), best ratio first.</p>`;
   // Build-your-own rows (Chopped Leaf, Pas Noodle): on their own station, or when searching for them
   html += byoRows(q);
@@ -2932,6 +3004,8 @@ async function checkMenuUpdate(manual) {
   } catch (e) { if (manual) toast("Couldn't check for a menu update. Are you online?"); }
 }
 setTimeout(() => checkMenuUpdate(false), 3000);
+refreshHours();
+document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - hoursChecked > 3600e3) refreshHours(); });
 document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - menuChecked > 6 * 3600e3) checkMenuUpdate(false); });
 
 if (!state.onboarded) setTimeout(showWelcome, 400);

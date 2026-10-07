@@ -1,0 +1,37 @@
+# Twice a day: save McMaster Hospitality's opening hours (MacEats "What's Open Now", a LibCal feed) into app/hours.json.
+# The app downloads that file on its own to show which places are closed. Only commits when the hours changed.
+name: Update hours
+on:
+  schedule:
+    - cron: "7 9,19 * * *"   # about 5 am and 3 pm Toronto time
+  workflow_dispatch:
+  push:
+    paths: [".github/workflows/update-hours.yml", "scripts/fetch_hours.py"]
+permissions:
+  contents: write
+  issues: write
+concurrency: update-hours
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch hours
+        run: python3 scripts/fetch_hours.py | tee /tmp/hours.txt
+      - name: Publish if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add app/hours.json
+          git commit -q -m "Hours update from McMaster Hospitality" -m "$(cat /tmp/hours.txt)" || { echo "No change"; exit 0; }
+          git pull -q --rebase origin main
+          git push origin HEAD:main
+      - name: Open an issue if it failed
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Hours update failed"
+          if [ -z "$(gh issue list --state open --search "$title in:title" --json number --jq '.[].number')" ]; then
+            gh issue create --title "$title" --body "Couldn't read McMaster's hours (${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}). The app keeps showing the last hours it has, and hides closed tags once those dates pass. Usually the site was down; if it keeps failing, the feed in scripts/fetch_hours.py may have changed."
+          fi
