@@ -1,0 +1,66 @@
+1 https://choppedleaf.ca/menu/
+PDF doc1 https://choppedleaf.ca/wp-content/uploads/AllergenNutritional-Oct2-1NEW.pdf | 
+2 https://choppedleaf.ca/nutrition/
+3 https://choppedleaf.ca/
+4 https://choppedleaf.ca/menu
+5 https://choppedleaf.ca/find-location/
+6 https://choppedleaf.ca/our-goals/
+7 https://choppedleaf.ca/nutritionals/
+PDF doc2 https://choppedleaf.ca/wp-content/uploads/Sep21-Nutritions.pdf | Nutritional Information
+PDF doc3 https://choppedleaf.ca/wp-content/uploads/Sep21-Allergen.pdf | Allergen Information
+PDF doc4 https://choppedleaf.ca/wp-content/uploads/Sep21-Ingredients.pdf | Ingredient Listing
+PDF doc5 https://choppedleaf.ca/wp-content/uploads/DYO-RecipeBook1.pdf | View Diet-Friendly Options
+8 https://choppedleaf.ca/rewards-page/
+9 https://choppedleaf.ca/catering/
+PDF doc6 https://choppedleaf.ca/wp-content/uploads/Catering-WebsiteMenu.pdf | View Catering Menu PDF
+10 https://choppedleaf.ca/join-our-team/
+11 https://choppedleaf.ca/guest-feedback/
+12 https://choppedleaf.ca/menu-category/bowls/
+13 https://choppedleaf.ca/menu-category/one-bowl-salad/
+14 https://choppedleaf.ca/menu-category/one-bowl-wrap/
+15 https://choppedleaf.ca/menu-category/design-your-own/
+16 https://choppedleaf.ca/menu-category/sandwiches/
+17 https://choppedleaf.ca/menu-category/quesadillas/
+18 https://choppedleaf.ca/menu-category/soups/
+19 https://choppedleaf.ca/menu-category/kids-menu/
+20 https://choppedleaf.ca/menu-category/chopped-water/
+21 https://choppedleaf.ca/menu-category/signature-dressings/
+22 https://choppedleaf.ca/subscribe/
+23 https://choppedleaf.ca/menu/new-autumn-bowl/
+24 https://choppedleaf.ca/menu/bistro/
+25 https://choppedleaf.ca/menu/new-goddess-bowl/
+26 https://choppedleaf.ca/menu/cobb-bowl/
+27 https://choppedleaf.ca/menu/bangkok-bowl-2/
+28 https://choppedleaf.ca/menu/bold-buffalo-bowl-2/
+29 https://choppedleaf.ca/menu/caesar-bowl-2/
+30 https://choppedleaf.ca/menu/harvest-bowl-2/
+31 https://choppedleaf.ca/menu/mediterranean/
+32 https://choppedleaf.ca/menu/santa-fe-bowl-2/
+33 https://choppedleaf.ca/menu/signature-bowl-2/
+34 https://choppedleaf.ca/menu/southwest-bowl-2/
+35 https://choppedleaf.ca/menu/sunshine-bowl-2/
+36 https://choppedleaf.ca/menu/new-goddess-salad/
+37 https://choppedleaf.ca/menu/cobb-salad/
+38 https://choppedleaf.ca/menu/bangkok-salad-2/
+39 https://choppedleaf.ca/menu/bold-buffalo-salad-2/
+40 https://choppedleaf.ca/menu/caesar-salad-2/
+41 https://choppedleaf.ca/menu/harvest-salad-2/
+42 https://choppedleaf.ca/menu/mediterranean-2/
+43 https://choppedleaf.ca/menu/santa-fe-salad-2/
+44 https://choppedleaf.ca/menu/signature-salad-2/
+45 https://choppedleaf.ca/menu/southwest-salad-2/
+46 https://choppedleaf.ca/menu/sunshine-salad-2/
+47 https://choppedleaf.ca/menu/new-goddess-wrap/
+48 https://choppedleaf.ca/menu/cobb-wrap/
+49 https://choppedleaf.ca/menu/bangkok-wrap-2/
+50 https://choppedleaf.ca/menu/bold-buffalo-wrap-2/
+51 https://choppedleaf.ca/menu/caesar-wrap-2/
+52 https://choppedleaf.ca/menu/harvest-wrap-2/
+53 https://choppedleaf.ca/menu/mediterranean-3/
+54 https://choppedleaf.ca/menu/santa-fe-wrap-2/
+55 https://choppedleaf.ca/menu/signature-wrap-2/
+56 https://choppedleaf.ca/menu/southwest-wrap-2/
+57 https://choppedleaf.ca/menu/sunshine-wrap-2/
+58 https://choppedleaf.ca/menu/design-your-own/
+59 https://choppedleaf.ca/menu/jalapeno-popper-grilled-cheese/
+60 https://choppedleaf.ca/menu/tuna-melt/
