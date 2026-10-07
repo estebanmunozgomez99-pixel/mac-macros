@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Save the open-now page
+      - name: Save the LibCal hours feed
         run: |
           mkdir -p data/probe-hours && cd data/probe-hours
           UA="Mozilla/5.0 (Maroon campus macro app; contact esteban.munoz.gomez99@gmail.com)"
-          curl -sSL -A "$UA" -D h1.txt -o open-now.html "https://hospitality.mcmaster.ca/maceats/open-now/" || true
-          ls -la; grep -o 'href="[^"]*"' open-now.html | grep -i -E "week|next|prev|ajax|date" | head -20 > nav-links.txt || true
+          curl -sSL -A "$UA" -o grid.json "https://hospitality-mcmaster.libcal.com/widget/hours/grid?iid=4258&format=json&weeks=2&systemTime=0" || true
+          ls -la
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
