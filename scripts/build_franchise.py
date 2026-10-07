@@ -135,6 +135,13 @@ for line in open('data/sources/starbucks-canada-menu.tsv',encoding='utf-8'):
     add('La Piazza','Starbucks',SB_FOOD.get(cat,'Snacks') if food else SB_DRINK[sec],item,
         serving if size in SB_SIZES or not serving else (serving if size.endswith('ml') else size.lower()),
         cal,fat,sat,chol,sod,carb,fib,sug,prot,kind,SB_SRC)
+# ---- Teriyaki Experience (La Piazza): meals; noodle sides and sauces are extras (Make it a meal / Edit)
+TE_SRC='Teriyaki Experience menu nutrition (teriyakiexperience.com/menu), pulled Oct 7, 2026'
+for line in open('data/sources/teriyaki-experience-menu.tsv',encoding='utf-8'):
+    if line.startswith(('#','category\t')) or not line.strip(): continue
+    cat,item,cal,fat,sat,trans,carb,fib,sug,prot,chol,sod,ing=line.rstrip('\n').split('\t')
+    serving={'Signature Meals':'1 meal','Sides':'1 side','Sauces':'1 portion'}[cat]
+    add('La Piazza','Teriyaki Experience',cat,item,serving,cal,fat,sat,chol,sod,carb,fib,sug,prot,0 if cat=='Signature Meals' else 1,TE_SRC)
 json.dump(out,open('data/build/franchise.json','w'),ensure_ascii=False,indent=0)
 from collections import Counter
 print(len(out), Counter((o['location'],o['station'],o['kind']) for o in out))

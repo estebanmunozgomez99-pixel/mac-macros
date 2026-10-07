@@ -24,6 +24,7 @@ MAP = {
     "Booster Juice (MUSC)": "La Piazza (MUSC)|Booster Juice",
     "Starbucks (MUSC)": "La Piazza (MUSC)|Starbucks",
     "Tim Hortons (MUSC)": "La Piazza (MUSC)|Tim Hortons",
+    "Teriyaki Experience (MUSC)": "La Piazza (MUSC)|Teriyaki Experience",
     "LAH": "Lincoln Alexander Hall",
     "Chopped Leaf (PGCLL)": "PGCLL|Chopped Leaf",
     "Second Cup (PGCLL)": "PGCLL|Second Cup",

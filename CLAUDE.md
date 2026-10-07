@@ -77,7 +77,7 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 
 ## Locations for non-McMaster restaurants
 
-- La Piazza → Tim Hortons, Booster Juice, Pizza Pizza (pizza only; see below), Starbucks (drinks + food). Shown in the app as **"La Piazza (MUSC)"** (`LOC_NAMES` in `appdata3.py`; `OLD_LOC_NAMES` in the app keeps old ids working; voice: "la piazza", "piazza", "musc"). Scripts and sources still say "La Piazza".
+- La Piazza → Tim Hortons, Booster Juice, Pizza Pizza (pizza only; see below), Starbucks (drinks + food), Teriyaki Experience (8 meals; Yakisoba/Udon noodle sides and 5 sauces are extras, so sides show in Make it a meal; `data/sources/teriyaki-experience-menu.tsv`, crawled from teriyakiexperience.com/menu with a one-time Actions browser; Side Rice and Mixed Veggies skipped because the site shows placeholder numbers). Shown in the app as **"La Piazza (MUSC)"** (`LOC_NAMES` in `appdata3.py`; `OLD_LOC_NAMES` in the app keeps old ids working; voice: "la piazza", "piazza", "musc"). Scripts and sources still say "La Piazza".
 - DBAC (David Braley Athletic Centre) → Booster Juice
 - PGCLL → Second Cup, Chopped Leaf (full menu)
 - Eco Bean - MUMC → Chopped Leaf ("powered by Chopped Leaf": everything except soups and Chopped Water), plus its own McMaster Breakfast station
@@ -98,7 +98,6 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 
 - Before the App Store: McMaster Hospitality permission for their data (user is asking) then wrap with Capacitor (bundle `app/`), Apple developer account, TestFlight beta.
 
-- Teriyaki Experience (student centre): not started.
 - Later: native iOS/Android version (React Native/Expo was the suggested route) for sharing with all first years.
 
 ## Style
