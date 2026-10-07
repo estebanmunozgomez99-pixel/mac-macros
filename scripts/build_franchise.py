@@ -50,8 +50,7 @@ for n,b in zip(names,blocks):
             add(loc,'Second Cup',cat_for(n),item,size,cal,fat,sat,chol,sod,carb,fib,sug,prot,2,SC_SRC)
 
 # ---- Chopped Leaf (PG Centre)
-CL_SRC='Chopped Leaf Nutritional Chart'
-CL_PROT={}; CL_BASE=[]  # salads/bowls/wraps come with a choice of protein (the chart lists them without one)
+CL_SRC='Chopped Leaf Nutritional Chart, September 2026 update (choppedleaf.ca/nutritionals)'
 sec=None; sub=''
 num=r'-?\d+(?:\.\d+)?'
 for line in open('data/build/cl.txt'):
@@ -60,7 +59,7 @@ for line in open('data/build/cl.txt'):
     m=re.match(r'^(.*?)\s{2,}('+num+r'(?:\s+'+num+r'){6})$',s)
     if not m:
         if s in ('Multigrain','Sourdough'): sub=s
-        else: sec=s; sub=''
+        else: sec={'Soup':'Soups'}.get(s,s); sub=''
         continue
     name=m.group(1).strip(); cal,fat,carb,fib,sug,prot,sod=m.group(2).split()
     if sec in ('Dressings','Proteins'): kind=1; item=('Extra ' if sec=='Proteins' else '')+name+(' (dressing)' if sec=='Dressings' and 'ressing' not in name and 'Sauce' not in name and 'Vinaigrette' not in name else '')
@@ -70,22 +69,11 @@ for line in open('data/build/cl.txt'):
         single={'Salads':'Salad','Bowls':'Bowl','Wraps':'Wrap','Quesadillas':'Quesadilla','Sandwiches':'Sandwich'}.get(sec)
         item=name if sec=='Kids Menu' else f"{name} {single}"+(f" ({sub})" if sub else '')
     if sec=='Chopped Water': item=f"Chopped Water, {name}"
-    if sec=='Proteins': CL_PROT[name]=(cal,fat,carb,fib,sug,prot,sod)
-    if sec in ('Salads','Bowls','Wraps'):  # chart lists these without protein; proteins added after the loop
-        CL_BASE.append((sec,item,(cal,fat,carb,fib,sug,prot,sod))); continue
     size=re.search(r' - (Small|Large)$',name)
     # PGCLL has the full menu; Eco Bean (MUMC) is "powered by Chopped Leaf" and has everything except soups and Chopped Water
     for loc in ('PGCLL','Eco Bean - MUMC'):
         if loc!='PGCLL' and sec in ('Soups','Chopped Water'): continue
         add(loc,'Chopped Leaf',sec,item,size.group(1) if size else '1 serving',cal,fat,None,None,sod,carb,fib,sug,prot,kind,CL_SRC)
-# Salads, bowls and wraps: "<dish> - No Protein" plus one variant per protein (dish + that protein's chart numbers).
-# The app groups them into one row with Protein buttons (so "southwest steak" finds the Southwest Bowl with steak).
-for sec,item,base in CL_BASE:
-    for pname,pv in [('No Protein',None)]+list(CL_PROT.items()):
-        v=[float(x) for x in base] if pv is None else [float(x)+float(y) for x,y in zip(base,pv)]
-        cal,fat,carb,fib,sug,prot,sod=[round(x,1) for x in v]
-        for loc in ('PGCLL','Eco Bean - MUMC'):
-            add(loc,'Chopped Leaf',sec,f'{item} - {pname}','1 serving',cal,fat,None,None,sod,carb,fib,sug,prot,0,CL_SRC+('' if pv is None else f' (dish + {pname.lower()} portion)'))
 # ---- Paramount Lebanese Kitchen (Centro)
 # Calories are from the menu boards (photos in data/sources/paramount-*.jpg, Sept 28, 2026). Paramount publishes no
 # protein/carb/fat numbers, so macros are estimates from typical portions, chosen so 4P + 4C + 9F ~= the posted calories.
