@@ -1,18 +1,24 @@
 # Teriyaki Experience (teriyakiexperience.com/menu, one page per item), pulled Oct 7, 2026 via a GitHub Actions browser.
 # Side Rice (all zeros) and Side Mixed Veggies ("123" placeholders) are left out: the site shows placeholder numbers for them.
-category	item	calories	fat	sat_fat	trans_fat	carbs	fibre	sugars	protein	cholesterol_mg	sodium_mg	ingredients
-Signature Meals	Classic Chicken Teriyaki	640	6	1	0	109	6	29	41	35	2410	seasoned chicken, steamed rice, broccoli, carrots, red peppers, bean sprouts, mushrooms, and famous teriyaki sauce.
-Signature Meals	Bento Box	580	11	2	0	90	8	25	33	35	1720	steamed rice, broccoli, carrots, red peppers, bean sprouts, mushrooms, and famous teriyaki sauce, edamame in a pod, 2 gyoza dumplings, 2 tempura shrimp, sweet chili sauce
-Signature Meals	Classic Beef Teriyaki	670	9	2.5	0.1	110	6	29	41	80	2270	seasoned beef, steamed rice, broccoli, carrots, red peppers, bean sprouts, mushrooms, and famous teriyaki sauce.
-Signature Meals	Pineapple Chicken	600	3	0.5	0	114	5	40	31	35	1920	seasoned chicken, steamed rice, broccoli, carrots, red pepper, pineapple, teriyaki sauce and sweet chili sauce.
-Signature Meals	Hot & Spicy Chicken	590	10	1.5	0	89	6	31	38	35	1710	seasoned chicken, yakisoba noodles, red peppers, spanish onion, bean sprouts, green onion, and sweet and mildly spiced chili sauce.
-Signature Meals	Ginger Sesame Beef	580	12	2.5	0.1	82	5	28	39	80	1590	seasoned beef, udon noodles, broccoli, bean sprouts, mushrooms, carrots, sesame seeds, green onion, and zesty ginger sesame sauce.
-Signature Meals	Protein Bowl	510	12	2	0	67	7	34	38	35	1580	broccoli, carrots, red pepper, corn, bok choy, edamame, cashew nuts, sundried cranberries, bean sprouts, reduced-sodium teriyaki sauce and with your choice of seasoned chicken, beef, shrimp, tofu or salmon.
-Signature Meals	Pan-Asian Shrimp	490	9	1.5	0	67	4	20	37	160	1430	shrimp, udon noodles, bok choy, red peppers, bean sprouts, sesame seeds, green onion, and secret pan-asian sauce.
-Sides	Yakisoba Noodles (side)	200	0.5	0	0	43	2	1	6	0	85	
-Sides	Udon Noodles (side)	160	0.2	0	0	34	1	0	6	0	15	
-Sauces	Extra Pan Asian Sauce	110	2	0.5	0	21	0	16	1	0	960	
-Sauces	Extra Sweet Chili Sauce	70	0	0	0	18	0	16	0.1	0	400	
-Sauces	Extra Ginger Sesame Sauce	130	1.5	0	0	27	0	21	2	0	1070	
-Sauces	Extra Hot & Spicy Sauce	120	1.5	0.1	0	25	0	21	1	0	1010	
-Sauces	Extra Famous Teriyaki Sauce	130	0	0	0	27	0	21	5	0	1870	
+# Protein rows: one portion of each protein from the site's "Change protein" list; a meal with another protein = meal - base_protein + that protein (how the site computes it).
+category	item	calories	fat	sat_fat	trans_fat	carbs	fibre	sugars	protein	cholesterol_mg	sodium_mg	ingredients	base_protein
+Signature Meals	Classic Chicken Teriyaki	640	6	1	0	109	6	29	41	35	2410	seasoned chicken, steamed rice, broccoli, carrots, red peppers, bean sprouts, mushrooms, and famous teriyaki sauce.	Chicken
+Signature Meals	Bento Box	580	11	2	0	90	8	25	33	35	1720	steamed rice, broccoli, carrots, red peppers, bean sprouts, mushrooms, and famous teriyaki sauce, edamame in a pod, 2 gyoza dumplings, 2 tempura shrimp, sweet chili sauce	Chicken
+Signature Meals	Classic Beef Teriyaki	670	9	2.5	0.1	110	6	29	41	80	2270	seasoned beef, steamed rice, broccoli, carrots, red peppers, bean sprouts, mushrooms, and famous teriyaki sauce.	Beef
+Signature Meals	Pineapple Chicken	600	3	0.5	0	114	5	40	31	35	1920	seasoned chicken, steamed rice, broccoli, carrots, red pepper, pineapple, teriyaki sauce and sweet chili sauce.	Chicken
+Signature Meals	Hot & Spicy Chicken	590	10	1.5	0	89	6	31	38	35	1710	seasoned chicken, yakisoba noodles, red peppers, spanish onion, bean sprouts, green onion, and sweet and mildly spiced chili sauce.	Chicken
+Signature Meals	Ginger Sesame Beef	580	12	2.5	0.1	82	5	28	39	80	1590	seasoned beef, udon noodles, broccoli, bean sprouts, mushrooms, carrots, sesame seeds, green onion, and zesty ginger sesame sauce.	Beef
+Signature Meals	Protein Bowl	510	12	2	0	67	7	34	38	35	1580	broccoli, carrots, red pepper, corn, bok choy, edamame, cashew nuts, sundried cranberries, bean sprouts, reduced-sodium teriyaki sauce and with your choice of seasoned chicken, beef, shrimp, tofu or salmon.	Chicken
+Signature Meals	Pan-Asian Shrimp	490	9	1.5	0	67	4	20	37	160	1430	shrimp, udon noodles, bok choy, red peppers, bean sprouts, sesame seeds, green onion, and secret pan-asian sauce.	Shrimp
+Sides	Yakisoba Noodles (side)	200	0.5	0	0	43	2	1	6	0	85		
+Sides	Udon Noodles (side)	160	0.2	0	0	34	1	0	6	0	15		
+Sauces	Extra Pan Asian Sauce	110	2	0.5	0	21	0	16	1	0	960		
+Sauces	Extra Sweet Chili Sauce	70	0	0	0	18	0	16	0.1	0	400		
+Sauces	Extra Ginger Sesame Sauce	130	1.5	0	0	27	0	21	2	0	1070		
+Sauces	Extra Hot & Spicy Sauce	120	1.5	0.1	0	25	0	21	1	0	1010		
+Sauces	Extra Famous Teriyaki Sauce	130	0	0	0	27	0	21	5	0	1870		
+Protein	Beef	70	2	1	0.1	2	0	1	10	80	150		
+Protein	Chicken	50	1	0.2	0	2	0	1	10	15	240		
+Protein	Salmon	70	2.5	0.5	0	0	0	0	11	35	60		
+Protein	Shrimp	40	0.2	0	0	0	0	0	10	80	150		
+Protein	Tofu	90	5	0.5	0	2	0	1	9	0	3		

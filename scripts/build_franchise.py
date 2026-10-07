@@ -135,13 +135,33 @@ for line in open('data/sources/starbucks-canada-menu.tsv',encoding='utf-8'):
     add('La Piazza','Starbucks',SB_FOOD.get(cat,'Snacks') if food else SB_DRINK[sec],item,
         serving if size in SB_SIZES or not serving else (serving if size.endswith('ml') else size.lower()),
         cal,fat,sat,chol,sod,carb,fib,sug,prot,kind,SB_SRC)
-# ---- Teriyaki Experience (La Piazza): meals; noodle sides and sauces are extras (Make it a meal / Edit)
+# ---- Teriyaki Experience (La Piazza): meals with a choice of protein; noodle sides and sauces are extras (Make it a meal / Edit)
 TE_SRC='Teriyaki Experience menu nutrition (teriyakiexperience.com/menu), pulled Oct 7, 2026'
+# Each meal = one app row with Protein buttons. Name without its protein (Classic Chicken + Classic Beef -> Classic Teriyaki).
+TE_NAMES={'Classic Chicken Teriyaki':'Classic Teriyaki','Classic Beef Teriyaki':'Classic Teriyaki','Pineapple Chicken':'Pineapple Teriyaki',
+          'Hot & Spicy Chicken':'Hot & Spicy','Ginger Sesame Beef':'Ginger Sesame','Pan-Asian Shrimp':'Pan-Asian'}
+te_meals,te_prot=[],{}
 for line in open('data/sources/teriyaki-experience-menu.tsv',encoding='utf-8'):
     if line.startswith(('#','category\t')) or not line.strip(): continue
-    cat,item,cal,fat,sat,trans,carb,fib,sug,prot,chol,sod,ing=line.rstrip('\n').split('\t')
-    serving={'Signature Meals':'1 meal','Sides':'1 side','Sauces':'1 portion'}[cat]
-    add('La Piazza','Teriyaki Experience',cat,item,serving,cal,fat,sat,chol,sod,carb,fib,sug,prot,0 if cat=='Signature Meals' else 1,TE_SRC)
+    f=line.rstrip('\n').split('\t')
+    cat,item,vals,base=f[0],f[1],[float(x) for x in f[2:12]],f[13]
+    if cat=='Protein': te_prot[item]=vals
+    elif cat=='Signature Meals': te_meals.append((item,vals,base))
+    else:
+        cal,fat,sat,trans,carb,fib,sug,prot,chol,sod=vals
+        add('La Piazza','Teriyaki Experience',cat,item,'1 side' if cat=='Sides' else '1 portion',cal,fat,sat,chol,sod,carb,fib,sug,prot,1,TE_SRC)
+done=set()
+for item,vals,base in te_meals:
+    name=TE_NAMES.get(item,item)
+    for pname,pv in te_prot.items():
+        # The site's own math: meal - its usual protein + the chosen one. A meal's own protein uses its page as-is.
+        if (name,pname) in done: continue
+        if pname!=base and any(TE_NAMES.get(i2,i2)==name and b2==pname for i2,_,b2 in te_meals): continue  # e.g. Classic + Beef: use the Classic Beef page
+        v=vals if pname==base else [max(a-b,0)+c for a,b,c in zip(vals,te_prot[base],pv)]
+        cal,fat,sat,trans,carb,fib,sug,prot,chol,sod=[round(x,1) for x in v]
+        done.add((name,pname))
+        add('La Piazza','Teriyaki Experience','Signature Meals',f'{name} - {pname}','1 meal',cal,fat,sat,chol,sod,carb,fib,sug,prot,0,
+            TE_SRC+('' if pname==base else f' (with {pname.lower()} instead of {base.lower()}, the site\'s Change protein numbers)'))
 json.dump(out,open('data/build/franchise.json','w'),ensure_ascii=False,indent=0)
 from collections import Counter
 print(len(out), Counter((o['location'],o['station'],o['kind']) for o in out))
