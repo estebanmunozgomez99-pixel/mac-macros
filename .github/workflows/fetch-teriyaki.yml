@@ -1,4 +1,4 @@
-# One-time: crawl teriyakiexperience.com/menu/ in a real browser and save every menu page's text into data/probe-te/.
+# One-time (try 2): crawl teriyakiexperience.com/menu/ in a real browser and save every menu page's text into data/probe-te/.
 name: Fetch Teriyaki Experience
 on:
   push:
@@ -25,10 +25,10 @@ jobs:
             p.on('response', r => { const ct = r.headers()['content-type'] || ''; if (/json|pdf/.test(ct)) api.push(r.status() + ' ' + ct.split(';')[0] + ' ' + r.url()); });
             const queue = ['https://teriyakiexperience.com/menu/classic-chicken-teriyaki/', 'https://teriyakiexperience.com/menu/', 'https://teriyakiexperience.com/nutrition/'];
             const seen = new Set(); let n = 0; const index = [];
-            while (queue.length && n < 120) {
+            while (queue.length && n < 80) {
               const u = queue.shift().split('#')[0]; if (seen.has(u)) continue; seen.add(u);
-              const r = await p.goto(u, { waitUntil: 'networkidle', timeout: 60000 }).catch(() => null);
-              n++; await p.waitForTimeout(1200);
+              const r = await p.goto(u, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => null);
+              n++; await p.waitForTimeout(2500);
               const text = await p.evaluate(() => document.body ? document.body.innerText : '').catch(() => '');
               fs.writeFileSync(out + 'page' + n + '.txt', u + ' ' + (r ? r.status() : 0) + '\n\n' + text);
               index.push(n + ' ' + u);
