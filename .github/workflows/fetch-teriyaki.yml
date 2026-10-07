@@ -1,4 +1,4 @@
-# One-time (try 2): crawl teriyakiexperience.com/menu/ in a real browser and save every menu page's text into data/probe-te/.
+# One-time (try 3): crawl teriyakiexperience.com/menu/ in a real browser and save every menu page's text into data/probe-te/.
 name: Fetch Teriyaki Experience
 on:
   push:
@@ -21,25 +21,13 @@ jobs:
             const b = await chromium.launch();
             const ctx = await b.newContext({ locale: 'en-CA', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
             const p = await ctx.newPage();
-            const api = [];
-            p.on('response', r => { const ct = r.headers()['content-type'] || ''; if (/json|pdf/.test(ct)) api.push(r.status() + ' ' + ct.split(';')[0] + ' ' + r.url()); });
-            const queue = ['https://teriyakiexperience.com/menu/classic-chicken-teriyaki/', 'https://teriyakiexperience.com/menu/', 'https://teriyakiexperience.com/nutrition/'];
-            const seen = new Set(); let n = 0; const index = [];
-            while (queue.length && n < 80) {
-              const u = queue.shift().split('#')[0]; if (seen.has(u)) continue; seen.add(u);
-              const r = await p.goto(u, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => null);
-              n++; await p.waitForTimeout(2500);
-              const text = await p.evaluate(() => document.body ? document.body.innerText : '').catch(() => '');
-              fs.writeFileSync(out + 'page' + n + '.txt', u + ' ' + (r ? r.status() : 0) + '\n\n' + text);
-              index.push(n + ' ' + u);
-              const links = await p.$$eval('a', as => as.map(a => a.href)).catch(() => []);
-              for (const h of links) { const k = h.split('#')[0].split('?')[0];
-                if (/teriyakiexperience\.com\/(menu|nutrition|[a-z-]*nutrition[a-z-]*)\//i.test(k) && !seen.has(k) && !queue.includes(k)) queue.push(k);
-                if (/\.pdf$/i.test(k) && !seen.has(k)) { seen.add(k); const res = await ctx.request.get(k).catch(() => null);
-                  if (res && res.ok()) { fs.writeFileSync(out + 'doc' + n + '.pdf', await res.body()); index.push('PDF doc' + n + ' ' + k); } } }
+            for (const [name, u] of [['product', 'https://teriyakiexperience.com/menu/classic-chicken-teriyaki/'], ['menu', 'https://teriyakiexperience.com/menu/']]) {
+              await p.goto(u, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => null);
+              await p.waitForTimeout(3000);
+              fs.writeFileSync(out + name + '.html', await p.content());
+              const links = await p.$$eval('a', as => as.map(a => a.href + ' | ' + a.innerText.trim().replace(/\s+/g, ' ').slice(0, 60)));
+              fs.writeFileSync(out + name + '-links.txt', [...new Set(links)].join('\n'));
             }
-            fs.writeFileSync(out + 'index.txt', index.join('\n'));
-            fs.writeFileSync(out + 'api.txt', api.join('\n'));
             await b.close();
           })();
           JS
