@@ -1005,7 +1005,12 @@ function rotationSlot(r, key) {
 }
 let showFullRotation = false;
 // Is this item served on the given day? Only rotational stations are filtered.
+// Weekend menus: on Saturday and Sunday the location serves only this station, which isn't served on weekdays
+// (The Bistro @ MKR runs just its BTG+ menu on weekends; user, Oct 2026)
+const WEEKEND_ONLY = { "The Bistro @ MKR": "BTG+" };
+const isWeekend = key => [0, 6].includes(keyToDate(key).getDay());
 function isServed(f, key) {
+  if (WEEKEND_ONLY[f.location] && (f.station === WEEKEND_ONLY[f.location]) !== isWeekend(key)) return false;
   const r = ROTATIONS[stationKey(f.location, f.station)];
   if (!r || showFullRotation) return true;
   if (r.all.has(f.item)) { const { week, day } = rotationSlot(r, key); return r.days[week][day].has(f.item); }
@@ -1300,7 +1305,8 @@ function renderLocations() {
     `<button class="loc${l !== "All" && isClosedNow(l) ? " is-closed" : ""}" aria-pressed="${l === activeLoc}" data-loc="${esc(l)}">${esc(l === "All" ? "All locations" : l)}${l !== "All" && isClosedNow(l) ? `<span class="closed-tag">Closed</span>` : ""}</button>`).join("");
   const sr = $("#stationRow");
   if (activeLoc === "All") { sr.hidden = true; sr.innerHTML = ""; return; }
-  const stations = ["All", ...new Set(MAINS.filter(f => f.location === activeLoc).map(f => f.station))];
+  const stations = ["All", ...new Set(MAINS.filter(f => f.location === activeLoc && isServed(f, viewKey)).map(f => f.station))];
+  if (!stations.includes(activeStation)) activeStation = "All";
   sr.hidden = false;
   sr.innerHTML = stations.map(st =>
     `<button class="loc${st !== "All" && isClosedNow(activeLoc, st) ? " is-closed" : ""}" aria-pressed="${st === activeStation}" data-station="${esc(st)}">${esc(st === "All" ? "All stations" : st)}${st !== "All" && isClosedNow(activeLoc, st) ? `<span class="closed-tag">Closed</span>` : ""}</button>`).join("");
