@@ -103,5 +103,5 @@ Requirements for the build: python3 with pandas, openpyxl, pdfplumber; `pdftotex
 
 - Colours: McMaster maroon `#7A003C`, gold `#FDBF57`; light and dark themes via CSS tokens.
 - Font: Figtree (bundled in `app/vendor/fonts`) with system fallbacks.
-- Logo: "MAROON" (no period; user removed it) in Horizon (Fontense, commercial font the user supplied). It's an inline SVG path in `.brand` (converted with fontTools), so the font file is NOT in the repo. To change the logo text, regenerate the path from the user's Horizon.otf.
+- Logo (top left): the "bitten M" mark from the user's Instagram profile picture (Oct 7, 2026), traced to an inline SVG path with potrace, shown **gold in both themes** (user asked). Replaced the earlier "MAROON" Horizon wordmark (Horizon is a commercial Fontense font; its file is not in the repo).
 - Keep the app a single HTML file unless the user asks otherwise.
