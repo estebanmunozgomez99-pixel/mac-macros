@@ -1,4 +1,4 @@
-# One-time: crawl choppedleaf.ca (menu + nutrition) in a real browser; save page text and any nutrition/allergen PDFs to data/probe-cl/.
+# One-time (try 2, uses the runner's Chrome): crawl choppedleaf.ca (menu + nutrition) in a real browser; save page text and any nutrition/allergen PDFs to data/probe-cl/.
 name: Fetch Chopped Leaf
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
         timeout-minutes: 10
         run: |
           mkdir -p data/probe-cl /tmp/pw && cd /tmp/pw
-          npm init -y -s >/dev/null && npm i -s playwright@1.47.2 >/dev/null && npx playwright install --with-deps chromium >/dev/null
+          npm init -y -s >/dev/null && PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm i -s playwright@1.47.2 >/dev/null && which google-chrome
           cat > get.js <<'JS'
           const { chromium } = require('playwright');
           const fs = require('fs'), out = process.env.GITHUB_WORKSPACE + '/data/probe-cl/';
           const index = []; let n = 0, d = 0;
           setTimeout(() => { fs.writeFileSync(out + 'index.txt', index.join('\n')); console.log('watchdog', n); process.exit(0); }, 420000);
           (async () => {
-            const b = await chromium.launch();
+            const b = await chromium.launch({ channel: 'chrome' });
             const ctx = await b.newContext({ locale: 'en-CA', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
             await ctx.route(/google|facebook|doubleclick|hotjar|tiktok|pinterest|clarity|youtube/i, r => r.abort());
             const p = await ctx.newPage(); p.setDefaultTimeout(20000);
@@ -48,6 +48,7 @@ jobs:
           JS
           node get.js > "$GITHUB_WORKSPACE/data/probe-cl/run.log" 2>&1 || true
       - name: Commit
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
