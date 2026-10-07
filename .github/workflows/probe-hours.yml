@@ -1,0 +1,50 @@
+# One-time: find McMaster Hospitality's hours of operation pages and save their text into data/probe-hours/.
+name: Probe hours
+on:
+  push:
+    paths: [".github/workflows/probe-hours.yml"]
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Crawl with a real browser
+        run: |
+          mkdir -p data/probe-hours /tmp/pw && cd /tmp/pw
+          npm init -y -s >/dev/null && npm i -s playwright@1.47.2 >/dev/null && npx playwright install --with-deps chromium >/dev/null
+          cat > get.js <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs'), out = process.env.GITHUB_WORKSPACE + '/data/probe-hours/';
+          (async () => {
+            const b = await chromium.launch();
+            const ctx = await b.newContext({ locale: 'en-CA', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
+            const p = await ctx.newPage();
+            const api = [];
+            p.on('response', r => { const ct = r.headers()['content-type'] || ''; if (ct.includes('json')) api.push(r.status() + ' ' + r.url()); });
+            const start = ['https://hospitality.mcmaster.ca/', 'https://hospitality.mcmaster.ca/hours/', 'https://hospitality.mcmaster.ca/locations/', 'https://hospitality.mcmaster.ca/dining/'];
+            const queue = [...start], seen = new Set(); let n = 0;
+            while (queue.length && n < 25) {
+              const u = queue.shift(); if (seen.has(u)) continue; seen.add(u);
+              const r = await p.goto(u, { waitUntil: 'networkidle', timeout: 60000 }).catch(e => null);
+              const st = r ? r.status() : 0; n++;
+              await p.waitForTimeout(2000);
+              const text = await p.evaluate(() => document.body ? document.body.innerText : '').catch(() => '');
+              fs.writeFileSync(out + 'page' + n + '.txt', u + ' ' + st + '\n\n' + text);
+              const links = await p.$$eval('a', as => as.map(a => a.href + ' | ' + a.innerText.trim().slice(0, 60))).catch(() => []);
+              fs.appendFileSync(out + 'links.txt', '== ' + u + '\n' + links.join('\n') + '\n');
+              for (const l of links) { const h = l.split(' | ')[0].split('#')[0];
+                if (/mcmaster\.ca/.test(h) && /hour|open|location|dining|eat|mac-?eats/i.test(l) && !seen.has(h)) queue.push(h); }
+            }
+            fs.writeFileSync(out + 'json-calls.txt', api.join('\n'));
+            await b.close();
+          })();
+          JS
+          node get.js > "$GITHUB_WORKSPACE/data/probe-hours/run.log" 2>&1 || true
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add data/probe-hours && git commit -m "Probe: hours pages" || echo nothing
+          git pull --rebase -q origin main && git push origin HEAD:main
