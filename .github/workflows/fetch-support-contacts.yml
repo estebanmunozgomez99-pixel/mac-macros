@@ -1,0 +1,45 @@
+# One-time: save the contact pages of the support services the app lists, to verify phone numbers and links.
+name: Fetch support contacts
+on:
+  push:
+    paths: [".github/workflows/fetch-support-contacts.yml"]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch
+        timeout-minutes: 8
+        run: |
+          mkdir -p data/probe-support /tmp/pw && cd /tmp/pw
+          npm init -y -s >/dev/null && PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm i -s playwright@1.47.2 >/dev/null
+          cat > get.js <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs'), out = process.env.GITHUB_WORKSPACE + '/data/probe-support/';
+          setTimeout(() => process.exit(0), 360000);
+          const URLS = ['https://wellness.mcmaster.ca/', 'https://wellness.mcmaster.ca/contact-us/', 'https://wellness.mcmaster.ca/contact/',
+            'https://nedic.ca/', 'https://nedic.ca/contact/', 'https://nedic.ca/contact-us/', 'https://good2talk.ca/', 'https://good2talk.ca/contact/'];
+          (async () => {
+            const b = await chromium.launch({ channel: 'chrome' });
+            const p = await b.newPage({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
+            let n = 0;
+            for (const u of URLS) {
+              const r = await p.goto(u, { waitUntil: 'domcontentloaded', timeout: 25000 }).catch(() => null);
+              await p.waitForTimeout(2500); n++;
+              const t = await p.evaluate(() => document.body ? document.body.innerText : '').catch(() => '');
+              const tel = await p.$$eval('a[href^="tel:"],a[href^="mailto:"]', as => as.map(a => a.href + ' | ' + a.innerText.trim())).catch(() => []);
+              fs.writeFileSync(out + 'page' + n + '.txt', u + ' -> ' + p.url() + ' ' + (r ? r.status() : 0) + '\n\nLINKS:\n' + [...new Set(tel)].join('\n') + '\n\nTEXT:\n' + t);
+            }
+            await b.close(); process.exit(0);
+          })();
+          JS
+          node get.js || true
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add data/probe-support && git commit -m "Fetch: support contacts" || echo nothing
+          git pull --rebase -q origin main && git push origin HEAD:main
