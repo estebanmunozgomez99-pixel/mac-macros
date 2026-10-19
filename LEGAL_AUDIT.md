@@ -29,9 +29,9 @@ Laws considered (Canada/Ontario first):
 | 10 | Hidden fees | Doesn't apply | Nothing costs money. | "Free" is stated plainly in the Terms, the About page and the privacy policy. Nothing hints at future charges. | Drip pricing rules apply if you ever charge. |
 | 11 | Fake reviews | Doesn't apply | There are no reviews, ratings, testimonials or user counts. | Nothing added. Rule recorded in CLAUDE.md: never add any unless they're real and confirmed. | Same rule for posters and Instagram (Competition Act). |
 | 12 | Unsupported claims | Applies | Competition Act: general impression, superlatives, numbers. | The welcome copy no longer says "Every dining hall…". The High protein rule is shown on the tab: "At least 20 g of protein per 300 calories (and 5 g or more), best ratio first." Your data note is visible on Home and on the sample screen: "Nutrition info from McMaster Hospitality Services and restaurant-published guides. May not reflect recipe changes. Confirm allergens with staff." The goal calculator no longer predicts weight change ("500 cal below your estimate. Results vary") and points to a doctor or registered dietitian. Paramount's macros are labelled as estimates. | **Posters/Instagram:** see "Marketing wording" below. "The best way…" is a superlative you can't prove. |
-| 13 | Alt text and screen readers | Applies | AODA / WCAG 1.1.1, 4.1.2. | The app has no `<img>` elements (icons are inline SVG). 29 decorative SVGs got `aria-hidden="true"`. Every icon-only button has an `aria-label`. Macro numbers in the log have spoken units ("32 protein"). The daily totals are announced politely through a hidden `aria-live` sentence instead of a noisy live region on the whole card. Sheet titles take focus when a sheet opens. The Progress chart has a table alternative (see Part 2). | Not tested with a real screen reader (VoiceOver/TalkBack). Worth a 10-minute check on your phone. |
+| 13 | Alt text and screen readers | Applies | AODA / WCAG 1.1.1, 4.1.2. | The app has no `<img>` elements (icons are inline SVG). 29 decorative SVGs got `aria-hidden="true"`. Every icon-only button has an `aria-label`. Macro numbers in the log have spoken units ("32 protein"). The daily totals are announced politely through a hidden `aria-live` sentence instead of a noisy live region on the whole card. Sheet titles take focus when a sheet opens. The Progress chart has a text summary (`role="img"` label) and a "Show as a table" alternative (see Part 2). | Not tested with a real screen reader (VoiceOver/TalkBack). Worth a 10-minute check on your phone. |
 | 14 | Colour contrast | Applies | WCAG 1.4.3 (text, 4.5:1) and 1.4.11 (UI, 3:1). | Added text-safe colour tokens and a two-tone focus ring. An automated scan of every text node in both themes found 1 failing pair before and 0 after. Before/after ratios are below. | The logo's gold on white (1.64:1) is exempt as a logo. Control borders are 1.39:1, but every control has a text label, so it isn't the only cue. |
-| 15 | Keyboard navigation | Applies | WCAG 2.1.1, 2.1.2, 2.4.3, 2.4.7, 2.5.8, 1.4.10, 2.3.3. | Sheets trap Tab, close on Esc and return focus to the button that opened them; the page behind is `inert`. Closed sheets are hidden from Tab. "Choose a photo" labels work with Enter and Space. A visible maroon/gold focus ring with a contrasting gap. Touch targets are at least 44 px. `prefers-reduced-motion` turns off transitions, animations and smooth scrolling. No horizontal scrolling at 320 px width (equivalent to 200% zoom on a 640 px screen). | **Exceptions:** inline text links (WCAG exempts inline links), and calendar days on the Progress calendar, which are about 37 px at 320 px wide (above the 24 px WCAG 2.2 AA minimum, below the 44 px goal). |
+| 15 | Keyboard navigation | Applies | WCAG 2.1.1, 2.1.2, 2.4.3, 2.4.7, 2.5.8, 1.4.10, 2.3.3. | Sheets trap Tab, close on Esc and return focus to the button that opened them; the page behind is `inert`. Closed sheets are hidden from Tab. "Choose a photo" labels work with Enter and Space. A visible maroon/gold focus ring with a contrasting gap. Touch targets are at least 44 px. `prefers-reduced-motion` turns off transitions, animations and smooth scrolling. No horizontal scrolling at 320 px width (equivalent to 200% zoom on a 640 px screen). | **Exceptions:** inline text links (WCAG exempts inline links), and the 7-across week strip and calendar days on Progress, which are about 34-36 px at 320 px wide (above the 24 px WCAG 2.2 AA minimum, below the 44 px goal; 44 px+ on most phones). |
 | 16 | Business details | Applies | Ontario consumer law and app stores expect a way to identify and contact the maker. | Added an "About Maroon" page: student project by [OWNER NAME] in Hamilton, Ontario; contact email; app version; free; not affiliated; not advice; plus a "Data sources" page with every source and its date. | Fill in [OWNER NAME]. |
 | 17 | Age and kids' data | Applies | Young users, and food tracking can affect people with eating disorders. | The Terms and privacy policy say Maroon is for university students and isn't directed at children under 13. Added a **Wellbeing** section in Settings, with contacts verified on the official sites on Oct 19, 2026: Student Wellness Centre 905-525-9140 ext. 27700 / wellness@mcmaster.ca; NEDIC 1-866-633-4220 (toll-free), 416-340-4156, live chat at nedic.ca; Good2Talk 1-866-925-5454 or text GOOD2TALKON to 686868 (24/7); "In an emergency, call 911." Going over a goal is shown in neutral colours, never red. A daily calorie goal under 1,200 shows a neutral note suggesting a doctor or registered dietitian, and saving is never blocked. | Phone numbers change: re-check them each term. **App stores:** a 4+ / Everyone age rating is likely, but answer the health questions honestly. |
 | 18 | Unsubscribe links | Doesn't apply | Maroon sends no email. "Report a problem" only opens the user's own mail app, and replies to someone who wrote first aren't commercial messages. | Nothing added. | **CASL:** any future mailing list, newsletter or launch announcement needs express opt-in (no pre-checked box), your identity and contact details, and a working unsubscribe that's honoured within 10 business days. |
@@ -69,7 +69,7 @@ Ratios are WCAG contrast ratios. AA needs 4.5:1 for normal text and 3:1 for larg
 | Dark: focus ring (gold on background) | 11.15 | 11.15 |
 | Dark: search focus border (maroon on card) | **1.49 (fail)** | now uses the gold focus token (11.15) |
 
-Bottom navigation ratios (Part 2) are listed in the "Part 2" section below.
+Bottom navigation and chart ratios are in the "Part 2" section below.
 
 ## Extra findings (not on the list)
 
@@ -92,3 +92,31 @@ Bottom navigation ratios (Part 2) are listed in the "Part 2" section below.
 12. **Trademark use.** Restaurant names are used plainly to identify food (nominative use). Don't put brand logos, colours or slogans in posters. Say "Not affiliated with McMaster University or any restaurant" on marketing.
 13. **The "Maroon" name** and McMaster's colours (maroon and gold). It's a common word and colour, but McMaster could object if marketing looks official. Keep the not-affiliated line and the original logo. **Lawyer:** is a trademark search worthwhile before an App Store launch?
 14. **Focus rings use `:focus-visible`,** so keyboard users always see them and mouse or touch users don't get rings on every tap.
+
+## Part 2: bottom navigation (re-checked after the change)
+
+- **Structure:** `<nav aria-label="Main">` with Home / Progress / Settings buttons; the active one has `aria-current="page"`. The + button is `aria-label="Add food"` with `aria-expanded` and `aria-controls`. Its menu is a small modal (`role="dialog"`): it traps focus (+ and three options), closes on Esc or an outside tap, and returns focus to +. The page behind it is `inert` while it's open.
+- **Speak:** the microphone is only requested after tapping Speak. Where the browser has no speech recognition, the option is replaced by a short explanation instead of a broken button. Matches are shown for confirmation, and nothing is logged until you tap Add. Audio and transcripts are never stored; this was verified by checking localStorage after a voice log. The privacy policy already describes this.
+- **Scan:** the existing barcode scanner (your decision). No photo or AI scanning, so the privacy policy is unchanged.
+- **Progress chart:** an inline SVG bar chart (no library) with a text summary for screen readers and a "Show as a table" alternative. Each day in the table is a 44 px button that opens the day on Home. The tone is neutral: averages and "X g of Y g" with no judgement words. The streak and scores stay (your decision).
+- **Contrast checks:**
+  - An automated scan of every text node on Home, the + menu, Add food, Settings, Progress (7 and 30 days, table open) and a document page, in both themes, found **0 failures**.
+  - **Light theme:**
+    - Active tab, maroon on white: 11.09.
+    - Inactive tab, grey on white: 5.62.
+    - The white + on maroon: 11.09. The + button against the page: 10.04.
+    - Menu icons, maroon on surface-2: 9.30.
+    - Chart bars: protein 11.09, carbs 5.93, fat 5.77 on white.
+  - **Dark theme:**
+    - Active tab, gold: 10.04.
+    - Inactive tab: 6.44.
+    - Menu icons: 8.82.
+    - Chart bars: protein 6.37, carbs 10.04, fat 6.75. Axis labels: 6.44.
+  - **One note:** in dark mode the maroon + circle is only 1.65:1 against the dark page. The white + symbol (11.09:1) is what identifies the button, so this meets WCAG 1.4.11. A lighter ring could be added if you want the circle itself to stand out more.
+- **Touch targets and reflow:** all tabs, + and the menu options are 44 px or larger. The goal inputs went from 42 to 44 px. There's no horizontal scrolling at 320 px on any tab; the week strip was shrunk to fit.
+- **Tested:**
+  - At 390 px and 1280 px, in light and dark themes.
+  - Keyboard only: tab order, the + menu trap, Esc, and focus returning after sheets.
+  - No console errors in the app. The only errors were network requests this test machine blocks.
+  - An existing `macmacros:v1` log loads with the same scores and streak as before.
+  - All 17 regression scripts give the same results as the previous version. The only exception is the Progress page text, which now starts with the new chart.
