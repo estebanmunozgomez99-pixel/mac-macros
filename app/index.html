@@ -346,6 +346,8 @@ img { max-width: 100%; }
 /* Goals form */
 .field { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; }
 .field + .field { border-top: 1px solid var(--line); }
+.goal-note { margin: 0; padding: 0 16px; font-size: 0.86rem; color: var(--text); }
+.goal-note:not(:empty) { padding: 10px 16px 12px; border-top: 1px solid var(--line); }
 .field label { font-weight: 600; display: flex; align-items: center; gap: 8px; }
 .field .dot { width: 10px; height: 10px; border-radius: 50%; }
 .field .input-wrap { display: flex; align-items: center; gap: 6px; color: var(--muted); }
@@ -668,6 +670,7 @@ img { max-width: 100%; }
     <span id="itemCount"></span>
   </div>
   <div id="logArea"></div>
+  <p class="sample-note home-note" id="homeNote">Nutrition info from McMaster Hospitality Services and restaurant-published guides. May not reflect recipe changes. Confirm allergens with staff.</p>
 </div>
 
 <div class="fab-wrap">
@@ -834,7 +837,7 @@ img { max-width: 100%; }
     </button>
   </div>
   <div class="sheet-body" id="calcBody">
-    <p class="hint">Estimates the calories you burn in a day and sets targets for your goal. It's a starting point, not medical advice. Adjust after a few weeks based on how your weight changes.</p>
+    <p class="hint">Estimates the calories you burn in a day and suggests targets. It's a rough starting point, not medical or nutrition advice. A doctor or registered dietitian can help you set goals that fit you.</p>
     <div class="tabs" role="group" aria-label="Units" id="unitSeg">
       <button data-units="metric">Metric (cm, kg)</button>
       <button data-units="imperial">Imperial (ft, lb)</button>
@@ -2465,7 +2468,7 @@ function dayScore(key) {
 // On target = 95+, close = 80-94, off = under 80
 const ON_TARGET = 95, CLOSE = 80;
 const scoreBand = sc => sc == null ? "none" : sc >= ON_TARGET ? "great" : sc >= CLOSE ? "close" : "off";
-const SCORE_WORDS = { great: "On target", close: "Close", off: "Off target", none: "Nothing logged" };
+const SCORE_WORDS = { great: "On target", close: "Close", off: "Further from goal", none: "Nothing logged" };
 const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
 const mondayOf = d => addDays(d, -((d.getDay() + 6) % 7));
 function avg(list) { const v = list.filter(x => x != null); return v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length) : null; }
@@ -2548,6 +2551,7 @@ function renderProgress() {
       <p><b>100</b> means you nailed it: calories within 3% of your goal, protein at or above your goal, carbs and fat within 5%.<br>
       <b>93-99</b> means you stayed inside the guidelines: calories within 10%, protein at least 90% of your goal, carbs and fat within 15%.<br>
       <b>Below that</b>, points drop faster the further off you are.</p>
+      <p>The score is a rough guide to how close a day landed, not a judgement. Every day is different, and that's fine.</p>
       <p>Days with nothing logged don't count, and each day is scored against the goals you had that day.</p></details>` : ""}`;
 }
 function openProgress() {
@@ -2785,8 +2789,16 @@ function renderGoals() {
     <div class="field">
       <label for="goal-${f.key}"><span class="dot" style="background:${f.color}"></span>${f.label}</label>
       <span class="input-wrap"><input id="goal-${f.key}" type="number" inputmode="numeric" min="0" step="1" value="${state.goals[f.key] || ""}" placeholder="—">${f.unit}</span>
-    </div>`).join("");
+    </div>`).join("") + `<p class="goal-note" id="goalNote" aria-live="polite"></p>`;
+  lowCalNote();
 }
+// A very low calorie goal gets a gentle, neutral note. It never blocks saving.
+const LOW_CAL_GOAL = 1200;
+function lowCalNote() {
+  const v = +($("#goal-calories") || {}).value || 0, n = $("#goalNote");
+  if (n) n.textContent = v > 0 && v < LOW_CAL_GOAL ? "That's a very low daily calorie goal. A doctor or registered dietitian can help you find a goal that's right for you." : "";
+}
+document.addEventListener("input", e => { if (e.target.id === "goal-calories") lowCalNote(); });
 
 /* ---------- Goal calculator ----------
    Maintenance calories: Mifflin-St Jeor resting energy x activity factor.
@@ -2799,10 +2811,10 @@ const ACTIVITY = [
   { f: 1.725, name: "Very active", note: "Hard exercise 6–7 days a week, or a varsity sport" }
 ];
 const PLANS = [
-  { key: "lose", name: "Lose fat", delta: -500, gPerKg: 2.0, note: "About 0.5 kg (1 lb) a week" },
+  { key: "lose", name: "Lose fat", delta: -500, gPerKg: 2.0, note: "500 cal below your estimate. Results vary" },
   { key: "maintain", name: "Maintain", delta: 0, gPerKg: 1.6, note: "Stay about the same weight" },
   { key: "muscle", name: "Build muscle", delta: 250, gPerKg: 1.8, note: "Slow, lean gain. Pair it with strength training" },
-  { key: "gain", name: "Gain weight", delta: 500, gPerKg: 1.6, note: "About 0.5 kg (1 lb) a week" }
+  { key: "gain", name: "Gain weight", delta: 500, gPerKg: 1.6, note: "500 cal above your estimate. Results vary" }
 ];
 const prof = () => state.profile;
 function calcPlans() {
@@ -3159,7 +3171,7 @@ Object.keys(state.custom).forEach(registerCustom);
 // Keep "Today" correct if the app stays open past midnight
 document.addEventListener("visibilitychange", () => { if (!document.hidden) renderDay(); });
 
-$("#sampleNote").textContent = "Nutrition info from McMaster Hospitality Services (updated nightly) and the restaurants' own published nutrition info: Tim Hortons, Second Cup, Chopped Leaf, Booster Juice, Pizza Pizza, Starbucks and Teriyaki Experience. Paramount numbers are estimates. Ask staff about allergens.";
+$("#sampleNote").textContent = "Nutrition info from McMaster Hospitality Services and restaurant-published guides. May not reflect recipe changes. Confirm allergens with staff.";
 
 renderAll();
 </script>
