@@ -1,3 +1,5 @@
 data/build/*
 !data/build/.gitkeep
 __pycache__/
+# Original restaurant PDFs/photos: kept off the public repo (see build.sh)
+data/private/

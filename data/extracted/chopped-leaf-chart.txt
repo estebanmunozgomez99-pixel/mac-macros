@@ -1,0 +1,133 @@
+       Nutritional Chart
+                     Menu         Calories   Fat (g)   Carbs (g)   Fibre (g)   Sugar (g)   Protein (g)   Sodium (mg)
+
+
+
+         Bowls
+         Goddess                   1026      77.3        75         15.4          8.9        22.4           1488
+         Cobb                       844      65.6        32          7.3           3         35.2           1123
+         Bangkok                    698      37.3       64.2        5.9           14         32.4            878
+         Harvest                    770      59.9       46.2        6.4          12.9        21.7           830
+         Mediterranean              825      66.7       49.9        8.5           7.6        12.3           1187
+         Santa Fe                   508      27.3       45.9         9.3         6.9         24.8           1168
+         Southwest                  726      53.4       40.2        5.6           4.5        23.4           890
+         Sunshine                   706      55.4       32.9        6.6            3         26.8           1106
+         Bold Buffalo               767      58.2       33.2         4.3          5.7        32.6           1766
+         Caesar                     728      56.1        29          3.4          1.2        32.1           1254
+         Signature                  752      56.4       43.5        5.5          13.4        27.2           888
+         Bistro                     770       48         64           8            8          24            1340
+         Autumn                     456      16.8       60.7        6.5            9          26            1172
+
+
+         Salads
+         Goddess                    906        67        61.6        15.5        9.5          21.6          1500
+         Cobb                       666       52.7       15.5         7.5        3.6          33.8           690
+         Bangkok                    561       28.2       48.6          6         12.7         31.3           960
+         Caesar                     583        45        15.6         3.5         1.8          31.1          920
+         Mediterranean              665       53.7       36.5         8.6        8.2          11.6          1080
+         Santa Fe                   418       22.6       31.5         9.2        6.6          23.9           940
+         Signature                  609       45.5       29.7        5.6         13.6         26.4           720
+         Sunshine                   583       46.9       18.6          6           3          25.9           680
+         Bold Buffalo               604       45.2       19.7         4.4        5.9          31.5           740
+         Harvest                    648       51.4       31.9          6         12.7         21.2          1030
+         Southwest                  591       43.3       26.9         5.8         5.1         22.7          1010
+
+
+         Wraps
+         Bangkok                    824        34        91.3        11.6        13.8         38.9          1083
+         Bold Buffalo               867        51        62.4        9.9           7          39.1          1974
+         Caesar                     846       50.8       58.3         9            3          38.6          1467
+         Mediterranean              928       59.5       79.2        14.2         9.3          19           1441
+         Santa Fe                   681       28.4       74.2         15          7.8         31.5          1334
+         Signature                  872       51.3       72.4        11.2        14.8          34           1120
+         Southwest                  854        49        69.5        11.3        6.2          30.3          1145
+         Sunshine                   850       52.7        62         12.3         4.7         33.5          1333
+         Goddess                    1170      74.7       104          21         10.6          29           1715
+         Cobb                       944       58.5       61.2         13          4.8          42           1326
+         Harvest                    914       57.3       75.4         12         14.6         28.4          1057
+
+
+
+        Sandwiches
+        Spicy Chipotle Chicken      753       36         73          3            2           35            1625
+        Cranberry Pesto Chicken     743       28         80          4            6           44            1665
+        Chicken Club                713       29         75          14           3           39            1415
+        Southwest Steak             789       41         73          3            1           33            1720
+        Jalapeño Popper             600       30         53          3            4           30            1420
+        Tuna Melt                   680       41         47          3            0           32            1230
+
+
+        Quesadillas
+        Baja                        900       52         79          15          10           36            1820
+        BBQ                         860       53         68          12          10           33            2150
+        Pesto                       870       55         66          13           8           35            1890
+        Vegetarian                  770       44         81          15          23           21            1430
+
+
+
+
+AUTUMNSEP212026
+                    Menu                   Calories   Fat (g)   Carbs (g)   Fibre (g)   Sugar (g)   Protein (g)   Sodium (mg)
+
+
+
+        Soup
+        Creamy Tomato - Small                290       22         20           3           9            4             580
+        Creamy Tomato - Large                500       38         36           5           15           7            1020
+        Chicken Noodle - Small                80        2         10           1            1           7             580
+        Chicken Noodle - Large               170       4.5        21           1            3          13             1170
+        Curried Butternut Squash - Small     160        8         22           3           6            2             680
+        Curried Butternut Squash - Large     280       13         39           6           11           4             1170
+        Broccoli Cheddar - Small             190       12          7           2           2            6             760
+        Broccoli Cheddar - Large             330       21         28           4            4          10            1310
+
+
+        Kids Menu
+        Chickie Bowl                         210        5         26           2           1           16            380
+        Chickie Caesar Salad                 300       23          7           2           1           16            600
+        Chickie Caesar Wrap                  500       30         39           5           2           21            940
+        Chickie Quesadilla                   300       10         35           3           2           19            610
+        Chickie Ranch Wrap                   450       26         37           4           2           20            790
+        Chickie Grilled Cheese               410        6         73           2           6           17            980
+
+
+
+        Dressings
+        Chopped Balsamic                     225       24           3          0          1.5          0.3           225
+        Goddess                              270      28.5          3          0           0           1.5           480
+        Greek Vinaigrette                    285      31.5         1.5         0           0           0.5           143
+        Evil Peanut                          210       18         10.5         0          7.5          1.5           345
+        Pesto                                80         7           1          0           0            2            200
+        Caesar                               270      28.5         1.5         0           0           1.5           345
+        Ranch                                285       30          1.5         0          1.5          1.5           300
+        Chipotle Lime Citrus                 255       27          1.5         0           0           0.5           180
+        Chipotle Ranch                       285       30          1.5         0           0           0.6           315
+        Salsa                                 15        0           4          1           1            0            340
+        Sour Cream                            45       3.5          2          0           1            1             25
+        BBQ Sauce                             45       0.5         10          0           8           0.1           380
+        Tzatziki                              70        5           2          0           1            3             75
+        Buffalo Sauce                          5        0           1          0           0           0.2           420
+
+
+
+        Proteins
+        Chicken                               90        2          3           0           1           14            240
+        Steak                                120        6          3           0           0           13            340
+        Tuna                                 340       30         0            0           0           17            510
+        Tofu                                 130        7          4           0           3           12            450
+        Falafel                              200       11         22           5           4           6             360
+        Eggs                                 150       10         2            0           1           12            125
+        Shrimp                                60       0          0            0           0           15            190
+
+
+        Chopped Water
+        Strawberry Lemon                     10         0          3           1           1           0.3            15
+        Cucumber Lime Mint                   15         0          3           0           1           0.3            15
+        Mixed Berry                          20         0          5           2           3           0.3            15
+        Cherry Lime                          27         0         7.2          1          5.8          0.5            15
+
+
+
+
+AUTUMNSEP212026
+

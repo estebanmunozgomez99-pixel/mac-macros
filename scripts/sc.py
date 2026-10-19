@@ -1,5 +1,5 @@
 import pdfplumber, json, re, bisect
-pdf=pdfplumber.open('data/sources/Second-Cup-Nutritional-Facts-BL.pdf'); p=pdf.pages[0]
+pdf=pdfplumber.open('data/private/Second-Cup-Nutritional-Facts-BL.pdf'); p=pdf.pages[0]
 edges=sorted(set(round(e['top']) for e in p.edges if e['orientation']=='h' and e['x0']<200<e['x1']))
 edges=[e for e in edges if e>=294]
 t=p.find_tables()[1]; data=t.extract()
