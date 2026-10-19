@@ -33,6 +33,7 @@ try { var t = JSON.parse(localStorage.getItem("macmacros:v1") || "{}").theme; if
   --carbs: #E0A33A;
   --fat: #2F6F73;
   --on-maroon: #FFFFFF;
+  --link: #7A003C;
   --scrim: rgba(20, 10, 18, 0.45);
   --radius-lg: 22px;
   --radius-md: 14px;
@@ -51,6 +52,7 @@ try { var t = JSON.parse(localStorage.getItem("macmacros:v1") || "{}").theme; if
     --carbs: #FDBF57;
     --fat: #5BB3B8;
     --scrim: rgba(0, 0, 0, 0.6);
+    --link: #FDBF57;
     color-scheme: dark;
   }
 }
@@ -65,6 +67,7 @@ try { var t = JSON.parse(localStorage.getItem("macmacros:v1") || "{}").theme; if
   --carbs: #FDBF57;
   --fat: #5BB3B8;
   --scrim: rgba(0, 0, 0, 0.6);
+  --link: #FDBF57;
   color-scheme: dark;
 }
 
@@ -604,8 +607,31 @@ img { max-width: 100%; }
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+/* Legal notice, documents, settings links */
+.legal-notice {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(92px + env(safe-area-inset-bottom, 0px)); z-index: 15;
+  width: calc(100% - 32px); max-width: 488px; display: flex; align-items: center; gap: 12px;
+  background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 10px 12px 10px 16px; box-shadow: 0 6px 24px rgba(0,0,0,0.12); font-size: 0.88rem;
+}
+.legal-notice[hidden] { display: none; }
+.legal-notice p { margin: 0; flex: 1; }
+.link-inline { border: none; background: none; padding: 0; font: inherit; font-weight: 700; color: var(--link); text-decoration: underline; cursor: pointer; }
+.notice-ok { flex-shrink: 0; min-height: 44px; padding: 0 16px; border: none; border-radius: var(--radius-sm); background: var(--maroon); color: var(--on-maroon); font-weight: 800; }
+.doc-body h3 { font-size: 1.02rem; font-weight: 800; margin: 22px 0 6px; }
+.doc-body p, .doc-body li { font-size: 0.93rem; line-height: 1.55; }
+.doc-body ul { padding-left: 20px; }
+.doc-body a { color: var(--link); font-weight: 700; overflow-wrap: anywhere; }
+.doc-body pre { white-space: pre-wrap; font-size: 0.75rem; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+.set-card.links { padding: 4px 0 12px; }
+.link-row { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 48px; padding: 0 16px;
+  border: none; border-bottom: 1px solid var(--line); background: none; font-weight: 700; color: var(--text); text-align: left; }
+.link-row svg { width: 18px; height: 18px; color: var(--muted); }
+.set-card.links .hint { padding: 0 16px; }
+.hint.small { font-size: 0.8rem; }
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition: none !important; }
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
 </style>
 </head>
@@ -760,14 +786,15 @@ img { max-width: 100%; }
     <h2 id="welcomeTitle">Welcome to Maroon</h2>
   </div>
   <div class="sheet-body">
-    <p class="hint">Track what you eat on campus in a few taps. Every dining hall and campus restaurant is already in here.</p>
+    <p class="hint" id="welcomeIntro">Track what you eat on campus in a few taps.</p>
     <ul class="welcome-list">
       <li><b>🔍 Search, 🎤 say it or ▦ scan it.</b> "Medium protein latte from Tims" works. So does the barcode on a granola bar.</li>
       <li><b>🍽️ Make it a meal.</b> Add your sides right away, or build your own bowl, pasta or omelette.</li>
       <li><b>🎯 Set a goal, 📈 see your progress.</b> Each day gets a score for how close you landed.</li>
     </ul>
     <p class="facts-note">Maroon is a student project and isn't affiliated with McMaster University or any restaurant. Numbers come
-      from published nutrition info and some are estimates. It's not medical advice. Your data stays on this phone.</p>
+      from published nutrition info and some are estimates, so treat them as a guide. It's not medical advice, and for allergens
+      always ask the staff. Your data stays on this phone.</p>
     <button class="primary" id="welcomeGoals">Set my goals</button>
     <button class="ghost" id="welcomeSkip">Just explore</button>
   </div>
@@ -782,6 +809,17 @@ img { max-width: 100%; }
     </button>
   </div>
   <div class="sheet-body" id="progBody"></div>
+</div>
+
+<!-- Document sheet: Privacy Policy, Terms, Licenses (from legal/*.md), About, Data sources -->
+<div class="sheet" id="docSheet" role="dialog" aria-modal="true" aria-labelledby="docTitle" aria-hidden="true">
+  <div class="sheet-head">
+    <h2 id="docTitle">Privacy Policy</h2>
+    <button class="icon-btn" data-close aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body doc-body" id="docBody"></div>
 </div>
 
 <!-- Goal calculator sheet -->
@@ -840,6 +878,11 @@ img { max-width: 100%; }
     <button class="primary" id="editDone">Done</button>
     <button class="ghost danger" id="editRemove">Remove from log</button>
   </div>
+</div>
+
+<div class="legal-notice" id="legalNotice" role="region" aria-label="Privacy notice" hidden>
+  <p>Your food log stays on this device. By using Maroon you agree to the <button class="link-inline" data-doc="terms">Terms</button> and <button class="link-inline" data-doc="privacy">Privacy Policy</button>.</p>
+  <button class="notice-ok" id="legalOk">Got it</button>
 </div>
 
 <div class="toast" id="toast" role="status"></div>
@@ -2536,7 +2579,65 @@ async function sendReport(subject, body) {
 }
 
 /* ---------- Settings ---------- */
-const PRIVACY_URL = "https://estebanmunozgomez99-pixel.github.io/mac-macros/privacy.html";
+/* LEGAL:START (generated by scripts/build_legal.py from legal/*.md; don't edit here) */
+const LEGAL = {"privacy": {"title": "Maroon Privacy Policy", "html": "<p>Effective date: [EFFECTIVE DATE]<\/p>\n<p>Maroon is a free macro tracker for McMaster University students, made by one student, [OWNER NAME], in Hamilton, Ontario, Canada. This policy explains what Maroon does with your information. The short version: <b>your food log stays on your device, and nothing about you is sent to me.<\/b><\/p>\n<h3>The short version<\/h3>\n<ul><li>No accounts. You never give Maroon your name, email or phone number.<\/li><li>Your food log, goals and settings are stored only on this device, in your browser's storage.<\/li><li>No analytics, no tracking, no ads, and no selling or sharing of data.<\/li><li>Maroon never records or keeps audio, and never keeps what you said.<\/li><\/ul>\n<h3>What Maroon stores, and where<\/h3>\n<p>Everything below is saved only in your browser's local storage on this device. I can't see it, and it isn't sent to me or to any server I run (I don't run one).<\/p>\n<ul><li><b>Food log:<\/b> what you logged, on which day, servings and any extras.<\/li><li><b>Goals:<\/b> your daily calorie, protein, carb and fat goals, and the goals each day was scored against.<\/li><li><b>Goal calculator details (optional):<\/b> if you use \"Calculate my goals\", the sex, age, height, weight, activity level and priority you entered, so the form is filled in next time.<\/li><li><b>Recent foods and My foods:<\/b> foods you logged recently, and foods you scanned, typed in or built yourself.<\/li><li><b>Settings:<\/b> light or dark appearance, whether you've seen the welcome tour and the privacy notice.<\/li><li><b>Downloaded menu data and opening hours:<\/b> a copy of the latest menu and campus hours, so the app works offline.<\/li><\/ul>\n<p>If you uninstall the app or clear this site's data in your browser, all of this is deleted.<\/p>\n<h3>Cookies and storage<\/h3>\n<p>Maroon doesn't use cookies. It uses your browser's local storage only to make the app work: to remember your log, goals and settings between visits. There is no tracking storage, so Maroon doesn't need a cookie banner.<\/p>\n<h3>When Maroon uses the internet<\/h3>\n<p>Maroon only connects to the internet for these things:<\/p>\n<ul><li><b>Loading the app, menu updates and opening hours.<\/b> Maroon is hosted on GitHub Pages (GitHub, Inc.). When your device downloads the app, a newer menu or the latest opening hours, GitHub may keep standard server logs such as your IP address and browser type. These requests contain nothing about your food log. See GitHub's privacy statement: <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\" target=\"_blank\" rel=\"noopener\">https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement<\/a><\/li><li><b>Barcode lookups (only if you use Scan).<\/b> The barcode number is sent to Open Food Facts, a non-profit food database, to look up the product. Nothing else is sent. See <a href=\"https://world.openfoodfacts.org/privacy\" target=\"_blank\" rel=\"noopener\">https://world.openfoodfacts.org/privacy<\/a><\/li><li><b>Speak (only if you use it).<\/b> Maroon uses your browser's built-in speech recognition. While the microphone is on, your browser may send the audio to its own speech service to turn it into text: Google for Chrome and most Android browsers, Apple for Safari. That is between you and your browser's maker, under their privacy policies. Maroon only receives the resulting text, uses it right away to find matching foods, and doesn't store the audio or the text. The microphone is only used after you tap Speak, and you can turn off microphone access at any time in your device settings.<\/li><li><b>Camera (only if you use Scan).<\/b> The camera picture is read on your device to find a barcode. Images are never saved or sent anywhere.<\/li><li><b>Emailing me (only if you choose to).<\/b> \"Report a problem\" opens your own email app with a message filled in. If you send it, I receive your email address and whatever is in the message. I only use it to reply and to fix the app, and I don't add you to any mailing list.<\/li><\/ul>\n<h3>What Maroon doesn't do<\/h3>\n<ul><li>No accounts, sign-ins or profiles on a server.<\/li><li>No analytics, tracking pixels, advertising or fingerprinting.<\/li><li>No location tracking.<\/li><li>No selling, renting or sharing of personal information.<\/li><li>No recording or storing of audio or speech transcripts.<\/li><\/ul>\n<h3>Your choices: export and delete<\/h3>\n<ul><li><b>Export my data:<\/b> Settings → Data → Export my data saves a file (JSON) with your log, goals, foods and settings. You can keep it as a backup or restore it on another device.<\/li><li><b>Delete all my data:<\/b> Settings → Data → Delete all my data asks you to confirm, then permanently erases everything Maroon stored on this device and resets the app. It can't be undone, so export first if you want a copy.<\/li><li>You can also clear this site's data from your browser settings at any time.<\/li><\/ul>\n<h3>Children<\/h3>\n<p>Maroon is made for university students. It isn't directed at children under 13, and I don't knowingly collect information from anyone, including children. Because nothing you enter leaves your device, there's no personal information on my side to collect.<\/p>\n<h3>Health information<\/h3>\n<p>Nutrition numbers in Maroon come from published nutrition information, and some are estimates. Maroon is for general information only and isn't medical, dietary or nutrition advice.<\/p>\n<h3>Changes to this policy<\/h3>\n<p>If this policy changes, I'll update this page and the effective date at the top. If a change affects what happens to your information, the app will show a notice before it takes effect.<\/p>\n<h3>Contact<\/h3>\n<p>Questions about privacy? Email <a href=\"mailto:esteban.munoz.gomez99@gmail.com\">esteban.munoz.gomez99@gmail.com<\/a>.<\/p>\n<p>You can also contact the Office of the Privacy Commissioner of Canada: <a href=\"https://www.priv.gc.ca\" target=\"_blank\" rel=\"noopener\">https://www.priv.gc.ca<\/a><\/p>"}, "terms": {"title": "Maroon Terms of Service", "html": "<p>Effective date: [EFFECTIVE DATE]<\/p>\n<p>These terms apply when you use Maroon, a free macro tracker for McMaster University students made by [OWNER NAME] in Hamilton, Ontario, Canada (\"I\", \"me\"). By using Maroon you agree to these terms and to the Privacy Policy. If you don't agree, please don't use the app.<\/p>\n<h3>Maroon is free<\/h3>\n<p>Maroon is free and has no purchases, subscriptions, ads or in-app payments. There's nothing to refund. If that ever changes, the price and what you get would be shown clearly before you pay anything, and these terms would be updated first.<\/p>\n<h3>It's a beta, provided \"as is\"<\/h3>\n<p>Maroon is a free beta made by a student. It's provided \"as is\" and \"as available\", without warranties of any kind, express or implied, including fitness for a particular purpose, accuracy, or that it will always work or keep your data. Keep a backup (Settings → Data → Export my data) if your log matters to you.<\/p>\n<h3>Not medical, dietary or nutrition advice<\/h3>\n<p>Maroon is a tool for general information. It isn't medical, dietary or nutrition advice, and it doesn't replace a doctor, registered dietitian or other health professional. Goal suggestions and day scores are rough guides, not recommendations for you. Talk to a health professional before making big changes to how you eat, especially if you're pregnant, have a medical condition, or have a history of disordered eating.<\/p>\n<h3>Nutrition data may be wrong<\/h3>\n<p>Nutrition numbers come from third parties: McMaster Hospitality Services and the restaurants' published nutrition guides. Some numbers are estimates and are marked as estimates. Recipes, portions, suppliers and menus change, and published numbers can be out of date or wrong. Real servings vary. Treat every number as an approximation.<\/p>\n<h3>Allergens: always ask staff<\/h3>\n<p>Maroon doesn't give allergen information you can rely on. <b>If you have a food allergy, intolerance or dietary restriction, always confirm ingredients and allergens with the staff serving your food<\/b> before eating it. Cross-contact can happen in any kitchen.<\/p>\n<h3>Not affiliated<\/h3>\n<p>Maroon is an independent student project. It isn't affiliated with, sponsored by or endorsed by McMaster University, the McMaster Students Union (MSU), McMaster Hospitality Services, or any restaurant or brand shown in the app. Restaurant and brand names are used only to identify where food comes from. All trademarks belong to their owners.<\/p>\n<h3>Acceptable use<\/h3>\n<p>Please use Maroon only for personal, lawful purposes. Don't try to break, overload or misuse the app or the services it connects to, and don't copy the app's data to resell it or present it as your own.<\/p>\n<h3>Limitation of liability<\/h3>\n<p>To the fullest extent the law allows, I'm not liable for any indirect, incidental, special or consequential damages, or for any loss of data, arising from your use of Maroon or from relying on its nutrition numbers. Where liability can't be excluded, my total liability is limited to the amount you paid to use Maroon, which is zero. Nothing in these terms limits rights you have under Ontario consumer protection law that can't be waived.<\/p>\n<h3>Who it's for<\/h3>\n<p>Maroon is made for university students. It isn't directed at children under 13.<\/p>\n<h3>Changes and ending<\/h3>\n<p>I may change or stop offering Maroon at any time. If these terms change, I'll update this page and the effective date, and the app will show a notice for important changes. Using Maroon after a change means you accept the new terms.<\/p>\n<h3>Governing law<\/h3>\n<p>These terms are governed by the laws of the Province of Ontario and the federal laws of Canada that apply there.<\/p>\n<h3>Contact<\/h3>\n<p>Questions? Email <a href=\"mailto:esteban.munoz.gomez99@gmail.com\">esteban.munoz.gomez99@gmail.com<\/a>.<\/p>"}, "licenses": {"title": "Maroon Licenses and Credits", "html": "<p>Maroon is built from original code plus a few open-source pieces. Their licenses are below.<\/p>\n<h3>Logo<\/h3>\n<p>The \"bitten M\" logo is an original design made for Maroon. No McMaster University crest, logos or \"Marauders\" marks are used, and no restaurant logos are used.<\/p>\n<h3>Fonts<\/h3>\n<ul><li><b>Figtree<\/b> by Erik Kennedy, SIL Open Font License 1.1. Bundled with the app (no font is downloaded from Google or anywhere else). Full license below.<\/li><li>The marketing font <b>Horizon<\/b> (Fontense) is <b>not<\/b> used in the app.<\/li><\/ul>\n<h3>Icons<\/h3>\n<ul><li>The flame, drumstick, wheat and drop icons are adapted from <b>Lucide<\/b> (ISC License, below). Other icons are drawn for Maroon.<\/li><\/ul>\n<h3>Barcode reader<\/h3>\n<p>Used only on devices without a built-in barcode reader.<\/p>\n<ul><li><b>barcode-detector<\/b> 3.2.2 by Ze-Zheng Wu, MIT License (below).<\/li><li><b>zxing-wasm<\/b> 3.1.3 by Ze-Zheng Wu, MIT License (below). It includes <b>ZXing-C++<\/b>, Apache License 2.0: <a href=\"https://github.com/zxing-cpp/zxing-cpp/blob/master/LICENSE\" target=\"_blank\" rel=\"noopener\">https://github.com/zxing-cpp/zxing-cpp/blob/master/LICENSE<\/a><\/li><\/ul>\n<h3>Data<\/h3>\n<ul><li><b>McMaster Hospitality Services<\/b> menu nutrition (macnutrition.mcmaster.ca) and opening hours (hospitality.mcmaster.ca). Used with permission from McMaster Hospitality Services.<\/li><li>Published nutrition information from <b>Tim Hortons, Second Cup, Chopped Leaf, Booster Juice, Pizza Pizza, Starbucks and Teriyaki Experience<\/b>, and posted menu-board calories from <b>Paramount Lebanese Kitchen<\/b> (protein, carbs and fat for Paramount are estimates). Brand names belong to their owners and are used only to identify where food comes from.<\/li><li>Barcode lookups: product data from <b>Open Food Facts<\/b> (<a href=\"https://world.openfoodfacts.org\" target=\"_blank\" rel=\"noopener\">https://world.openfoodfacts.org<\/a>), available under the Open Database License (ODbL); product images and text under their own licenses.<\/li><\/ul>\n<p>The full list of sources with dates is in the app under Settings → Data sources.<\/p>\n<h3>SIL Open Font License 1.1 (Figtree)<\/h3>\n<pre>Copyright 2022 The Figtree Project Authors (https://github.com/erikdkennedy/figtree) Figtree-Italic[wght].ttf: Copyright 2022 The Figtree Project Authors (https://github.com/erikdkennedy/figtree)\n\nThis Font Software is licensed under the SIL Open Font License, Version 1.1.\nThis license is copied below, and is also available with a FAQ at:\nhttp://scripts.sil.org/OFL\n\n\n-----------------------------------------------------------\nSIL OPEN FONT LICENSE Version 1.1 - 26 February 2007\n-----------------------------------------------------------\n\nPREAMBLE\nThe goals of the Open Font License (OFL) are to stimulate worldwide\ndevelopment of collaborative font projects, to support the font creation\nefforts of academic and linguistic communities, and to provide a free and\nopen framework in which fonts may be shared and improved in partnership\nwith others.\n\nThe OFL allows the licensed fonts to be used, studied, modified and\nredistributed freely as long as they are not sold by themselves. The\nfonts, including any derivative works, can be bundled, embedded,\nredistributed and/or sold with any software provided that any reserved\nnames are not used by derivative works. The fonts and derivatives,\nhowever, cannot be released under any other type of license. The\nrequirement for fonts to remain under this license does not apply\nto any document created using the fonts or their derivatives.\n\nDEFINITIONS\n&quot;Font Software&quot; refers to the set of files released by the Copyright\nHolder(s) under this license and clearly marked as such. This may\ninclude source files, build scripts and documentation.\n\n&quot;Reserved Font Name&quot; refers to any names specified as such after the\ncopyright statement(s).\n\n&quot;Original Version&quot; refers to the collection of Font Software components as\ndistributed by the Copyright Holder(s).\n\n&quot;Modified Version&quot; refers to any derivative made by adding to, deleting,\nor substituting -- in part or in whole -- any of the components of the\nOriginal Version, by changing formats or by porting the Font Software to a\nnew environment.\n\n&quot;Author&quot; refers to any designer, engineer, programmer, technical\nwriter or other person who contributed to the Font Software.\n\nPERMISSION &amp; CONDITIONS\nPermission is hereby granted, free of charge, to any person obtaining\na copy of the Font Software, to use, study, copy, merge, embed, modify,\nredistribute, and sell modified and unmodified copies of the Font\nSoftware, subject to the following conditions:\n\n1) Neither the Font Software nor any of its individual components,\nin Original or Modified Versions, may be sold by itself.\n\n2) Original or Modified Versions of the Font Software may be bundled,\nredistributed and/or sold with any software, provided that each copy\ncontains the above copyright notice and this license. These can be\nincluded either as stand-alone text files, human-readable headers or\nin the appropriate machine-readable metadata fields within text or\nbinary files as long as those fields can be easily viewed by the user.\n\n3) No Modified Version of the Font Software may use the Reserved Font\nName(s) unless explicit written permission is granted by the corresponding\nCopyright Holder. This restriction only applies to the primary font name as\npresented to the users.\n\n4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font\nSoftware shall not be used to promote, endorse or advertise any\nModified Version, except to acknowledge the contribution(s) of the\nCopyright Holder(s) and the Author(s) or with their explicit written\npermission.\n\n5) The Font Software, modified or unmodified, in part or in whole,\nmust be distributed entirely under this license, and must not be\ndistributed under any other license. The requirement for fonts to\nremain under this license does not apply to any document created\nusing the Font Software.\n\nTERMINATION\nThis license becomes null and void if any of the above conditions are\nnot met.\n\nDISCLAIMER\nTHE FONT SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT\nOF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE\nCOPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nINCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL\nDAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM\nOTHER DEALINGS IN THE FONT SOFTWARE.<\/pre>\n<h3>MIT License (barcode-detector)<\/h3>\n<pre>MIT License\n\nCopyright (c) 2023 Ze-Zheng Wu\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the &quot;Software&quot;), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.<\/pre>\n<h3>MIT License (zxing-wasm)<\/h3>\n<pre>MIT License\n\nCopyright (c) 2023 Ze-Zheng Wu\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the &quot;Software&quot;), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.<\/pre>\n<h3>ISC License (Lucide)<\/h3>\n<pre>ISC License\n\nCopyright (c) for portions of Lucide are held by Cole Bemis 2013-2022 as part of Feather (MIT). All other copyright (c) for Lucide are held by Lucide Contributors 2022.\n\nPermission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED &quot;AS IS&quot; AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.<\/pre>"}};
+/* LEGAL:END */
+// Maroon's own settings (separate from macmacros:v1, which holds the log and must never be renamed)
+const PREFS_KEY = "maroon:prefs", LEGAL_VERSION = "2026-10";  // bump LEGAL_VERSION when the Terms/Privacy change: the notice shows again
+const prefs = (() => { try { return { legalAck: null, ...JSON.parse(localStorage.getItem(PREFS_KEY) || "{}") }; } catch (e) { return { legalAck: null }; } })();
+function savePrefs() { try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch (e) { /* ignore */ } }
+
+// Everything Maroon keeps on this device: macmacros:* (log, cached menu and hours) and maroon:* (settings)
+function deleteAllData() {
+  if (!confirm("Delete all your Maroon data on this device?\n\nThis erases your food log, goals, My foods and settings. It can't be undone. Export your data first if you want a copy.")) return;
+  try {
+    Object.keys(localStorage).filter(k => k.startsWith("macmacros:") || k.startsWith("maroon:")).forEach(k => localStorage.removeItem(k));
+  } catch (e) { toast("Couldn't delete the data on this device."); return; }
+  location.reload();
+}
+
+/* Documents: legal pages come from legal/*.md (LEGAL); About and Data sources are built here */
+const SOURCES = [
+  ["McMaster Hospitality Services", "Menu nutrition from macnutrition.mcmaster.ca, checked every night; opening hours from the MacEats \"What's Open Now\" page. Used with permission.", () => MENU.version ? "Menu data from " + new Date(MENU.version).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : ""],
+  ["Tim Hortons", "Tim Hortons Canada Nutrition Information, August 2025."],
+  ["Second Cup", "Second Cup Beverage Menu Nutritional Values."],
+  ["Chopped Leaf", "Chopped Leaf Nutritional Chart, September 2026 update (choppedleaf.ca)."],
+  ["Booster Juice", "Booster Juice Nutrition Guide, Version 24.1 (in-store), September 2026."],
+  ["Pizza Pizza", "pizzapizza.ca nutrition tables (\"nutrition facts as of November 1, 2023\"), pulled October 2026."],
+  ["Starbucks", "starbucks.ca menu nutrition (Canada), standard recipes, pulled October 2026."],
+  ["Teriyaki Experience", "teriyakiexperience.com menu nutrition, pulled October 2026."],
+  ["Paramount Lebanese Kitchen", "Calories from the menu boards at Centro, September 2026. Protein, carbs and fat are estimates."],
+  ["Open Food Facts", "Product data for scanned barcodes (world.openfoodfacts.org), Open Database License."]
+];
+function docHTML(name) {
+  if (LEGAL[name]) return { title: LEGAL[name].title.replace(/^Maroon /, ""), html: LEGAL[name].html };
+  if (name === "about") return { title: "About Maroon", html: `
+    <p><b>Maroon</b> is a free macro tracker for McMaster University students. It's a student project, built by [OWNER NAME] in Hamilton, Ontario, Canada.</p>
+    <p>Contact: <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p>
+    <p>Version ${esc(APP_VERSION)}.</p>
+    <p><b>Maroon isn't affiliated with, sponsored by or endorsed by McMaster University, the McMaster Students Union, McMaster Hospitality Services, or any restaurant.</b> Restaurant and brand names are used only to identify where food comes from, and all trademarks belong to their owners.</p>
+    <p>Maroon is for general information only. It isn't medical, dietary or nutrition advice.</p>
+    <p>Maroon is free and has no purchases, subscriptions or ads.</p>` };
+  if (name === "sources") return { title: "Data sources and accuracy", html: `
+    <p>Nutrition info from McMaster Hospitality Services and restaurant-published guides. It may not reflect recipe changes, and real portions vary, so treat every number as a guide. <b>Always confirm allergens with staff.</b></p>
+    <ul>${SOURCES.map(([n, d, date]) => `<li><b>${esc(n)}</b>: ${esc(d)}${date && date() ? " " + esc(date()) + "." : ""}</li>`).join("")}</ul>
+    <p>Items marked "≈" in the builders are estimates. Restaurant names are used only to identify where food comes from.</p>
+    <p>Spot a wrong number? Settings → Report a problem.</p>` };
+  return { title: "", html: "" };
+}
+function openDoc(name) {
+  const d = docHTML(name);
+  $("#docTitle").textContent = d.title;
+  $("#docBody").innerHTML = d.html;
+  openSheet("docSheet");
+  $("#docBody").scrollTop = 0;
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-doc]"); if (b) { e.preventDefault(); openDoc(b.dataset.doc); } });
+
+// One-time notice (shown again only when LEGAL_VERSION changes). No tracking storage is used, so no consent banner is needed.
+function showLegalNotice() { $("#legalNotice").hidden = prefs.legalAck === LEGAL_VERSION; }
+$("#legalOk").addEventListener("click", () => { prefs.legalAck = LEGAL_VERSION; savePrefs(); $("#legalNotice").hidden = true; });
+showLegalNotice();
 function unregisterCustom(key) {
   const id = "custom|" + key, f = FOOD_BY_ID.get(id);
   if (f) {
@@ -2568,11 +2669,13 @@ function renderSettings() {
         <button class="info-btn" data-mydel="${esc(k)}" aria-label="Delete ${esc(c.name)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
       </li>`).join("")}</ul>` : `<p class="hint">Foods you scan, type in or build show up here.</p>`}
 
-    <div class="group-label">Backup</div>
+    <div class="group-label">Data</div>
     <div class="card set-card">
-      <p class="hint">Your log, goals and foods are saved only on this phone. Save a backup file now and then (for example to Files or Google Drive) so you can restore it on a new phone.</p>
-      <button class="primary" data-export>Save a backup</button>
-      <label class="ghost file-btn">Restore from a backup<input type="file" accept="application/json,.json" id="importFile" hidden></label>
+      <p class="hint">Your log, goals, foods and settings are saved only on this device. Nothing is sent to me.</p>
+      <button class="primary" data-export>Export my data</button>
+      <label class="ghost file-btn" tabindex="0">Restore from an exported file<input type="file" accept="application/json,.json" id="importFile" hidden></label>
+      <button class="ghost" data-deleteall>Delete all my data</button>
+      <p class="hint small">Export saves a file (JSON) you can keep as a backup or restore on another device. Delete erases everything Maroon saved on this device.</p>
     </div>
 
     <div class="group-label">Menu</div>
@@ -2587,23 +2690,28 @@ function renderSettings() {
       <button class="ghost" data-tour>Show the welcome tour again</button>
     </div>
 
-    <div class="group-label">Support</div>
+    <div class="group-label">Wellbeing</div>
     <div class="card set-card support">
-      <p>If food, weight or tracking ever starts to feel stressful, you don't have to deal with it alone:</p>
+      <p>If food or eating feels stressful, support is available. You don't have to deal with it alone.</p>
       <ul>
-        <li><b>McMaster Student Wellness Centre</b> · <a href="https://wellness.mcmaster.ca" target="_blank" rel="noopener">wellness.mcmaster.ca</a></li>
-        <li><b>NEDIC helpline</b> (eating disorders, free) · <a href="tel:18666334220">1-866-633-4220</a></li>
-        <li><b>Good2Talk</b> (Ontario post-secondary students, 24/7) · <a href="tel:18669255454">1-866-925-5454</a></li>
+        <li><b>McMaster Student Wellness Centre</b><br>
+          <a href="https://wellness.mcmaster.ca" target="_blank" rel="noopener">wellness.mcmaster.ca</a> ·
+          <a href="tel:+19055259140,27700">905-525-9140 ext. 27700</a> ·
+          <a href="mailto:wellness@mcmaster.ca">wellness@mcmaster.ca</a></li>
+        <li><b>NEDIC</b> (National Eating Disorder Information Centre, free)<br>
+          <a href="tel:+18666334220">1-866-633-4220</a> (toll-free) · <a href="tel:+14163404156">416-340-4156</a> ·
+          live chat at <a href="https://nedic.ca" target="_blank" rel="noopener">nedic.ca</a></li>
+        <li><b>Good2Talk</b> (Ontario post-secondary students, free, 24/7)<br>
+          <a href="tel:+18669255454">1-866-925-5454</a> · text GOOD2TALKON to 686868</li>
       </ul>
+      <p class="hint small">In an emergency, call 911. Contact details checked on each service's website on October 19, 2026.</p>
     </div>
 
-    <div class="group-label">About</div>
-    <div class="card set-card about">
-      <p><b>Maroon</b> ${esc(APP_VERSION)}</p>
-      <p>A student project. <b>Not affiliated with, or endorsed by, McMaster University or any restaurant.</b> Restaurant names are used only to describe their food.</p>
-      <p>Nutrition numbers come from McMaster Hospitality Services' published menu data and the restaurants' own nutrition guides. Some are estimates and are marked that way. Menus change, so check the posted numbers if something looks off.</p>
-      <p>Maroon is for general information only and isn't medical or nutrition advice. Talk to a doctor or registered dietitian before making big changes to how you eat.</p>
-      <p><a href="${PRIVACY_URL}" target="_blank" rel="noopener">Privacy policy</a></p>
+    <div class="group-label">About and legal</div>
+    <div class="card set-card links">
+      ${[["about", "About Maroon"], ["sources", "Data sources and accuracy"], ["privacy", "Privacy Policy"], ["terms", "Terms of Service"], ["licenses", "Licenses"]]
+        .map(([k, name]) => `<button class="link-row" data-doc="${k}">${name}<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>`).join("")}
+      <p class="hint small">Maroon ${esc(APP_VERSION)} · Not affiliated with McMaster University or any restaurant.</p>
     </div>`;
 }
 function applyTheme() {
@@ -2612,17 +2720,17 @@ function applyTheme() {
 }
 function openSettings() { renderSettings(); openSheet("setSheet"); $("#setBody").scrollTop = 0; }
 function exportBackup() {
-  const data = JSON.stringify({ app: "Maroon", version: 1, exported: new Date().toISOString(), state }, null, 1);
-  const name = `mac-macros-backup-${dateKey(new Date())}.json`;
+  const data = JSON.stringify({ app: "Maroon", version: 1, exported: new Date().toISOString(), state, prefs }, null, 1);
+  const name = `maroon-data-${dateKey(new Date())}.json`;
   const file = new File([data], name, { type: "application/json" });
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    navigator.share({ files: [file], title: "Maroon backup" }).catch(() => {});
+    navigator.share({ files: [file], title: "Maroon data" }).catch(() => {});
     return;
   }
   const a = document.createElement("a");
   a.href = URL.createObjectURL(file); a.download = name; document.body.appendChild(a); a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-  toast("Backup saved");
+  toast("Data exported");
 }
 async function importBackup(file) {
   let b;
@@ -2630,7 +2738,10 @@ async function importBackup(file) {
   if (!b || !["Maroon", "Mac Macros"].includes(b.app) || !b.state || typeof b.state.log !== "object") { toast("That file isn't a Maroon backup."); return; }
   const days = Object.keys(b.state.log).length;
   if (!confirm(`Restore this backup from ${new Date(b.exported).toLocaleDateString()}? It has ${days} day${days === 1 ? "" : "s"} of logs and replaces everything on this phone.`)) return;
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(b.state)); } catch (e) { toast("Couldn't restore on this phone."); return; }
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(b.state));
+    if (b.prefs && typeof b.prefs === "object") localStorage.setItem(PREFS_KEY, JSON.stringify(b.prefs));
+  } catch (e) { toast("Couldn't restore on this phone."); return; }
   location.reload();
 }
 $("#openSettings").addEventListener("click", openSettings);
@@ -2640,6 +2751,7 @@ $("#setBody").addEventListener("click", e => {
   let b;
   if ((b = t("[data-theme-pick]"))) { state.theme = b.dataset.themePick; applyTheme(); saveState(); renderSettings(); }
   else if (t("[data-export]")) exportBackup();
+  else if (t("[data-deleteall]")) deleteAllData();
   else if (t("[data-menucheck]")) checkMenuUpdate(true);
   else if (t("[data-reportapp]")) sendReport("Maroon: feedback", `What happened or what would you like to see?\n\n\n--- \nApp ${APP_VERSION} · Menu data ${MENU.version || "?"}`);
   else if (t("[data-tour]")) { closeSheets(); setTimeout(showWelcome, 250); }

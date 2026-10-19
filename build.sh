@@ -11,3 +11,4 @@ python3 scripts/build_franchise.py > /dev/null
 python3 scripts/appdata3.py > /dev/null
 python3 scripts/inject_menu.py
 python3 scripts/build_xlsx.py
+python3 scripts/build_legal.py
