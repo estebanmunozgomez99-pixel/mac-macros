@@ -105,7 +105,7 @@ button { cursor: pointer; }
 img { max-width: 100%; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-.app { max-width: 520px; margin: 0 auto; padding: 0 16px 120px; }
+.app { max-width: 520px; margin: 0 auto; padding: 0 16px calc(116px + env(safe-area-inset-bottom, 0px)); }
 
 /* ---------- Header ---------- */
 .top {
@@ -209,27 +209,62 @@ img { max-width: 100%; }
 }
 .empty strong { display: block; color: var(--text); font-size: 1.05rem; margin-bottom: 4px; }
 
-/* ---------- Floating add button ---------- */
-.fab-wrap {
-  position: fixed; left: 0; right: 0; bottom: 0;
-  padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(to top, var(--bg) 60%, transparent);
-  pointer-events: none;
+/* ---------- Bottom navigation (Home, Progress, Settings) and the + button ----------
+   Layers: legal notice 15 < nav 16 < + menu backdrop 17 < + menu 18 < + button 19 < sheet scrim 20 < sheets 21 < toast 30 */
+.view[hidden] { display: none; }
+.view-title { margin: 8px 2px 14px; font-size: 1.4rem; font-weight: 800; }
+.view-title:focus { outline: none; }
+.goal-hint { margin: 0 2px 8px; }
+#view-settings > .primary { margin-top: 12px; }
+.bottom-nav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 16;
+  max-width: 520px; margin: 0 auto;
+  background: var(--surface); border: 1px solid var(--line); border-bottom: none; border-radius: 22px 22px 0 0;
+  box-shadow: 0 -4px 20px rgba(30, 10, 25, 0.10);
+  padding: 6px 96px calc(6px + env(safe-area-inset-bottom, 0px)) 8px;
 }
-.fab {
-  pointer-events: auto;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; max-width: 488px; margin: 0 auto;
-  height: 56px; border: none; border-radius: var(--radius-sm);
-  background: var(--gold); color: #2A1500; font-weight: 800; font-size: 1.05rem;
-  box-shadow: 0 6px 18px rgba(122, 0, 60, 0.22);
+.bn-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.bn-tab {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  min-height: 52px; padding: 4px 2px; border: none; border-radius: 12px; background: none;
+  color: var(--muted); font-size: 0.78rem; font-weight: 600; line-height: 1.1;
 }
-.fab svg { width: 22px; height: 22px; }
-.fab-row { display: flex; gap: 10px; max-width: 488px; margin: 0 auto; }
-.fab-row .fab { flex: 1; margin: 0; }
-.fab-row .fab.side { flex: 0 0 56px; width: 56px; padding: 0; background: var(--surface); color: var(--text); border: 1px solid var(--line); }
-.fab-row .fab.mic { background: var(--maroon); color: var(--on-maroon); border: none; }
-.fab.mic.on { animation: pulse 1.2s ease-in-out infinite; }
+.bn-tab svg { width: 24px; height: 24px; }
+.bn-tab[aria-current="page"] { color: var(--link); font-weight: 800; }
+.bn-tab[aria-current="page"] svg { stroke-width: 2.3; }
+.plus {
+  position: fixed; z-index: 19; right: max(16px, calc(50% - 260px + 16px)); bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  width: 62px; height: 62px; padding: 0; border: none; border-radius: 50%;
+  background: var(--maroon); color: var(--on-maroon); display: grid; place-items: center;
+  box-shadow: 0 0 0 4px var(--surface), 0 8px 20px rgba(122, 0, 60, 0.35);
+}
+.plus svg { width: 28px; height: 28px; transition: transform .2s ease; }
+.plus[aria-expanded="true"] svg { transform: rotate(45deg); }
+.plus-scrim {
+  position: fixed; inset: 0; z-index: 17; background: rgba(20, 10, 18, 0.28);
+  opacity: 0; visibility: hidden; transition: opacity .18s ease, visibility 0s linear .18s;
+}
+.plus-scrim.open { opacity: 1; visibility: visible; transition: opacity .18s ease; }
+.plus-menu {
+  position: fixed; z-index: 18; right: max(16px, calc(50% - 260px + 16px)); bottom: calc(98px + env(safe-area-inset-bottom, 0px));
+  width: min(310px, calc(100% - 32px)); padding: 6px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  opacity: 0; transform: translateY(12px) scale(.96); transform-origin: bottom right; visibility: hidden;
+  transition: opacity .18s ease, transform .2s cubic-bezier(.2,.8,.2,1), visibility 0s linear .2s;
+}
+.plus-menu.open { opacity: 1; transform: none; visibility: visible; transition: opacity .18s ease, transform .2s cubic-bezier(.2,.8,.2,1); }
+.plus-opt {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 60px; padding: 8px 10px;
+  border: none; border-radius: 14px; background: none; color: var(--text); text-align: left;
+}
+.plus-opt:hover { background: var(--surface-2); }
+.plus-opt .po-ic { flex-shrink: 0; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); color: var(--link); }
+.plus-opt .po-ic svg { width: 22px; height: 22px; }
+.plus-opt b { display: block; font-weight: 800; }
+.plus-opt small { display: block; color: var(--muted); font-size: 0.82rem; line-height: 1.3; }
+.plus-opt.off { cursor: default; }
+.plus-opt.off .po-ic { color: var(--muted); }
+.plus-opt.off:hover { background: none; }
 
 /* ---------- Sheets ---------- */
 .scrim {
@@ -361,7 +396,7 @@ img { max-width: 100%; }
 .field .dot { width: 10px; height: 10px; border-radius: 50%; }
 .field .input-wrap { display: flex; align-items: center; gap: 6px; color: var(--muted); }
 .field input {
-  width: 92px; height: 42px; text-align: right; padding: 0 10px;
+  width: 92px; height: 44px; text-align: right; padding: 0 10px;
   border: 1px solid var(--line); border-radius: 10px; background: var(--bg);
 }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); }
@@ -469,7 +504,8 @@ img { max-width: 100%; }
 .prog-head .up { color: #2E8B57; font-weight: 700; } .prog-head .down { color: var(--muted); font-weight: 700; }
 .prog-head .nav { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); font-size: 1.2rem; }
 .prog-head .nav:disabled { opacity: 0.3; }
-.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.wday .ring { width: 100%; max-width: 40px; height: auto; }
 .wday { border: none; background: none; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 0; border-radius: 10px; }
 .wday.today { background: var(--surface-2); }
 .wday:disabled { opacity: 0.35; }
@@ -504,6 +540,30 @@ img { max-width: 100%; }
 .stat + .stat { border-top: 1px solid var(--line); }
 .stat span { color: var(--muted); }
 .how { margin: 4px 2px 8px; font-size: 0.85rem; color: var(--muted); }
+.seg2 { grid-template-columns: 1fr 1fr; margin-bottom: 10px; }
+.chart { display: block; width: 100%; height: auto; margin: 2px 0 4px; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .axis { fill: var(--muted); font-size: 10px; }
+.chart .bar-p { fill: var(--protein-text); } .chart .bar-c { fill: var(--carbs-text); } .chart .bar-f { fill: var(--fat-text); } .chart .bar-x { fill: var(--muted); }
+.chart .bar rect:not(.hit) { stroke: var(--surface); stroke-width: 1; }
+.chart .hit { fill: transparent; cursor: pointer; }
+.chart .bar:hover rect:not(.hit) { opacity: 0.85; }
+.chart .goal-line { stroke: var(--text); stroke-width: 1.2; stroke-dasharray: 4 3; opacity: 0.6; }
+.chart-key { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 2px 6px; font-size: 0.75rem; color: var(--muted); }
+.chart-key span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+.chart-key .p::before { background: var(--protein-text); } .chart-key .c::before { background: var(--carbs-text); } .chart-key .f::before { background: var(--fat-text); }
+.chart-key .g::before { height: 0; border-top: 2px dashed var(--text); width: 12px; border-radius: 0; vertical-align: 3px; }
+.prog-empty { padding: 6px 4px 2px; font-size: 0.92rem; }
+.prog-empty b { display: block; margin-bottom: 2px; }
+.prog-empty .primary { margin-top: 12px; height: 44px; }
+.table-alt { margin: 6px 4px 0; }
+.prog-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.85rem; color: var(--text); }
+.prog-table th, .prog-table td { padding: 0 4px; text-align: right; border-top: 1px solid var(--line); white-space: nowrap; }
+.prog-table thead th { color: var(--muted); font-weight: 700; padding: 6px 4px; border-top: none; white-space: normal; vertical-align: bottom; }
+.table-wrap { overflow-x: auto; }
+.prog-table th:first-child { text-align: left; }
+.prog-table td.none { color: var(--muted); text-align: left; }
+.day-link { border: none; background: none; padding: 0; min-height: 44px; min-width: 44px; font: inherit; font-weight: 700; color: var(--link); text-decoration: underline; text-align: left; }
 .how summary { font-weight: 700; color: var(--text); cursor: pointer; }
 
 /* Goal calculator */
@@ -613,7 +673,7 @@ img { max-width: 100%; }
 
 /* Toast */
 .toast {
-  position: fixed; left: 50%; bottom: calc(92px + env(safe-area-inset-bottom, 0px)); z-index: 30;
+  position: fixed; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); z-index: 30;
   transform: translate(-50%, 20px); opacity: 0;
   background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: var(--radius-sm);
   font-weight: 600; font-size: 0.92rem; transition: opacity .2s, transform .2s; pointer-events: none;
@@ -627,11 +687,11 @@ button, [role="tab"], summary, label.file-btn, .link-row { min-height: 44px; }
 .loc, .station-row .loc, #catRow .loc, .opt, .tabs button { min-height: 44px; }
 .facts-toggle, .link-btn, summary { display: inline-flex; align-items: center; }
 .link-inline { min-height: 0; }
-.cal-day { min-height: 0; }  /* 7 across: about 37 px at 320 px wide, 44+ on most phones (WCAG AA minimum is 24 px) */
+.cal-day { min-height: 0; }  /* 7 across: about 34 px at 320 px wide, 44+ on most phones (WCAG AA minimum is 24 px) */
 
 /* Legal notice, documents, settings links */
 .legal-notice {
-  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(92px + env(safe-area-inset-bottom, 0px)); z-index: 15;
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(100px + env(safe-area-inset-bottom, 0px)); z-index: 15;
   width: calc(100% - 32px); max-width: 488px; display: flex; align-items: center; gap: 12px;
   background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: var(--radius-md);
   padding: 10px 12px 10px 16px; box-shadow: 0 6px 24px rgba(0,0,0,0.12); font-size: 0.88rem;
@@ -661,15 +721,9 @@ button, [role="tab"], summary, label.file-btn, .link-row { min-height: 44px; }
 <div class="app">
   <header class="top">
     <h1 class="brand"><svg class="logo" viewBox="835 946 1570 1424" role="img" aria-label="Maroon"><path fill="currentColor" transform="translate(0,3240) scale(0.1,-0.1)" d="M8813 22825 c-155 -34 -275 -141 -335 -301 l-23 -59 0 -6640 0 -6640 23 -65 c55 -160 179 -271 341 -306 99 -21 3723 -21 3822 0 160 34 296 152 347 301 16 47 17 217 22 2590 l5 2540 948 -1894 c1042 -2080 977 -1961 1105 -2029 120 -64 84 -62 1132 -62 1048 0 1012 -2 1132 62 128 68 63 -51 1105 2029 l948 1894 5 -2545 5 -2545 23 -58 c58 -143 187 -250 341 -283 99 -21 3723 -21 3822 0 159 34 281 141 341 301 l23 60 3 4584 2 4584 -37 -7 c-21 -3 -74 -13 -118 -21 -44 -8 -147 -18 -230 -22 -643 -26 -1247 286 -1598 827 -189 291 -297 656 -297 1001 l0 79 -103 0 c-753 0 -1451 499 -1700 1216 -153 439 -136 904 49 1335 18 45 34 83 34 85 0 9 -469 3 -535 -6 -128 -19 -239 -88 -307 -192 -19 -29 -134 -260 -255 -513 -210 -437 -1466 -3053 -1645 -3425 -46 -96 -291 -606 -543 -1132 -253 -527 -463 -958 -466 -958 -3 0 -28 48 -56 108 -28 59 -219 458 -425 887 -207 429 -810 1685 -1340 2790 -531 1106 -992 2064 -1024 2129 -93 191 -203 282 -369 306 -44 6 -806 9 -2090 9 -1662 0 -2031 -3 -2082 -14z"/></svg></h1>
-    <div class="top-actions">
-    <button class="icon-btn" id="openSettings" aria-label="Settings"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
-    <button class="icon-btn" id="openProgress" aria-label="Progress"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></button>
-    <button class="icon-btn" id="openGoals" aria-label="Daily goals">
-      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="13" r="8.5"/><circle cx="11" cy="13" r="4.5"/><path d="M11 13 21 3"/><path d="M16.5 3.5v4h4"/><path d="M19 1.5v3.5h3.5"/></svg>
-    </button>
-    </div>
   </header>
 
+  <section class="view" id="view-home" aria-labelledby="dayLabel">
   <nav class="daynav" aria-label="Choose day">
     <button id="prevDay" aria-label="Previous day">
       <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -689,20 +743,43 @@ button, [role="tab"], summary, label.file-btn, .link-row { min-height: 44px; }
   </div>
   <div id="logArea"></div>
   <p class="sample-note home-note" id="homeNote">Nutrition info from McMaster Hospitality Services and restaurant-published guides. May not reflect recipe changes. Confirm allergens with staff.</p>
+  </section>
+
+  <!-- Progress tab -->
+  <section class="view" id="view-progress" aria-labelledby="progTitle" hidden>
+    <h2 class="view-title" id="progTitle" tabindex="-1">Progress</h2>
+    <div id="progBody"></div>
+  </section>
+
+  <!-- Settings tab: daily goals first, the rest is built by renderSettings() -->
+  <section class="view" id="view-settings" aria-labelledby="setTitle" hidden>
+    <h2 class="view-title" id="setTitle" tabindex="-1">Settings</h2>
+    <div class="group-label" id="goalTitle">Daily goals</div>
+    <p class="hint goal-hint">Optional. Leave a box empty to just see your totals for that one.</p>
+    <div class="card" id="goalFields" role="group" aria-labelledby="goalTitle"></div>
+    <div class="calc-link-row"><button class="link-btn" id="openCalc">Don't know where to start? <b>Calculate my goals →</b></button></div>
+    <button class="primary" id="saveGoals">Save goals</button>
+    <div id="setBody"></div>
+  </section>
 </div>
 
-<div class="fab-wrap">
-  <div class="fab-row">
-  <button class="fab" id="openAdd">
-    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-    Add food
-  </button>
-  <button class="fab side" id="fabScan" aria-label="Scan a barcode"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M7.5 8v8M10.5 8v8M13 8v8M16.5 8v8"/></svg></button>
-  <button class="fab mic side" id="fabMic" hidden aria-label="Say what you ate">
-    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
-  </button>
+<!-- Bottom navigation and the + (add food) button -->
+<nav class="bottom-nav" aria-label="Main">
+  <div class="bn-tabs">
+    <button class="bn-tab" data-view="home" aria-current="page"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9v11a1 1 0 0 0 1 1H10v-6h4v6h3.5a1 1 0 0 0 1-1V9"/></svg><span>Home</span></button>
+    <button class="bn-tab" data-view="progress"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><rect x="5" y="11" width="3.5" height="7" rx="1"/><rect x="10.25" y="5" width="3.5" height="13" rx="1"/><rect x="15.5" y="8.5" width="3.5" height="9.5" rx="1"/></svg><span>Progress</span></button>
+    <button class="bn-tab" data-view="settings"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Settings</span></button>
   </div>
+</nav>
+<div class="plus-scrim" id="plusScrim"></div>
+<div class="plus-menu" id="plusMenu" role="dialog" aria-modal="true" aria-label="Add food">
+  <button class="plus-opt" data-plus="search"><span class="po-ic"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></span><span><b>Search menu</b><small>Find food by name, place or station</small></span></button>
+  <button class="plus-opt" data-plus="speak" id="plusSpeak"><span class="po-ic"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><span><b>Speak</b><small>Say what you ate, then check it before it's added</small></span></button>
+  <button class="plus-opt" data-plus="scan"><span class="po-ic"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M7.5 8v8M10.5 8v8M13 8v8M16.5 8v8"/></svg></span><span><b>Scan barcode</b><small>Packaged food, looked up in Open Food Facts</small></span></button>
 </div>
+<button class="plus" id="openPlus" aria-label="Add food" aria-expanded="false" aria-controls="plusMenu">
+  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
 
 <!-- Add food sheet -->
 <div class="scrim" id="scrim"></div>
@@ -735,23 +812,6 @@ button, [role="tab"], summary, label.file-btn, .link-row { min-height: 44px; }
     <div class="loc-row station-row" id="catRow" role="group" aria-label="Filter by category" hidden></div>
     <div id="foodArea"></div>
     <p class="sample-note" id="sampleNote"></p>
-  </div>
-</div>
-
-<!-- Goals sheet -->
-<div class="sheet short" id="goalSheet" role="dialog" aria-modal="true" aria-labelledby="goalTitle" aria-hidden="true">
-  <div class="sheet-head">
-    <h2 id="goalTitle" tabindex="-1">Daily goals</h2>
-    <button class="icon-btn" data-close aria-label="Close">
-      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-  </div>
-  <div class="sheet-body">
-    <p class="hint">Optional. Leave a box empty to just see your totals for that one.</p>
-    <div class="card" id="goalFields"></div>
-    <div class="calc-link-row"><button class="link-btn" id="openCalc">Don't know where to start? <b>Calculate my goals →</b></button></div>
-    <button class="primary" id="saveGoals">Save goals</button>
-    <p class="hint" style="margin-top:16px">Your log is saved on this device only.</p>
   </div>
 </div>
 
@@ -793,17 +853,6 @@ button, [role="tab"], summary, label.file-btn, .link-row { min-height: 44px; }
   <div class="sheet-body" id="byoBody"></div>
 </div>
 
-<!-- Settings sheet -->
-<div class="sheet" id="setSheet" role="dialog" aria-modal="true" aria-labelledby="setTitle" aria-hidden="true">
-  <div class="sheet-head">
-    <h2 id="setTitle" tabindex="-1">Settings</h2>
-    <button class="icon-btn" data-close aria-label="Close">
-      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-  </div>
-  <div class="sheet-body" id="setBody"></div>
-</div>
-
 <!-- Welcome (first open) -->
 <div class="sheet short" id="welcomeSheet" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" aria-hidden="true">
   <div class="sheet-head">
@@ -822,17 +871,6 @@ button, [role="tab"], summary, label.file-btn, .link-row { min-height: 44px; }
     <button class="primary" id="welcomeGoals">Set my goals</button>
     <button class="ghost" id="welcomeSkip">Just explore</button>
   </div>
-</div>
-
-<!-- Progress sheet -->
-<div class="sheet" id="progSheet" role="dialog" aria-modal="true" aria-labelledby="progTitle" aria-hidden="true">
-  <div class="sheet-head">
-    <h2 id="progTitle" tabindex="-1">Progress</h2>
-    <button class="icon-btn" data-close aria-label="Close">
-      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-  </div>
-  <div class="sheet-body" id="progBody"></div>
 </div>
 
 <!-- Document sheet: Privacy Policy, Terms, Licenses (from legal/*.md), About, Data sources -->
@@ -1272,7 +1310,7 @@ function renderLog() {
   const entries = state.log[viewKey] || [];
   $("#itemCount").textContent = entries.length ? `${entries.length} item${entries.length > 1 ? "s" : ""}` : "";
   if (!entries.length) {
-    $("#logArea").innerHTML = `<div class="empty"><strong>Nothing logged ${viewKey === dateKey(new Date()) ? "yet today" : "this day"}</strong>Tap Add food to log what you ate.</div>`;
+    $("#logArea").innerHTML = `<div class="empty"><strong>Nothing logged ${viewKey === dateKey(new Date()) ? "yet today" : "this day"}</strong>Tap the + button to log what you ate.</div>`;
     return;
   }
   const ic = k => `<svg aria-hidden="true" class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${SUM_ICONS[k]}</svg>`;
@@ -1830,7 +1868,6 @@ function startListening() {
 }
 if (SR) document.querySelectorAll(".mic").forEach(b => { b.hidden = false; });
 $("#micBtn").addEventListener("click", startListening);
-$("#fabMic").addEventListener("click", () => { openAddSheet(); startListening(); });
 
 /* ---------- Barcode scanning and My foods ----------
    Scan a package (camera, a photo, or typing the number) -> look it up in Open Food Facts (free, no key) -> confirm
@@ -2070,7 +2107,6 @@ function openScan() {
   startCamera();
 }
 $("#scanBtn").addEventListener("click", openScan);
-$("#fabScan").addEventListener("click", openScan);
 
 /* ---------- Chopped Leaf: build your own ----------
    n = [calories, fat g, carbs g, fibre g, sugars g, protein g, sodium mg] for one portion.
@@ -2509,6 +2545,59 @@ function ring(sc, size = 40) {
     <text x="50%" y="50%" dy="0.35em" text-anchor="middle">${sc == null ? "–" : sc}</text></svg>`;
 }
 let progWeek = 0, progMonth = 0;  // 0 = this week / month, -1 = the one before, ...
+let progRange = 7;  // the chart: last 7 or 30 days
+// Last 7 / 30 days: a stacked bar per day (calories from protein, carbs and fat), averages, and the same numbers as a table
+function rangeCard() {
+  const today = new Date(), n = progRange, g = state.goals;
+  const days = [...Array(n)].map((_, i) => { const k = dateKey(addDays(today, i - n + 1)); return { k, t: totalsFor(k), has: (state.log[k] || []).length > 0 }; });
+  const logged = days.filter(d => d.has);
+  const seg = `<div class="seg3 seg2" role="radiogroup" aria-label="Days shown">${[7, 30].map(x =>
+    `<button role="radio" data-range="${x}" aria-checked="${n === x}">Last ${x} days</button>`).join("")}</div>`;
+  if (!logged.length) return `<section class="prog-card range-card">${seg}
+    <div class="prog-empty"><b>Nothing logged in the last ${n} days yet.</b> Log a meal and your days will show up here.
+      <button class="primary" data-progadd>Add food</button></div></section>`;
+  const avgOf = f => Math.round(logged.reduce((a, d) => a + d.t[f], 0) / logged.length);
+  const a = { calories: avgOf("calories"), protein: avgOf("protein"), carbs: avgOf("carbs"), fat: avgOf("fat") };
+  // Chart geometry (SVG units; the SVG scales to the card's width)
+  const W = 340, H = 170, L = 34, B = 22, T = 8, plotH = H - B - T, slot = (W - L - 4) / n, bw = Math.max(3, slot * (n > 7 ? 0.62 : 0.5));
+  const top = Math.max(g.calories || 0, ...days.map(d => d.t.calories), 500);
+  const step = top > 3000 ? 1000 : 500, max = Math.ceil(top * 1.08 / step) * step;
+  const y = v => T + plotH - v / max * plotH;
+  const short = k => keyToDate(k).toLocaleDateString(undefined, { weekday: "short" });
+  const dayName = k => keyToDate(k).toLocaleDateString(undefined, { weekday: "short", day: "numeric" });
+  const ticks = [0, max / 2, max].map(v => `<line class="grid" x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}"/><text class="axis" x="${L - 6}" y="${y(v) + 3.5}" text-anchor="end">${v >= 1000 ? (v / 1000) + "k" : v}</text>`).join("");
+  const bars = days.map((d, i) => {
+    const x = L + 4 + slot * i + (slot - bw) / 2, cx = x + bw / 2;
+    const label = n === 7 ? `<text class="axis" x="${cx}" y="${H - 6}" text-anchor="middle">${short(d.k).slice(0, 3)}</text>`
+      : i % 5 === (n - 1) % 5 ? `<text class="axis" x="${cx}" y="${H - 6}" text-anchor="middle">${Number(d.k.slice(8))}</text>` : "";
+    if (!d.has) return label;
+    // Each bar's height is the day's calories, split by how many of them came from protein, carbs and fat
+    const parts = [["p", d.t.protein * 4], ["c", d.t.carbs * 4], ["f", d.t.fat * 9]], sum = parts.reduce((s, [, v]) => s + v, 0);
+    let yy = y(0);
+    const rects = sum > 0 ? parts.map(([c, v]) => { const h = d.t.calories * v / sum / max * plotH; yy -= h; return h > 0 ? `<rect class="bar-${c}" x="${x}" y="${yy}" width="${bw}" height="${h}"/>` : ""; }).join("")
+      : `<rect class="bar-x" x="${x}" y="${y(d.t.calories)}" width="${bw}" height="${y(0) - y(d.t.calories)}"/>`;
+    return `<g class="bar" data-day="${d.k}">${rects}<rect class="hit" x="${L + 4 + slot * i}" y="${T}" width="${slot}" height="${plotH}"/></g>${label}`;
+  }).join("");
+  const goalLine = g.calories ? `<line class="goal-line" x1="${L}" x2="${W}" y1="${y(g.calories)}" y2="${y(g.calories)}"/>` : "";
+  const protVsGoal = g.protein ? `<div class="stat"><span>Average protein vs your goal</span><b>${fmt(a.protein)} g of ${fmt(g.protein)} g (${Math.round(a.protein / g.protein * 100)}%)</b></div>` : "";
+  const calVsGoal = g.calories ? `<div class="stat"><span>Average calories vs your goal</span><b>${fmt(a.calories)} of ${fmt(g.calories)}</b></div>` : "";
+  return `<section class="prog-card range-card">${seg}
+    <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Bar chart of calories per day for the last ${n} days. ${logged.length} days logged, ${fmt(a.calories)} calories on average. The same numbers are in the table below.">
+      ${ticks}${goalLine}${bars}</svg>
+    <div class="chart-key" aria-hidden="true"><span class="p">Protein</span><span class="c">Carbs</span><span class="f">Fat</span>${g.calories ? `<span class="g">Calorie goal</span>` : ""}</div>
+    <div class="stat"><span>Days logged</span><b>${logged.length} of ${n}</b></div>
+    <div class="stat"><span>Average day</span><b>${fmt(a.calories)} cal</b></div>
+    <div class="stat"><span>Average protein · carbs · fat</span><b>${fmt(a.protein)} g · ${fmt(a.carbs)} g · ${fmt(a.fat)} g</b></div>
+    ${calVsGoal}${protVsGoal}
+    <p class="hint small">Averages count only the days you logged. Tap a day to open it.</p>
+    <details class="how table-alt"><summary>Show as a table</summary>
+      <div class="table-wrap"><table class="prog-table"><caption class="sr-only">Calories and macros per day, last ${n} days</caption>
+        <thead><tr><th scope="col">Day</th><th scope="col">Calories</th><th scope="col">Protein (g)</th><th scope="col">Carbs (g)</th><th scope="col">Fat (g)</th></tr></thead>
+        <tbody>${days.slice().reverse().map(d => `<tr><th scope="row"><button class="day-link" data-day="${d.k}">${esc(dayName(d.k))}</button></th>${d.has
+          ? `<td>${fmt(d.t.calories)}</td><td>${fmt(d.t.protein)}</td><td>${fmt(d.t.carbs)}</td><td>${fmt(d.t.fat)}</td>`
+          : `<td colspan="4" class="none">Nothing logged</td>`}</tr>`).join("")}</tbody></table></div></details>
+  </section>`;
+}
 function renderProgress() {
   const today = new Date(), todayKey = dateKey(today), hasGoal = !!state.goals.calories;
   // Week strip
@@ -2543,6 +2632,7 @@ function renderProgress() {
   $("#progBody").innerHTML = `
     ${hasGoal ? "" : `<div class="prog-nudge"><b>Set a daily goal to get a score.</b> You'll see how close each day lands to your calories and protein.
       <button class="primary" data-progcalc>Calculate my goals</button></div>`}
+    ${rangeCard()}
     <section class="prog-card">
       <div class="prog-head"><button class="nav" data-week="-1" aria-label="Previous week">‹</button>
         <div><b>${wLabel}</b>${hasGoal ? `<span class="avg">avg ${wAvg ?? "–"} ${trend}</span>` : ""}</div>
@@ -2576,18 +2666,15 @@ function renderProgress() {
       <p>The score is a rough guide to how close a day landed, not a judgement. Every day is different, and that's fine.</p>
       <p>Days with nothing logged don't count, and each day is scored against the goals you had that day.</p></details>` : ""}`;
 }
-function openProgress() {
-  progWeek = 0; progMonth = 0;
-  renderProgress(); openSheet("progSheet"); $("#progBody").scrollTop = 0;
-}
-$("#openProgress").addEventListener("click", openProgress);
 $("#progBody").addEventListener("click", e => {
   const t = k => e.target.closest(k);
   let b;
-  if ((b = t("[data-day]"))) { viewKey = b.dataset.day; closeSheets(); renderAll(); window.scrollTo({ top: 0 }); return; }
-  if ((b = t("[data-week]"))) { progWeek = Math.min(0, progWeek + Number(b.dataset.week)); renderProgress(); return; }
-  if ((b = t("[data-month]"))) { progMonth = Math.min(0, progMonth + Number(b.dataset.month)); renderProgress(); return; }
-  if (t("[data-progcalc]")) { closeSheets(); setTimeout(() => $("#openCalc").click(), 50); }
+  if ((b = t("[data-day]"))) { viewKey = b.dataset.day; showView("home"); return; }
+  if ((b = t("[data-week]"))) { progWeek = Math.min(0, progWeek + Number(b.dataset.week)); keepFocus($("#progBody"), renderProgress); return; }
+  if ((b = t("[data-month]"))) { progMonth = Math.min(0, progMonth + Number(b.dataset.month)); keepFocus($("#progBody"), renderProgress); return; }
+  if ((b = t("[data-range]"))) { progRange = Number(b.dataset.range); keepFocus($("#progBody"), renderProgress); return; }
+  if (t("[data-progadd]")) { openAddSheet(); setTimeout(() => $("#searchInput").focus(), 250); return; }
+  if (t("[data-progcalc]")) $("#openCalc").click();
 });
 
 /* ---------- Report a problem ----------
@@ -2747,7 +2834,6 @@ function applyTheme() {
   if (state.theme === "light" || state.theme === "dark") document.documentElement.dataset.theme = state.theme;
   else delete document.documentElement.dataset.theme;
 }
-function openSettings() { renderSettings(); openSheet("setSheet"); $("#setBody").scrollTop = 0; }
 function exportBackup() {
   const data = JSON.stringify({ app: "Maroon", version: 1, exported: new Date().toISOString(), state, prefs }, null, 1);
   const name = `maroon-data-${dateKey(new Date())}.json`;
@@ -2773,12 +2859,11 @@ async function importBackup(file) {
   } catch (e) { toast("Couldn't restore on this phone."); return; }
   location.reload();
 }
-$("#openSettings").addEventListener("click", openSettings);
 $("#setBody").addEventListener("change", e => { if (e.target.id === "importFile" && e.target.files[0]) { importBackup(e.target.files[0]); e.target.value = ""; } });
 $("#setBody").addEventListener("click", e => {
   const t = k => e.target.closest(k);
   let b;
-  if ((b = t("[data-theme-pick]"))) { state.theme = b.dataset.themePick; applyTheme(); saveState(); renderSettings(); }
+  if ((b = t("[data-theme-pick]"))) { state.theme = b.dataset.themePick; applyTheme(); saveState(); keepFocus($("#setBody"), renderSettings); }
   else if (t("[data-export]")) exportBackup();
   else if (t("[data-deleteall]")) deleteAllData();
   else if (t("[data-menucheck]")) checkMenuUpdate(true);
@@ -2786,7 +2871,7 @@ $("#setBody").addEventListener("click", e => {
   else if (t("[data-tour]")) { closeSheets(); setTimeout(showWelcome, 250); }
   else if ((b = t("[data-mydel]"))) {
     const c = state.custom[b.dataset.mydel];
-    if (c && confirm(`Delete "${c.name}" from My foods? Meals you already logged stay in your log.`)) { unregisterCustom(b.dataset.mydel); renderSettings(); toast("Deleted"); }
+    if (c && confirm(`Delete "${c.name}" from My foods? Meals you already logged stay in your log.`)) { unregisterCustom(b.dataset.mydel); renderSettings(); $("#setTitle").focus(); toast("Deleted"); }
   } else if ((b = t("[data-myedit]"))) {
     document.querySelectorAll(".sheet.open").forEach(x => { x.classList.remove("open"); x.setAttribute("aria-hidden", "true"); });
     openSheet("scanSheet"); showManual({ key: b.dataset.myedit }, "Edit the numbers, then save.");
@@ -2914,7 +2999,7 @@ $("#calcBody").addEventListener("click", e => {
     pinPastGoals();
     state.goals = { calories: pl.calories, protein: pl.protein, carbs: pl.carbs, fat: pl.fat };
     state.dayGoals[dateKey(new Date())] = { ...state.goals };
-    saveState(); closeSheets(); renderSummary();
+    saveState(); closeSheets(); renderSummary(); renderGoals();
     toast(`Goal set: ${pl.name}, ${fmt(pl.calories)} cal, ${pl.protein}g protein`);
     return;
   } else return;
@@ -2924,14 +3009,16 @@ $("#calcBody").addEventListener("click", e => {
 /* ---------- Sheets ---------- */
 // Sheets are modal: the page behind is inert, Tab stays inside the top sheet, Esc closes, and focus goes back
 // to the button that opened the first sheet.
-let lastFocus = null, sheetOrder = [];
+let lastFocus = null, sheetOrder = [], plusOpen = false;
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select, textarea, summary, [tabindex]:not([tabindex="-1"])';
 function syncInert() {
   const open = !!document.querySelector(".sheet.open");
-  document.querySelectorAll(".app, .fab-wrap, #legalNotice, .bottom-nav, .plus-menu").forEach(el => { el.inert = open; });
+  document.querySelectorAll(".app, #legalNotice, .bottom-nav").forEach(el => { el.inert = open || plusOpen; });
+  document.querySelectorAll(".plus, .plus-menu").forEach(el => { el.inert = open; });
 }
 const topSheet = () => { for (let i = sheetOrder.length - 1; i >= 0; i--) { const s = $("#" + sheetOrder[i]); if (s && s.classList.contains("open")) return s; } return document.querySelector(".sheet.open"); };
 function openSheet(id) {
+  if (plusOpen) setPlus(false);
   if (!document.querySelector(".sheet.open")) lastFocus = document.activeElement;
   $("#scrim").classList.add("open");
   const s = $("#" + id);
@@ -2947,10 +3034,36 @@ function closeSheets() {
   document.querySelectorAll(".sheet").forEach(s => { s.classList.remove("open"); s.setAttribute("aria-hidden", "true"); });
   sheetOrder = [];
   syncInert();
-  if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+  // The open tab may show something a sheet changed (My foods, goals): redraw it and put focus back on the same control
+  const key = focusKey(lastFocus);
+  if (view === "settings") renderSettings();
+  if (view === "progress") renderProgress();
+  const back = lastFocus && document.contains(lastFocus) ? lastFocus : key && document.querySelector(key);
+  if (back) back.focus();
+  else if (view !== "home") $(view === "settings" ? "#setTitle" : "#progTitle").focus();
+}
+// A selector for a control by its id or data-* attributes, so focus can find it again after a redraw
+function focusKey(el) {
+  if (!el || !el.attributes) return "";
+  if (el.id) return "#" + CSS.escape(el.id);
+  const k = [...el.attributes].filter(a => a.name.startsWith("data-")).map(a => `[${a.name}="${CSS.escape(a.value)}"]`).join("");
+  return k ? el.tagName.toLowerCase() + k : "";
+}
+function keepFocus(box, render) {
+  const key = box.contains(document.activeElement) ? focusKey(document.activeElement) : "";
+  render();
+  const el = key && box.querySelector(key);
+  if (el) el.focus();
 }
 document.addEventListener("keydown", e => {
   if (e.key !== "Tab") return;
+  if (plusOpen && !document.querySelector(".sheet.open")) {
+    const f = [$("#openPlus"), ...$("#plusMenu").querySelectorAll("button")];
+    const i = f.indexOf(document.activeElement);
+    e.preventDefault();
+    f[(i < 0 ? 0 : i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus();
+    return;
+  }
   const s = topSheet(); if (!s) return;
   const f = [...s.querySelectorAll(FOCUSABLE)].filter(el => el.offsetParent !== null || el === document.activeElement);
   if (!f.length) return;
@@ -2976,6 +3089,47 @@ function toast(msg, action) {
   toastTimer = setTimeout(() => t.classList.remove("show"), action ? 4000 : Math.max(1800, msg.length * 45));
 }
 
+/* ---------- Bottom navigation: Home, Progress, Settings, and the + menu ---------- */
+let view = "home";
+function showView(name) {
+  view = name;
+  document.querySelectorAll(".view").forEach(v => { v.hidden = v.id !== "view-" + name; });
+  document.querySelectorAll(".bn-tab").forEach(b => { if (b.dataset.view === name) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
+  if (name === "home") renderAll();
+  if (name === "progress") { progWeek = 0; progMonth = 0; renderProgress(); }
+  if (name === "settings") { renderGoals(); renderSettings(); }
+  // Focus was on something in the tab we just left (a day in Progress): move it to this tab's button
+  if (!document.activeElement || document.activeElement === document.body || document.activeElement.closest(".view[hidden]")) $(`.bn-tab[data-view="${name}"]`).focus();
+  window.scrollTo({ top: 0 });
+}
+document.querySelector(".bn-tabs").addEventListener("click", e => {
+  const b = e.target.closest("[data-view]");
+  if (b && b.dataset.view !== view) showView(b.dataset.view);
+});
+// The + menu: Search menu (the Add food sheet), Speak (voice, nothing is added until you confirm), Scan barcode
+function setPlus(open, focusPlus = true) {
+  plusOpen = open;
+  $("#openPlus").setAttribute("aria-expanded", String(open));
+  $("#plusMenu").classList.toggle("open", open);
+  $("#plusScrim").classList.toggle("open", open);
+  syncInert();
+  if (open) $("#plusMenu").querySelector("button").focus();
+  else if (focusPlus) $("#openPlus").focus();
+}
+$("#openPlus").addEventListener("click", () => setPlus(!plusOpen));
+$("#plusScrim").addEventListener("click", () => setPlus(false, false));
+$("#plusMenu").addEventListener("click", e => {
+  const b = e.target.closest("[data-plus]"); if (!b) return;
+  setPlus(false);  // focus goes back to +, so closing the sheet returns there
+  const k = b.dataset.plus;
+  if (k === "search") { openAddSheet(); setTimeout(() => $("#searchInput").focus(), 250); }
+  else if (k === "speak") { openAddSheet(); startListening(); }
+  else if (k === "scan") openScan();
+});
+// No speech recognition in this browser (Firefox, some in-app browsers): explain instead of showing a button that can't work
+if (!SR) $("#plusSpeak").outerHTML = `<div class="plus-opt off" role="note"><span class="po-ic"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
+  <span><b>Speak isn't available here</b><small>This browser can't turn speech into text. Use Search menu, or open Maroon in Chrome or Safari.</small></span></div>`;
+
 /* ---------- Events ---------- */
 function openAddSheet() {
   voice = null; renderVoice();
@@ -2985,11 +3139,13 @@ function openAddSheet() {
   renderLocations(); renderFoods();
   openSheet("addSheet");
 }
-$("#openAdd").addEventListener("click", () => { openAddSheet(); setTimeout(() => $("#searchInput").focus(), 250); });
-$("#openGoals").addEventListener("click", () => { renderGoals(); openSheet("goalSheet"); });
 $("#scrim").addEventListener("click", closeSheets);
 document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeSheets));
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheets(); });
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (plusOpen) setPlus(false);
+  else if (document.querySelector(".sheet.open")) closeSheets();
+});
 
 $("#prevDay").addEventListener("click", () => { viewKey = shiftKey(viewKey, -1); renderAll(); });
 $("#nextDay").addEventListener("click", () => {
@@ -3077,7 +3233,7 @@ $("#logArea").addEventListener("click", e => {
   }
 });
 $("#summary").addEventListener("click", e => {
-  if (e.target.closest("[data-open-progress]")) { openProgress(); return; }
+  if (e.target.closest("[data-open-progress]")) { showView("progress"); return; }
   if (!e.target.closest("[data-day-facts]")) return;
   const entries = state.log[viewKey] || [];
   openFacts("Nutrition for " + ($("#dayLabel").textContent === "Today" ? "today" : $("#dayLabel").textContent),
@@ -3190,7 +3346,7 @@ $("#saveGoals").addEventListener("click", () => {
   });
   state.goals = goals;
   state.dayGoals[dateKey(new Date())] = { ...goals };  // today is scored against the new goals
-  saveState(); closeSheets(); renderSummary();
+  saveState(); renderSummary();
   toast("Goals saved");
 });
 
