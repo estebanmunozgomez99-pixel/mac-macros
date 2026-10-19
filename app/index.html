@@ -37,6 +37,9 @@ try { var t = JSON.parse(localStorage.getItem("macmacros:v1") || "{}").theme; if
   --fat: #2F6F73;
   --on-maroon: #FFFFFF;
   --link: #7A003C;
+  /* text-safe macro colours (4.5:1+ on every surface) and a focus ring that shows on any background */
+  --protein-text: #7A003C; --carbs-text: #8A5A00; --fat-text: #2F6F73;
+  --focus: #7A003C; --focus-gap: #FFFFFF;
   --scrim: rgba(20, 10, 18, 0.45);
   --radius-lg: 22px;
   --radius-md: 14px;
@@ -56,6 +59,8 @@ try { var t = JSON.parse(localStorage.getItem("macmacros:v1") || "{}").theme; if
     --fat: #5BB3B8;
     --scrim: rgba(0, 0, 0, 0.6);
     --link: #FDBF57;
+    --protein-text: #F07BA8; --carbs-text: #FDBF57; --fat-text: #5BB3B8;
+    --focus: #FDBF57; --focus-gap: #17131A;
     color-scheme: dark;
   }
 }
@@ -71,6 +76,8 @@ try { var t = JSON.parse(localStorage.getItem("macmacros:v1") || "{}").theme; if
   --fat: #5BB3B8;
   --scrim: rgba(0, 0, 0, 0.6);
   --link: #FDBF57;
+  --protein-text: #F07BA8; --carbs-text: #FDBF57; --fat-text: #5BB3B8;
+  --focus: #FDBF57; --focus-gap: #17131A;
   color-scheme: dark;
 }
 
@@ -94,7 +101,7 @@ body {
 }
 button, input { font: inherit; color: inherit; }
 button { cursor: pointer; }
-:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 6px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; box-shadow: 0 0 0 2px var(--focus-gap); border-radius: 6px; }
 img { max-width: 100%; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
@@ -186,9 +193,9 @@ img { max-width: 100%; }
 .log .info { flex: 1; min-width: 0; }
 .log .name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chips b { font-weight: 700; }
-.chips .p b { color: var(--protein); }
-.chips .c b { color: var(--carbs); }
-.chips .f b { color: var(--fat); }
+.chips .p b { color: var(--protein-text); }
+.chips .c b { color: var(--carbs-text); }
+.chips .f b { color: var(--fat-text); }
 .remove {
   border: none; background: transparent; color: var(--muted);
   width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0;
@@ -236,11 +243,13 @@ img { max-width: 100%; }
   height: calc(100% - 40px - env(safe-area-inset-top, 0px));
   background: var(--bg); border-radius: 24px 24px 0 0;
   display: flex; flex-direction: column;
-  transform: translateY(105%); transition: transform .28s cubic-bezier(.2,.8,.2,1);
+  transform: translateY(105%); transition: transform .28s cubic-bezier(.2,.8,.2,1), visibility 0s linear .28s;
+  visibility: hidden;
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .sheet.short { height: auto; max-height: calc(100% - 40px - env(safe-area-inset-top, 0px)); }
-.sheet.open { transform: translateY(0); }
+.sheet.open { transform: translateY(0); visibility: visible; transition: transform .28s cubic-bezier(.2,.8,.2,1), visibility 0s; }
+.sheet-head h2:focus { outline: none; }
 .sheet-head {
   display: flex; align-items: center; justify-content: space-between;
   padding: 16px 16px 8px;
@@ -288,7 +297,7 @@ img { max-width: 100%; }
 .valts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 16px 12px; background: var(--surface-2); font-size: 0.85rem; color: var(--muted); }
 .valts .opt { height: 32px; font-size: 0.82rem; }
 .valts small { color: var(--muted); font-weight: 500; }
-.search input:focus { outline: 2px solid var(--maroon); outline-offset: 0; border-color: transparent; }
+.search input:focus { outline: 2px solid var(--focus); outline-offset: 0; border-color: transparent; }
 
 .loc-row {
   display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 12px; margin: 0 -16px; padding-left: 16px; padding-right: 16px;
@@ -451,7 +460,7 @@ img { max-width: 100%; }
   border: 1px solid var(--line); background: var(--surface); color: var(--text); font-size: 0.85rem; font-weight: 600;
 }
 .score-chip b { font-size: 1rem; font-weight: 900; }
-.score-chip.great b { color: var(--protein); }
+.score-chip.great b { color: var(--protein-text); }
 .prog-nudge { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 12px; font-size: 0.92rem; }
 .prog-nudge .primary { margin-top: 12px; height: 44px; }
 .prog-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 12px 12px 14px; margin-bottom: 12px; }
@@ -521,9 +530,9 @@ img { max-width: 100%; }
 .tag { font-size: 0.72rem; font-weight: 800; background: var(--gold); color: #2B1A00; padding: 3px 8px; border-radius: 999px; }
 .plan-note { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
 .plan-nums { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 10px; font-size: 0.9rem; }
-.plan-nums .p b { color: var(--protein); }
-.plan-nums .c b { color: var(--carbs); }
-.plan-nums .f b { color: var(--fat); }
+.plan-nums .p b { color: var(--protein-text); }
+.plan-nums .c b { color: var(--carbs-text); }
+.plan-nums .f b { color: var(--fat-text); }
 .plan .primary, .plan .ghost { margin-top: 12px; height: 42px; }
 .calc-empty { margin-top: 18px; }
 
@@ -599,7 +608,7 @@ img { max-width: 100%; }
 .tabs button { height: 38px; border: none; border-radius: 999px; background: transparent; font-weight: 700; color: var(--muted); }
 .tabs button[aria-selected="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
 .food-btn .cal small { display: block; text-align: right; font-weight: 500; color: var(--muted); font-size: 0.78rem; }
-.food-btn .prot { color: var(--protein); }
+.food-btn .prot { color: var(--protein-text); }
 .hp-note { font-size: 0.88rem; color: var(--muted); margin: 2px 2px 8px; }
 
 /* Toast */
@@ -611,6 +620,14 @@ img { max-width: 100%; }
   max-width: calc(100% - 32px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* Touch targets: every control is at least 44 x 44 px (links inside sentences excepted, as WCAG allows) */
+button, [role="tab"], summary, label.file-btn, .link-row { min-height: 44px; }
+.icon-btn, .info-btn, .log .edit, .day-facts, .daynav button, .search .scan, .search .mic, .stepper button, .nav { min-width: 44px; min-height: 44px; }
+.loc, .station-row .loc, #catRow .loc, .opt, .tabs button { min-height: 44px; }
+.facts-toggle, .link-btn, summary { display: inline-flex; align-items: center; }
+.link-inline { min-height: 0; }
+.cal-day { min-height: 0; }  /* 7 across: about 37 px at 320 px wide, 44+ on most phones (WCAG AA minimum is 24 px) */
 
 /* Legal notice, documents, settings links */
 .legal-notice {
@@ -645,25 +662,26 @@ img { max-width: 100%; }
   <header class="top">
     <h1 class="brand"><svg class="logo" viewBox="835 946 1570 1424" role="img" aria-label="Maroon"><path fill="currentColor" transform="translate(0,3240) scale(0.1,-0.1)" d="M8813 22825 c-155 -34 -275 -141 -335 -301 l-23 -59 0 -6640 0 -6640 23 -65 c55 -160 179 -271 341 -306 99 -21 3723 -21 3822 0 160 34 296 152 347 301 16 47 17 217 22 2590 l5 2540 948 -1894 c1042 -2080 977 -1961 1105 -2029 120 -64 84 -62 1132 -62 1048 0 1012 -2 1132 62 128 68 63 -51 1105 2029 l948 1894 5 -2545 5 -2545 23 -58 c58 -143 187 -250 341 -283 99 -21 3723 -21 3822 0 159 34 281 141 341 301 l23 60 3 4584 2 4584 -37 -7 c-21 -3 -74 -13 -118 -21 -44 -8 -147 -18 -230 -22 -643 -26 -1247 286 -1598 827 -189 291 -297 656 -297 1001 l0 79 -103 0 c-753 0 -1451 499 -1700 1216 -153 439 -136 904 49 1335 18 45 34 83 34 85 0 9 -469 3 -535 -6 -128 -19 -239 -88 -307 -192 -19 -29 -134 -260 -255 -513 -210 -437 -1466 -3053 -1645 -3425 -46 -96 -291 -606 -543 -1132 -253 -527 -463 -958 -466 -958 -3 0 -28 48 -56 108 -28 59 -219 458 -425 887 -207 429 -810 1685 -1340 2790 -531 1106 -992 2064 -1024 2129 -93 191 -203 282 -369 306 -44 6 -806 9 -2090 9 -1662 0 -2031 -3 -2082 -14z"/></svg></h1>
     <div class="top-actions">
-    <button class="icon-btn" id="openSettings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
-    <button class="icon-btn" id="openProgress" aria-label="Progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></button>
+    <button class="icon-btn" id="openSettings" aria-label="Settings"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    <button class="icon-btn" id="openProgress" aria-label="Progress"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></button>
     <button class="icon-btn" id="openGoals" aria-label="Daily goals">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="13" r="8.5"/><circle cx="11" cy="13" r="4.5"/><path d="M11 13 21 3"/><path d="M16.5 3.5v4h4"/><path d="M19 1.5v3.5h3.5"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="13" r="8.5"/><circle cx="11" cy="13" r="4.5"/><path d="M11 13 21 3"/><path d="M16.5 3.5v4h4"/><path d="M19 1.5v3.5h3.5"/></svg>
     </button>
     </div>
   </header>
 
   <nav class="daynav" aria-label="Choose day">
     <button id="prevDay" aria-label="Previous day">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
     <h1 id="dayLabel">Today</h1>
     <button id="nextDay" aria-label="Next day">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
     </button>
   </nav>
 
-  <section class="summary" aria-live="polite" id="summary"></section>
+  <section class="summary" id="summary" aria-label="Today's totals"></section>
+  <p class="sr-only" id="liveTotals" aria-live="polite"></p>
 
   <div class="section-head">
     <h2 id="logTitle">Logged Today</h2>
@@ -676,12 +694,12 @@ img { max-width: 100%; }
 <div class="fab-wrap">
   <div class="fab-row">
   <button class="fab" id="openAdd">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     Add food
   </button>
-  <button class="fab side" id="fabScan" aria-label="Scan a barcode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M7.5 8v8M10.5 8v8M13 8v8M16.5 8v8"/></svg></button>
+  <button class="fab side" id="fabScan" aria-label="Scan a barcode"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M7.5 8v8M10.5 8v8M13 8v8M16.5 8v8"/></svg></button>
   <button class="fab mic side" id="fabMic" hidden aria-label="Say what you ate">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
   </button>
   </div>
 </div>
@@ -690,20 +708,20 @@ img { max-width: 100%; }
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="addSheet" role="dialog" aria-modal="true" aria-labelledby="addTitle" aria-hidden="true">
   <div class="sheet-head">
-    <h2 id="addTitle">Add food</h2>
+    <h2 id="addTitle" tabindex="-1">Add food</h2>
     <button class="icon-btn" data-close aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
   </div>
   <div class="sheet-body">
     <div class="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
       <label class="sr-only" for="searchInput">Search food</label>
       <input id="searchInput" type="search" placeholder="Search food or location" autocomplete="off" enterkeyhint="done">
       <div class="search-actions">
-      <button class="scan" id="scanBtn" aria-label="Scan a barcode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M7.5 8v8M10.5 8v8M13 8v8M16.5 8v8"/></svg></button>
+      <button class="scan" id="scanBtn" aria-label="Scan a barcode"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M7.5 8v8M10.5 8v8M13 8v8M16.5 8v8"/></svg></button>
       <button class="mic" id="micBtn" hidden aria-label="Say what you ate">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
       </button>
       </div>
     </div>
@@ -723,9 +741,9 @@ img { max-width: 100%; }
 <!-- Goals sheet -->
 <div class="sheet short" id="goalSheet" role="dialog" aria-modal="true" aria-labelledby="goalTitle" aria-hidden="true">
   <div class="sheet-head">
-    <h2 id="goalTitle">Daily goals</h2>
+    <h2 id="goalTitle" tabindex="-1">Daily goals</h2>
     <button class="icon-btn" data-close aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
   </div>
   <div class="sheet-body">
@@ -740,9 +758,9 @@ img { max-width: 100%; }
 <!-- Barcode scanner sheet -->
 <div class="sheet" id="scanSheet" role="dialog" aria-modal="true" aria-labelledby="scanTitle" aria-hidden="true">
   <div class="sheet-head">
-    <h2 id="scanTitle">Scan a barcode</h2>
+    <h2 id="scanTitle" tabindex="-1">Scan a barcode</h2>
     <button class="icon-btn" data-close aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
   </div>
   <div class="sheet-body" id="scanBody">
@@ -750,7 +768,7 @@ img { max-width: 100%; }
       <div class="scan-view"><video id="scanVideo" playsinline muted></video><div class="scan-frame"></div></div>
       <p class="hint" id="scanStatus" aria-live="polite">Point the camera at the barcode on the package.</p>
       <div class="scan-alts">
-        <label class="ghost file-btn">Use a photo instead<input type="file" accept="image/*" id="scanFile" hidden></label>
+        <label class="ghost file-btn" tabindex="0">Use a photo instead<input type="file" accept="image/*" id="scanFile" hidden></label>
         <form class="code-row" id="codeForm">
           <label class="sr-only" for="scanCode">Barcode number</label>
           <input id="scanCode" inputmode="numeric" pattern="[0-9]*" placeholder="Or type the number" autocomplete="off">
@@ -766,9 +784,9 @@ img { max-width: 100%; }
 <!-- Chopped Leaf build-your-own sheet -->
 <div class="sheet" id="byoSheet" role="dialog" aria-modal="true" aria-labelledby="byoTitle" aria-hidden="true">
   <div class="sheet-head">
-    <h2 id="byoTitle">Build your own</h2>
+    <h2 id="byoTitle" tabindex="-1">Build your own</h2>
     <button class="icon-btn" data-close aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
   </div>
   <div class="byo-total" id="byoTotal" aria-live="polite"></div>
@@ -778,9 +796,9 @@ img { max-width: 100%; }
 <!-- Settings sheet -->
 <div class="sheet" id="setSheet" role="dialog" aria-modal="true" aria-labelledby="setTitle" aria-hidden="true">
   <div class="sheet-head">
-    <h2 id="setTitle">Settings</h2>
+    <h2 id="setTitle" tabindex="-1">Settings</h2>
     <button class="icon-btn" data-close aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
   </div>
   <div class="sheet-body" id="setBody"></div>
@@ -789,7 +807,7 @@ img { max-width: 100%; }
 <!-- Welcome (first open) -->
 <div class="sheet short" id="welcomeSheet" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" aria-hidden="true">
   <div class="sheet-head">
-    <h2 id="welcomeTitle">Welcome to Maroon</h2>
+    <h2 id="welcomeTitle" tabindex="-1">Welcome to Maroon</h2>
   </div>
   <div class="sheet-body">
     <p class="hint" id="welcomeIntro">Track what you eat on campus in a few taps.</p>
@@ -809,9 +827,9 @@ img { max-width: 100%; }
 <!-- Progress sheet -->
 <div class="sheet" id="progSheet" role="dialog" aria-modal="true" aria-labelledby="progTitle" aria-hidden="true">
   <div class="sheet-head">
-    <h2 id="progTitle">Progress</h2>
+    <h2 id="progTitle" tabindex="-1">Progress</h2>
     <button class="icon-btn" data-close aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
   </div>
   <div class="sheet-body" id="progBody"></div>
@@ -820,9 +838,9 @@ img { max-width: 100%; }
 <!-- Document sheet: Privacy Policy, Terms, Licenses (from legal/*.md), About, Data sources -->
 <div class="sheet" id="docSheet" role="dialog" aria-modal="true" aria-labelledby="docTitle" aria-hidden="true">
   <div class="sheet-head">
-    <h2 id="docTitle">Privacy Policy</h2>
+    <h2 id="docTitle" tabindex="-1">Privacy Policy</h2>
     <button class="icon-btn" data-close aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
   </div>
   <div class="sheet-body doc-body" id="docBody"></div>
@@ -831,9 +849,9 @@ img { max-width: 100%; }
 <!-- Goal calculator sheet -->
 <div class="sheet" id="calcSheet" role="dialog" aria-modal="true" aria-labelledby="calcTitle" aria-hidden="true">
   <div class="sheet-head">
-    <h2 id="calcTitle">Calculate my goals</h2>
+    <h2 id="calcTitle" tabindex="-1">Calculate my goals</h2>
     <button class="icon-btn" data-close aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
   </div>
   <div class="sheet-body" id="calcBody">
@@ -854,9 +872,9 @@ img { max-width: 100%; }
 <!-- Nutrition facts sheet (one logged item, or the whole day) -->
 <div class="sheet short" id="factsSheet" role="dialog" aria-modal="true" aria-labelledby="factsTitle" aria-hidden="true">
   <div class="sheet-head">
-    <h2 id="factsTitle">Nutrition facts</h2>
+    <h2 id="factsTitle" tabindex="-1">Nutrition facts</h2>
     <button class="icon-btn" data-close aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
   </div>
   <div class="sheet-body" id="factsBody"></div>
@@ -865,9 +883,9 @@ img { max-width: 100%; }
 <!-- Edit meal sheet -->
 <div class="sheet" id="editSheet" role="dialog" aria-modal="true" aria-labelledby="editTitle" aria-hidden="true">
   <div class="sheet-head">
-    <h2 id="editTitle">Edit meal</h2>
+    <h2 id="editTitle" tabindex="-1">Edit meal</h2>
     <button class="icon-btn" data-close aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
   </div>
   <div class="sheet-body">
@@ -875,7 +893,7 @@ img { max-width: 100%; }
     <div id="extrasSection">
     <div class="group-label" id="extrasLabel">Add extras</div>
     <div class="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
       <label class="sr-only" for="extraSearch">Search extras</label>
       <input id="extraSearch" type="search" placeholder="Cheese, bacon, sauce, fries…" autocomplete="off">
     </div>
@@ -1214,13 +1232,14 @@ function sumRing(key, frac, color, big) {
   return `<div class="sum-ring"><svg class="r" viewBox="0 0 100 100" aria-hidden="true">
       <circle class="t" cx="50" cy="50" r="${r}" stroke-width="${sw}"/>
       <circle class="f" cx="50" cy="50" r="${r}" stroke-width="${sw}" stroke="${color}" stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}"/>
-    </svg><span class="ic" style="color:${color}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${SUM_ICONS[key]}</svg></span></div>`;
+    </svg><span class="ic" style="color:${color}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${SUM_ICONS[key]}</svg></span></div>`;
 }
 
 function renderSummary() {
   const t = totalsFor(viewKey);
   const g = state.goals;
   // Each card shows what's left (or how far over), never "x of y". No goal set: show what's been eaten.
+  const spoken = [];
   const card = (key, label, color, unit, big) => {
     const val = t[key], goal = g[key] || 0;
     let num, lbl, frac;
@@ -1228,11 +1247,12 @@ function renderSummary() {
     else if (val > goal) { num = val - goal; lbl = `${label} <b>over</b>`; frac = 1; }
     else { num = goal - val; lbl = `${label} left`; frac = val / goal; }
     const n = unit ? fmtG(num) + unit : fmt(num);
+    spoken.push(`${n.replace(/g$/, " grams")} ${label.toLowerCase()} ${!goal ? "eaten" : val > goal ? "over" : "left"}`);
     return `<div class="sum-card${big ? " cal" : ""}">
       <div><div class="sum-num">${n}</div><div class="sum-lbl">${lbl}</div></div>
       ${sumRing(key, frac, color, big)}
       ${big && (state.log[viewKey] || []).length ? `<button class="day-facts" data-day-facts aria-label="Full nutrition for the day">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg></button>` : ""}
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg></button>` : ""}
     </div>`;
   };
   const score = viewKey < dateKey(new Date()) ? dayScore(viewKey) : null;  // no grade for today while it's still going
@@ -1243,6 +1263,8 @@ function renderSummary() {
     ${card("fat", "Fats", "#8FD3D6", "g")}
     <div class="sum-foot">${score != null ? `<button class="score-chip ${scoreBand(score)}" data-open-progress>
       Score <b>${score}</b> · ${SCORE_WORDS[scoreBand(score)]}</button>` : ""}</div>`;
+  const sentence = `${$("#dayLabel").textContent}: ${spoken.join(", ")}.`;
+  if ($("#liveTotals").dataset.last !== sentence) { $("#liveTotals").dataset.last = sentence; $("#liveTotals").textContent = sentence; }
 }
 
 /* ---------- Log ---------- */
@@ -1253,7 +1275,7 @@ function renderLog() {
     $("#logArea").innerHTML = `<div class="empty"><strong>Nothing logged ${viewKey === dateKey(new Date()) ? "yet today" : "this day"}</strong>Tap Add food to log what you ate.</div>`;
     return;
   }
-  const ic = k => `<svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${SUM_ICONS[k]}</svg>`;
+  const ic = k => `<svg aria-hidden="true" class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${SUM_ICONS[k]}</svg>`;
   $("#logArea").innerHTML = `<ul class="log">${entries.map((e, i) => { const t = entryTotals(e); return `
     <li>
       <div class="info">
@@ -1261,16 +1283,16 @@ function renderLog() {
         ${(e.extras || []).length ? `<div class="extras-line">+ ${esc(extrasText(e))}</div>` : ""}
         <div class="kcal-line">${ic("calories")}${fmt(t.calories)} calories${e.servings !== 1 ? `<span class="qty">×${fmtQ(e.servings)}</span>` : ""}</div>
         <div class="mrow">
-          <span class="p">${ic("protein")}${fmtG(t.protein)}g</span>
-          <span class="c">${ic("carbs")}${fmtG(t.carbs)}g</span>
-          <span class="f">${ic("fat")}${fmtG(t.fat)}g</span>
+          <span class="p">${ic("protein")}${fmtG(t.protein)}g<span class="sr-only"> protein</span></span>
+          <span class="c">${ic("carbs")}${fmtG(t.carbs)}g<span class="sr-only"> carbs</span></span>
+          <span class="f">${ic("fat")}${fmtG(t.fat)}g<span class="sr-only"> fat</span></span>
         </div>
       </div>
       <button class="info-btn" data-facts-entry="${i}" aria-label="Nutrition facts for ${esc(e.item)}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>
       </button>
       <button class="edit" data-edit="${i}" aria-label="Edit ${esc(e.item)}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>
       </button>
     </li>`; }).join("")}</ul>`;
 }
@@ -2672,8 +2694,8 @@ function renderSettings() {
     <div class="group-label">My foods</div>
     ${mine.length ? `<ul class="foods my-foods">${mine.map(([k, c]) => `<li>
         <div class="info"><div class="name">${esc(c.name)}</div><div class="meta">${SOURCE_WORDS[c.source] || "Saved"} · ${fmt(c.calories)} cal · ${esc(c.serving || "1 serving")}</div></div>
-        <button class="info-btn" data-myedit="${esc(k)}" aria-label="Edit ${esc(c.name)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button>
-        <button class="info-btn" data-mydel="${esc(k)}" aria-label="Delete ${esc(c.name)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
+        <button class="info-btn" data-myedit="${esc(k)}" aria-label="Edit ${esc(c.name)}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button>
+        <button class="info-btn" data-mydel="${esc(k)}" aria-label="Delete ${esc(c.name)}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
       </li>`).join("")}</ul>` : `<p class="hint">Foods you scan, type in or build show up here.</p>`}
 
     <div class="group-label">Data</div>
@@ -2900,20 +2922,48 @@ $("#calcBody").addEventListener("click", e => {
 });
 
 /* ---------- Sheets ---------- */
-let lastFocus = null;
+// Sheets are modal: the page behind is inert, Tab stays inside the top sheet, Esc closes, and focus goes back
+// to the button that opened the first sheet.
+let lastFocus = null, sheetOrder = [];
+const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select, textarea, summary, [tabindex]:not([tabindex="-1"])';
+function syncInert() {
+  const open = !!document.querySelector(".sheet.open");
+  document.querySelectorAll(".app, .fab-wrap, #legalNotice, .bottom-nav, .plus-menu").forEach(el => { el.inert = open; });
+}
+const topSheet = () => { for (let i = sheetOrder.length - 1; i >= 0; i--) { const s = $("#" + sheetOrder[i]); if (s && s.classList.contains("open")) return s; } return document.querySelector(".sheet.open"); };
 function openSheet(id) {
-  lastFocus = document.activeElement;
+  if (!document.querySelector(".sheet.open")) lastFocus = document.activeElement;
   $("#scrim").classList.add("open");
   const s = $("#" + id);
   s.classList.add("open");
   s.setAttribute("aria-hidden", "false");
+  sheetOrder = sheetOrder.filter(x => x !== id).concat(id);
+  syncInert();
+  requestAnimationFrame(() => { if (!s.contains(document.activeElement)) { const h = s.querySelector(".sheet-head h2"); if (h) h.focus(); } });
 }
 function closeSheets() {
   if (typeof stopCamera === "function") stopCamera();
   $("#scrim").classList.remove("open");
   document.querySelectorAll(".sheet").forEach(s => { s.classList.remove("open"); s.setAttribute("aria-hidden", "true"); });
-  if (lastFocus) lastFocus.focus();
+  sheetOrder = [];
+  syncInert();
+  if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
 }
+document.addEventListener("keydown", e => {
+  if (e.key !== "Tab") return;
+  const s = topSheet(); if (!s) return;
+  const f = [...s.querySelectorAll(FOCUSABLE)].filter(el => el.offsetParent !== null || el === document.activeElement);
+  if (!f.length) return;
+  const first = f[0], last = f[f.length - 1];
+  if (!s.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+  else if (e.shiftKey && (document.activeElement === first || document.activeElement === s.querySelector(".sheet-head h2"))) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+// File pickers styled as buttons (<label class="file-btn">) open with Enter or Space too
+document.addEventListener("keydown", e => {
+  const l = e.target.closest && e.target.closest("label.file-btn");
+  if (l && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); const i = l.querySelector("input[type=file]"); if (i) i.click(); }
+});
 
 let toastTimer;
 function toast(msg, action) {
