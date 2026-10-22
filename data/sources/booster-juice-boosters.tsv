@@ -1,0 +1,16 @@
+# Booster Juice Boosters and Super Boosters, from the in-store menu board (photographed Oct 22, 2026; photo kept in data/private/).
+# Calories are from the board. Whey Protein (21 g) and Pea Protein (5 g) protein are from the board; every other gram value is an ESTIMATE:
+# free boosters = their few calories as carbs; chia seeds and hemp hearts = USDA per-100 g values scaled to the board calories
+# (chia ~7 g, hemp hearts ~22 g); collagen = all protein; whey = 21 g protein plus typical whey carbs/fat. Added to smoothies as extras.
+category	item	serving	calories	fat	sat_fat	trans_fat	protein	carbs	fibre	sugars	cholesterol_mg	sodium_mg	potassium_mg	calcium_mg	iron_mg
+Boosters	Combo Booster	1 booster	4	0	0	0	0	1	0	0					
+Boosters	Energy Booster	1 booster	4	0	0	0	0	1	0	0					
+Boosters	Density Booster	1 booster	2	0	0	0	0	0.5	0	0					
+Boosters	Power Booster	1 booster	5	0	0	0	0	1	0	0					
+Boosters	Warrior Booster	1 booster	5	0	0	0	0	1	0	0					
+Boosters	Wilderness Booster	1 booster	4	0	0	0	0.5	0.5	0	0					
+Super Boosters	Whey Protein Super Booster	1 booster	110	1.5	1	0	21	3	0	2					
+Super Boosters	Chia Seeds Super Booster	1 booster	35	2.2	0.2	0	1.2	3	2.5	0					
+Super Boosters	Hemp Hearts Super Booster	1 booster	120	10.6	1	0	6.9	1.9	0.9	0.3					
+Super Boosters	Collagen Powder Super Booster	1 booster	30	0	0	0	7.5	0	0	0					
+Super Boosters	Pea Protein Super Booster	1 booster	20	0	0	0	5	0	0	0					

@@ -106,9 +106,17 @@ for line in open('data/sources/booster-juice-nutrition-guide-v24.1.tsv',encoding
     if line.startswith(('#','category\t')) or not line.strip(): continue
     cat,name,serving,cal,fat,sat,trans,prot,carb,fib,sug,chol,sod,pot,ca,fe=line.rstrip('\n').split('\t')
     if cat=='Smoothies' or serving.endswith('oz'): name+=' - '+serving  # sizes group into one row in the app
-    kind=0 if cat=='Grilled Fresh' else 2
+    kind=0 if cat in ('Grilled Fresh','Smoothies') else 2  # smoothies are meals so they can take Boosters
     for loc in ('La Piazza','DBAC'):
         add(loc,'Booster Juice',cat,name,serving,cal,fat,sat,chol,sod,carb,fib,sug,prot,kind,BJ_SRC,ca,fe)
+# Boosters and Super Boosters (in-store menu board, Oct 2026): extras on smoothies. Calories from the board, most grams estimated
+# (see the notes at the top of the TSV).
+BJB_SRC='Booster Juice in-store Boosters menu board, Oct 22, 2026 (calories; whey and pea protein grams); other grams estimated'
+for line in open('data/sources/booster-juice-boosters.tsv',encoding='utf-8'):
+    if line.startswith(('#','category\t')) or not line.strip(): continue
+    cat,name,serving,cal,fat,sat,trans,prot,carb,fib,sug,chol,sod,pot,ca,fe=line.rstrip('\n').split('\t')
+    for loc in ('La Piazza','DBAC'):
+        add(loc,'Booster Juice',cat,name,serving,cal,fat,sat,chol,sod,carb,fib,sug,prot,1,BJB_SRC,ca,fe)
 # ---- Pizza Pizza (La Piazza): pizza only. Walk-in slice + a slice of each pie size; the size groups into one row in the app.
 PP_SRC='Pizza Pizza nutrition (pizzapizza.ca/about-us/nutrition, facts as of Nov 1, 2023), pulled Oct 1, 2026'
 for line in open('data/sources/pizza-pizza-nutrition.tsv',encoding='utf-8'):

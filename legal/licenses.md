@@ -25,7 +25,7 @@ Used only on devices without a built-in barcode reader.
 ## Data
 
 - **McMaster Hospitality Services** menu nutrition (macnutrition.mcmaster.ca) and opening hours (hospitality.mcmaster.ca). Used with permission from McMaster Hospitality Services.
-- Published nutrition information from **Tim Hortons, Second Cup, Chopped Leaf, Booster Juice, Pizza Pizza, Starbucks and Teriyaki Experience**, and posted menu-board calories from **Paramount Lebanese Kitchen** (protein, carbs and fat for Paramount are estimates). Brand names belong to their owners and are used only to identify where food comes from.
+- Published nutrition information from **Tim Hortons, Second Cup, Chopped Leaf, Booster Juice, Pizza Pizza, Starbucks and Teriyaki Experience**, and posted menu-board calories from **Paramount Lebanese Kitchen** (protein, carbs and fat for Paramount are estimates) and from the **Booster Juice** Boosters board (most booster grams are estimates). Brand names belong to their owners and are used only to identify where food comes from.
 - Barcode lookups: product data from **Open Food Facts** (https://world.openfoodfacts.org), available under the Open Database License (ODbL); product images and text under their own licenses.
 
 The full list of sources with dates is in the app under Settings → Data sources.
